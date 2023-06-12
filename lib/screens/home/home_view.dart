@@ -7,6 +7,7 @@ import 'package:dnotes/screens/home/home_contrl.dart';
 import 'package:dnotes/widgets/app_text.dart';
 import 'package:dnotes/widgets/app_toast.dart';
 import 'package:dnotes/widgets/icon_button.dart';
+import 'package:dnotes/widgets/popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -48,30 +49,69 @@ class HomeView extends StatelessWidget {
               ),
             ),
             Stack(
+              alignment: Alignment.center,
               children: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 75),
+                  child: AppIconButton(
+                    AppImages.addIcon,
+                    onTap: () {},
+                  ),
+                ),
                 AppIconButton(
-                  AppImages.addIcon,
+                  AppImages.searchIcon,
                   onTap: () {},
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 38),
-                  child: AppIconButton(
-                    AppImages.searchIcon,
-                    onTap: () {},
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 76),
-                  child: AppIconButton(
-                    AppImages.menuIcon,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 10),
-                    onTap: () {},
-                  ),
-                ),
+                  padding: const EdgeInsets.only(left: 75),
+                  child: popupMenu(context),
+                )
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  popupMenu(BuildContext context) {
+    return AppPopupMenu(
+      menuKey: controller.homePopupKey,
+      onTap: () {
+        dynamic state = controller.homePopupKey.currentState;
+        state.showButtonMenu();
+      },
+      child: SizedBox(
+        width: 135,
+        child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          physics: const ScrollPhysics(),
+          itemCount: controller.popupMenuList.length,
+          itemBuilder: ((context, index) {
+            return Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: (() {
+                  Get.back();
+                  if (controller.popupMenuList[index] == "View") {
+                    // view notes code
+                  } else if (controller.popupMenuList[index] == "Edit") {
+                    // edit notes code
+                  }
+                }),
+                borderRadius: BorderRadius.circular(15),
+                child: Padding(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                  child: AppText(
+                    controller.popupMenuList[index],
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            );
+          }),
         ),
       ),
     );
