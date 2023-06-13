@@ -7,4 +7,6 @@ class AppImages {
   static const forwardIcon = "assets/images/forward_icon.svg";
   static const moreIcon = "assets/images/more_icon.svg";
   static const shareIcon = "assets/images/share_icon.svg";
+  static const copyIcon = "assets/images/copy_icon.svg";
+  static const wrapIcon = "assets/images/wrap_icon.svg";
 }

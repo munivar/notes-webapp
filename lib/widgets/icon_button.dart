@@ -25,8 +25,8 @@ class AppIconButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height ?? 42,
-      width: width ?? 42,
+      height: height ?? 45,
+      width: width ?? 45,
       child: Material(
         color: Colors.transparent,
         child: InkWell(

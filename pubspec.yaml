@@ -26,6 +26,14 @@ dependencies:
   get_storage: ^2.1.1
   # for formating date
   intl: ^0.17.0
+  # for formating code
+  code_text_field: ^1.1.0
+  # for highlighting text
+  highlight: ^0.7.0
+  # for highlighting text
+  flutter_highlight: ^0.7.0
+  # for sharing text and image
+  share_plus: ^6.3.0
 
 dev_dependencies:
   flutter_test:

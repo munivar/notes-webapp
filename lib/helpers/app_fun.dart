@@ -4,18 +4,18 @@ import 'package:flutter/services.dart';
 // All Common Used Function is here in AppFun Class
 class AppFun {
   // opening keyboard
-  void openKeyboard(BuildContext context, FocusNode? focusNode) {
+  static void openKeyboard(BuildContext context, FocusNode? focusNode) {
     SystemChannels.textInput.invokeMethod('TextInput.show');
     FocusScope.of(context).requestFocus(focusNode);
   }
 
   // closing keyboard
-  void closeKeyboard(BuildContext context) {
+  static void closeKeyboard(BuildContext context) {
     SystemChannels.textInput.invokeMethod('TextInput.hide');
   }
 
   // function for picking date
-  pickDate(BuildContext context) async {
+  static pickDate(BuildContext context) async {
     try {
       DateTime? dateValue = await showDatePicker(
         context: context,

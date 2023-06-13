@@ -30,8 +30,8 @@ Future<void> initializeDependencies() async {
 
 Future<void> setupSystemUIOverlayStyle() async {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    systemNavigationBarColor: AppColor.backgroundClr,
-    statusBarColor: AppColor.backgroundClr,
+    systemNavigationBarColor: AppColor.lightBgClr,
+    statusBarColor: AppColor.lightBgClr,
   ));
 }
 
@@ -55,7 +55,7 @@ class StartApp extends StatelessWidget {
       getPages: AppRoutes.getPages(),
       title: "DNotes",
       theme: ThemeData(
-        brightness: Brightness.light,
+        brightness: Brightness.dark,
         primaryColor: AppColor.primaryClr,
         fontFamily: Const.fontFamily,
       ),

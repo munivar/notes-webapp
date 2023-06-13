@@ -1,7 +1,7 @@
 import 'package:dnotes/screens/home/home_view.dart';
+import 'package:dnotes/screens/login/login_view.dart';
 import 'package:dnotes/screens/notes/notes_view.dart';
 import 'package:dnotes/screens/splash/splash_view.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AppRoutes {
@@ -15,19 +15,19 @@ class AppRoutes {
       GetPage(
         name: splash,
         page: () => SplashView(),
-        transition: Transition.cupertino,
+        transition: Transition.fadeIn,
         transitionDuration: const Duration(milliseconds: 250),
       ),
       GetPage(
         name: login,
-        page: () => Container(),
-        transition: Transition.cupertino,
+        page: () => LoginView(),
+        transition: Transition.fadeIn,
         transitionDuration: const Duration(milliseconds: 250),
       ),
       GetPage(
         name: home,
         page: () => HomeView(),
-        transition: Transition.cupertino,
+        transition: Transition.fadeIn,
         transitionDuration: const Duration(milliseconds: 250),
       ),
       GetPage(

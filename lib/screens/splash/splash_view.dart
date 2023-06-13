@@ -21,13 +21,11 @@ class SplashView extends StatelessWidget {
 
   mainLayout(BuildContext context) {
     return Container(
-      color: AppColor.backgroundClr,
+      color: AppColor.lightBgClr,
       child: Center(
-        child: FadeAppAnimation(
-          child: Image.asset(
-            AppImages.notesLogo,
-            height: AppHelper.height(context, 6),
-          ),
+        child: Image.asset(
+          AppImages.notesLogo,
+          height: AppHelper.height(context, 6),
         ),
       ),
     );

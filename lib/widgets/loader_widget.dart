@@ -14,9 +14,9 @@ class AppLoaderWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           LoaderWidget(delay: const Duration(milliseconds: 100), color: color),
-          const SizedBox(width: 1),
+          const SizedBox(width: 3),
           LoaderWidget(delay: const Duration(milliseconds: 200), color: color),
-          const SizedBox(width: 1),
+          const SizedBox(width: 3),
           LoaderWidget(delay: const Duration(milliseconds: 300), color: color),
         ],
       ),

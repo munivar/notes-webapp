@@ -10,8 +10,8 @@ class SplashController extends GetxController {
   }
 
   void goToHome() {
-    Timer(const Duration(milliseconds: 1500), () {
-      Get.offAllNamed(AppRoutes.home);
+    Timer(const Duration(milliseconds: 400), () {
+      Get.offAllNamed(AppRoutes.login);
     });
   }
 }
