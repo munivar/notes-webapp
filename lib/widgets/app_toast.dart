@@ -31,14 +31,21 @@ class AppToast {
                 ),
               ),
               const SizedBox(width: 10),
-              Flexible(
-                child: AppText(
-                  message,
-                  maxLines: 2,
-                  fontWeight: FontWeight.w600,
-                  fontSize: AppHelper.font(context, 11),
-                ),
-              ),
+              AppHelper.isWeb == true
+                  ? AppText(
+                      message,
+                      maxLines: 2,
+                      fontWeight: FontWeight.w600,
+                      fontSize: AppHelper.font(context, 11),
+                    )
+                  : Flexible(
+                      child: AppText(
+                        message,
+                        maxLines: 2,
+                        fontWeight: FontWeight.w600,
+                        fontSize: AppHelper.font(context, 11),
+                      ),
+                    ),
             ],
           )),
       gravity: ToastGravity.BOTTOM,
