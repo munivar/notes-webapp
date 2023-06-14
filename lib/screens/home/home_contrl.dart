@@ -1,7 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_text_field/code_text_field.dart';
 import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_routes.dart';
+import 'package:dnotes/helpers/app_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:highlight/languages/dart.dart';
@@ -15,9 +17,13 @@ class HomeController extends GetxController {
   RxBool isDesktopListView = false.obs;
   RxBool isOptionShowing = false.obs;
   RxBool isFromEdit = false.obs;
+  late FirebaseFirestore collectionRef;
 
   @override
   void onInit() {
+    // initializing firebase firestore
+    collectionRef = FirebaseFirestore.instance;
+    // initializing code controller
     codeController = CodeController(
       text: Const.codeSnippet["dart"],
       language: dart,
@@ -56,7 +62,13 @@ class HomeController extends GetxController {
         isDesktopListView(false);
       }
     } else if (popupMenuList[index] == "LogOut") {
-      Get.offAllNamed(AppRoutes.login);
+      signOutWithFirebase();
     }
+  }
+
+  Future signOutWithFirebase() async {
+    await AppStorage.removeAllData();
+    await AppStorage.setData(Const.isLogin, false);
+    Get.offAllNamed(AppRoutes.login);
   }
 }

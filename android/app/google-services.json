@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "555648023468",
+    "project_id": "dnotes-7ba3c",
+    "storage_bucket": "dnotes-7ba3c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555648023468:android:acee68141e4321c51c1809",
+        "android_client_info": {
+          "package_name": "com.dkpro.dnotes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "555648023468-htv2aa5258bl1utb7rgu5i5epniiqos0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDrUOH5oF9qNAeywf0PdYS3yA7pa-KFN7A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "555648023468-htv2aa5258bl1utb7rgu5i5epniiqos0.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "555648023468-kktdjrtp0tm8knta6ntru87i09o8d6fj.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.dkpro.dnotes"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

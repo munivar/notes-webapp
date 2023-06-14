@@ -79,6 +79,9 @@ class AppHelper {
     } else if (isTabletWidth) {
       // Tablet font size calculation
       return screenWidth * (fontSize / 8) / 100;
+    } else if (AppHelper.isWeb && screenWidth < 600) {
+      // Desktop Mobile View Size Calculation
+      return screenWidth * (fontSize / 4) / 100;
     } else {
       // Other devices font size calculation
       return screenWidth * (fontSize / 2.7) / 100;

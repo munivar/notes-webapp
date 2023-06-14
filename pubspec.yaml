@@ -34,6 +34,11 @@ dependencies:
   flutter_highlight: ^0.7.0
   # for sharing text and image
   share_plus: ^6.3.0
+  # for using firebase services
+  firebase_core: ^2.14.0
+  # for save data in firebase firestore
+  cloud_firestore: ^4.7.1
+  
 
 dev_dependencies:
   flutter_test:

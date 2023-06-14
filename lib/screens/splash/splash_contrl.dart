@@ -1,5 +1,6 @@
-import 'dart:async';
+import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_routes.dart';
+import 'package:dnotes/helpers/app_storage.dart';
 import 'package:get/get.dart';
 
 class SplashController extends GetxController {
@@ -10,8 +11,12 @@ class SplashController extends GetxController {
   }
 
   void goToHome() {
-    Timer(const Duration(milliseconds: 400), () {
-      Get.offAllNamed(AppRoutes.login);
+    AppStorage.getData(Const.isLogin).then((value) {
+      if (value == true) {
+        Get.offAllNamed(AppRoutes.home);
+      } else {
+        Get.offAllNamed(AppRoutes.login);
+      }
     });
   }
 }

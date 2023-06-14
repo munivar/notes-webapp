@@ -19,9 +19,9 @@ class AppToast {
             borderRadius: BorderRadius.circular(25),
           ),
           child: Row(
-            mainAxisAlignment: AppHelper.isMobile
-                ? MainAxisAlignment.start
-                : MainAxisAlignment.center,
+            mainAxisAlignment: AppHelper.isWeb
+                ? MainAxisAlignment.center
+                : MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ClipOval(

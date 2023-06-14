@@ -42,7 +42,7 @@ class LoginView extends StatelessWidget {
                   )
                 : Container(
                     height: AppHelper.height(context, 70),
-                    width: AppHelper.isMobile != true
+                    width: AppHelper.isMobile == false
                         ? 500
                         : AppHelper.width(context, 100),
                     padding: const EdgeInsets.all(15),
@@ -88,7 +88,7 @@ class LoginView extends StatelessWidget {
         ),
         AppHelper.sizedBox(context, 4, null),
         Padding(
-          padding: AppHelper.isMobile != true
+          padding: AppHelper.isMobile == false
               ? EdgeInsets.symmetric(horizontal: AppHelper.width(context, 1.4))
               : const EdgeInsets.all(0),
           child: TextFormField(
@@ -126,58 +126,8 @@ class LoginView extends StatelessWidget {
           width: AppHelper.width(context, 100),
         ),
         AppHelper.sizedBox(context, 1, null),
-        Obx(() {
-          return controller.isRegister.isFalse
-              ? Container()
-              : Column(
-                  children: [
-                    Padding(
-                      padding: AppHelper.isMobile != true
-                          ? EdgeInsets.symmetric(
-                              horizontal: AppHelper.width(context, 1.4))
-                          : const EdgeInsets.all(0),
-                      child: TextFormField(
-                        scrollPadding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).viewInsets.bottom),
-                        textInputAction: TextInputAction.next,
-                        keyboardType: TextInputType.text,
-                        maxLines: 1,
-                        onChanged: (value) {},
-                        style: TextStyle(
-                          fontSize: AppHelper.font(context, 12),
-                          color: AppColor.fontClr,
-                          fontWeight: FontWeight.w500,
-                        ),
-                        cursorColor: AppColor.primaryClr,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Email ID',
-                          hintStyle: TextStyle(
-                            fontSize: AppHelper.font(context, 12),
-                            color: AppColor.fontHintClr,
-                            fontWeight: FontWeight.normal,
-                          ),
-                          contentPadding: const EdgeInsets.only(
-                              left: 14.0, bottom: 14.0, top: 14.0),
-                        ),
-                        controller: controller.emailContrl,
-                      ),
-                    ),
-                    Container(
-                      height: 2,
-                      margin: EdgeInsets.symmetric(
-                          horizontal: AppHelper.width(context, 2)),
-                      decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(50)),
-                      width: AppHelper.width(context, 100),
-                    ),
-                    AppHelper.sizedBox(context, 1, null),
-                  ],
-                );
-        }),
         Padding(
-          padding: AppHelper.isMobile != true
+          padding: AppHelper.isMobile == false
               ? EdgeInsets.symmetric(horizontal: AppHelper.width(context, 1.4))
               : const EdgeInsets.all(0),
           child: TextFormField(
@@ -219,7 +169,7 @@ class LoginView extends StatelessWidget {
         ),
         AppHelper.sizedBox(context, 3, null),
         Padding(
-          padding: AppHelper.isMobile != true
+          padding: AppHelper.isMobile == false
               ? EdgeInsets.symmetric(horizontal: AppHelper.width(context, 1.8))
               : const EdgeInsets.symmetric(horizontal: 10),
           child: Material(

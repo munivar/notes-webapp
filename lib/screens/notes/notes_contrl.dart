@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_text_field/code_text_field.dart';
 import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_images.dart';
+import 'package:dnotes/helpers/app_storage.dart';
 import 'package:dnotes/screens/home/home_contrl.dart';
 import 'package:dnotes/widgets/app_toast.dart';
 import 'package:flutter/material.dart';
@@ -14,22 +16,20 @@ class NotesController extends GetxController {
   final GlobalKey notePopupKey = GlobalKey();
   CodeController codeController = CodeController();
   TextEditingController titleContrl = TextEditingController();
+  RxBool isWordWrap = false.obs;
+  late FirebaseFirestore collectionRef;
   List<String> popupMenuList = [
     "Copy Text",
     "Share Text",
     "WordWrap (Off)",
     "WordWrap (On)",
   ];
-  List<String> popupImageList = [
-    AppImages.copyIcon,
-    AppImages.shareIcon,
-    AppImages.wrapIcon,
-    AppImages.wrapIcon,
-  ];
-  RxBool isWordWrap = false.obs;
 
   @override
   void onInit() {
+    // initializing firebase firestore
+    collectionRef = FirebaseFirestore.instance;
+    // initializing code controller
     codeController = CodeController(
       text: homeContrl.isFromEdit.isTrue ? Const.codeSnippet["dart"] : "",
       // text: "",
@@ -54,7 +54,7 @@ class NotesController extends GetxController {
     super.onClose();
   }
 
-  void onMenuTap(BuildContext context, int index) {
+  void onMenuTap(BuildContext context, int index) async {
     Get.back();
     if (popupMenuList[index] == "WordWrap (On)") {
       isWordWrap(true);
@@ -67,14 +67,14 @@ class NotesController extends GetxController {
     }
   }
 
-  // -- copy text to clipboard
+  // copy text to clipboard
   void copyTextToClipboard(BuildContext context, String text) async {
     await Clipboard.setData(ClipboardData(text: text)).then((value) {
       AppToast.showToast(context, "Copied to Clipboard");
     });
   }
 
-  // -- share first text
+  // share first text
   void shareText(String text) async {
     await Share.share(text);
   }

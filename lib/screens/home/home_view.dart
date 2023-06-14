@@ -116,9 +116,6 @@ class HomeView extends StatelessWidget {
                             ? buildListLayout(context)
                             : buildGridLayout(context);
                       }),
-                // AppHelper.isMobile
-                //     ? buildListLayout(context)
-                //     : buildGridLayout(context),
                 AppHelper.sizedBox(context, 1, null),
                 InkWell(
                   onTap: () {

@@ -1,3 +1,4 @@
+import 'package:dnotes/firebase_options.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_routes.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 GlobalKey<NavigatorState> toastNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -25,6 +27,7 @@ void main() async {
 Future<void> initializeDependencies() async {
   await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await setupSystemUIOverlayStyle();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await initializeGetStorage();
 }
 

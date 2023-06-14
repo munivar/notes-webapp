@@ -9,7 +9,6 @@ import 'package:dnotes/widgets/icon_button.dart';
 import 'package:dnotes/widgets/popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/themes/vs2015.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class NotesView extends StatelessWidget {
@@ -132,26 +131,9 @@ class NotesView extends StatelessWidget {
                 child: Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8),
-                        child: SvgPicture.asset(
-                          controller.popupImageList[index],
-                          color: AppColor.fontClr,
-                          height: index == 2
-                              ? 15
-                              : index == 3
-                                  ? 15
-                                  : 18,
-                          width: 18,
-                        ),
-                      ),
-                      AppText(
-                        controller.popupMenuList[index],
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ],
+                  child: AppText(
+                    controller.popupMenuList[index],
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
@@ -171,10 +153,10 @@ class NotesView extends StatelessWidget {
             bottom: 10,
             right: AppHelper.width(context, 3)),
         padding: EdgeInsets.only(
-            left: AppHelper.isMobile ? 0 : 15,
+            left: AppHelper.isWeb ? 15 : 0,
             top: 15,
             bottom: 15,
-            right: AppHelper.isMobile ? 10 : 15),
+            right: AppHelper.isWeb ? 15 : 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           color: AppColor.codeFieldClr,
