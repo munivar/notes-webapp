@@ -3,6 +3,8 @@ class Const {
   static const userId = "userId";
   static const fontFamily = "AnekGujarati";
   static const codeFamily = "SourceCodePro";
+  static const isMobileListView = "isMobileListView";
+  static const isDesktopListView = "isDesktopListView";
 
   // firebase firestore collection
   static const fireUsers = "users";

@@ -10,22 +10,26 @@ class NotesList {
   String id;
   String title;
   String text;
+  String date;
 
   NotesList({
     required this.id,
     required this.title,
     required this.text,
+    required this.date,
   });
 
   factory NotesList.fromJson(Map<String, dynamic> json) => NotesList(
         id: json["id"],
         title: json["title"],
         text: json["text"],
+        date: json["date"],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
         "title": title,
         "text": text,
+        "date": date,
       };
 }

@@ -60,35 +60,56 @@ class HomeView extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 10),
-              child: AppText(
-                "DNotes",
-                fontSize: AppHelper.font(context, 20),
-                fontWeight: FontWeight.w600,
+              child: InkWell(
+                highlightColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                splashColor: Colors.transparent,
+                onTap: () {
+                  Get.offAllNamed(AppRoutes.home);
+                },
+                child: AppText(
+                  "DNotes",
+                  fontSize: AppHelper.font(context, 20),
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             Stack(
-              alignment: Alignment.center,
+              alignment: Alignment.centerRight,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: 75),
+                  padding: const EdgeInsets.only(right: 120),
                   child: AppIconButton(
                     AppImages.addIcon,
                     onTap: () {
-                      controller.isFromEdit(false);
-                      controller.isNewNotes(false);
-                      Get.toNamed(AppRoutes.notes);
+                      Get.toNamed(AppRoutes.notes, arguments: {
+                        "id": "dnotes",
+                        "title": "",
+                        "text": "",
+                        "date": "",
+                      });
                     },
                   ),
                 ),
-                AppIconButton(
-                  AppImages.searchIcon,
-                  padding: const EdgeInsets.all(11),
-                  onTap: () {},
+                Padding(
+                  padding: const EdgeInsets.only(right: 80),
+                  child: AppIconButton(
+                    AppImages.refreshIcon,
+                    padding: const EdgeInsets.all(12),
+                    onTap: () {
+                      Get.offAllNamed(AppRoutes.home);
+                    },
+                  ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 75),
-                  child: popupMenu(context),
-                )
+                  padding: const EdgeInsets.only(right: 40),
+                  child: AppIconButton(
+                    AppImages.searchIcon,
+                    padding: const EdgeInsets.all(11),
+                    onTap: () {},
+                  ),
+                ),
+                popupMenu(context),
               ],
             ),
           ],
@@ -104,21 +125,15 @@ class HomeView extends StatelessWidget {
             left: AppHelper.width(context, 3),
             bottom: 10,
             right: AppHelper.width(context, 3)),
-        child: RefreshIndicator(
-          key: controller.refreshKey,
-          onRefresh: () {
-            return controller.refreshList();
-          },
-          child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                buildListLayout(context),
-                // AppHelper.sizedBox(context, 4, null),
-              ],
-            ),
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              buildListLayout(context),
+              // AppHelper.sizedBox(context, 4, null),
+            ],
           ),
         ));
   }
@@ -169,40 +184,41 @@ class HomeView extends StatelessWidget {
             if (snapshot.hasData) {
               final items = snapshot.data!;
               if (items.isNotEmpty) {
-                return controller.listItemCount.value == 1
-                    ? ListView.builder(
-                        scrollDirection: Axis.vertical,
-                        shrinkWrap: true,
-                        physics: const BouncingScrollPhysics(),
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          // add data from firebase firestore to code controller
-                          controller.codeController = CodeController(
-                            text: items[index].text,
-                            language: dart,
-                          );
-                          //
-                          return buildChildrenLayout(
-                              context, index, items, true);
-                        })
-                    : AlignedGridView.count(
-                        physics: const BouncingScrollPhysics(),
-                        shrinkWrap: true,
-                        scrollDirection: Axis.vertical,
-                        crossAxisCount: controller.listItemCount.value,
-                        mainAxisSpacing: 8,
-                        crossAxisSpacing: 8,
-                        itemCount: items.length,
-                        itemBuilder: ((context, index) {
-                          // add data from firebase firestore to code controller
-                          controller.codeController = CodeController(
-                            text: items[index].text,
-                            language: dart,
-                          );
-                          //
-                          return buildChildrenLayout(
-                              context, index, items, false);
-                        }));
+                return Obx(() {
+                  return controller.listItemCount.value == 1
+                      ? ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          shrinkWrap: true,
+                          physics: const ScrollPhysics(),
+                          itemCount: items.length,
+                          reverse: true,
+                          itemBuilder: (context, index) {
+                            // add data from firebase firestore to code controller
+                            controller.codeController = CodeController(
+                              text: items[index].text,
+                              language: dart,
+                            );
+                            //
+                            return buildChildrenLayout(
+                                context, index, items, true);
+                          })
+                      : MasonryGridView.count(
+                          shrinkWrap: true,
+                          physics: const ScrollPhysics(),
+                          scrollDirection: Axis.vertical,
+                          crossAxisCount: controller.listItemCount.value,
+                          itemCount: items.length,
+                          itemBuilder: ((context, index) {
+                            // add data from firebase firestore to code controller
+                            controller.codeController = CodeController(
+                              text: items[index].text,
+                              language: dart,
+                            );
+                            //
+                            return buildChildrenLayout(
+                                context, index, items, false);
+                          }));
+                });
               } else {
                 return Center(
                     child: Column(
@@ -240,12 +256,11 @@ class HomeView extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: () {
-            controller.isFromEdit(true);
-            controller.isNewNotes(false);
             Get.toNamed(AppRoutes.notes, arguments: {
               "id": items[index].id,
               "title": items[index].title,
               "text": items[index].text,
+              "date": items[index].date,
             });
           },
           child: Padding(
@@ -262,7 +277,7 @@ class HomeView extends StatelessWidget {
                           items[index].title,
                           fontSize: AppHelper.font(context, 12),
                           maxLines: 2,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                 items[index].text.isEmpty
@@ -281,7 +296,7 @@ class HomeView extends StatelessWidget {
                               readOnly: true,
                               wrap: true,
                               minLines: 1,
-                              maxLines: 8,
+                              maxLines: 9,
                               decoration: BoxDecoration(
                                   color: Colors.transparent,
                                   borderRadius: BorderRadius.circular(15)),
@@ -294,6 +309,17 @@ class HomeView extends StatelessWidget {
                           ),
                         ),
                       ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: AppText(
+                      "Created on ${items[index].date}",
+                      fontSize: AppHelper.font(context, 10),
+                      fontColor: AppColor.fontHintClr,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),

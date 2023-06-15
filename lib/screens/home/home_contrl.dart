@@ -13,15 +13,9 @@ class HomeController extends GetxController {
   List<String> popupMenuList = ["ListView", "GridView", "LogOut"];
   CodeController codeController = CodeController();
   TextEditingController titleContrl = TextEditingController();
-  RxBool isMobileListView = false.obs;
-  RxBool isDesktopListView = false.obs;
-  RxBool isFromEdit = false.obs;
-  RxBool isNewNotes = false.obs;
   RxInt listItemCount = 1.obs;
   RxString userId = "".obs;
   late FirebaseFirestore collectionRef;
-  var refreshKey = GlobalKey<RefreshIndicatorState>();
-  RxDouble opacity = 1.0.obs;
 
   @override
   void onInit() {
@@ -43,16 +37,11 @@ class HomeController extends GetxController {
     userId.value = await AppStorage.getData(Const.userId);
   }
 
-  @override
-  void onClose() {
-    codeController.dispose();
-    super.onClose();
-  }
-
-  Future<void> refreshList() async {
-    refreshKey.currentState?.show(atTop: false);
-    refresh();
-  }
+  // @override
+  // void onClose() {
+  //   codeController.dispose();
+  //   super.onClose();
+  // }
 
   // on menu item tap
   void onMenuTap(int index) {
@@ -83,6 +72,7 @@ class HomeController extends GetxController {
           .collection(Const.fireNotes)
           .doc(userId.value)
           .collection(Const.fireUserNotes)
+          .orderBy("date")
           .snapshots()
           .map((event) {
         return event.docs.map((doc) => NotesList.fromJson(doc.data())).toList();

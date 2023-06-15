@@ -2,6 +2,7 @@ import 'package:code_text_field/code_text_field.dart';
 import 'package:dnotes/animations/fade_anim.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_const.dart';
+import 'package:dnotes/helpers/app_fun.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_images.dart';
 import 'package:dnotes/screens/notes/notes_contrl.dart';
@@ -20,8 +21,6 @@ class NotesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        controller.homeContrl.isFromEdit(false);
-        controller.homeContrl.isNewNotes(false);
         Get.back();
         return Future(() => false);
       },
@@ -55,15 +54,13 @@ class NotesView extends StatelessWidget {
                   AppImages.backIcon,
                   padding: const EdgeInsets.all(8),
                   onTap: () {
-                    controller.homeContrl.isFromEdit(false);
-                    controller.homeContrl.isNewNotes(false);
                     Get.back();
                   },
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 5),
                   child: SizedBox(
-                    width: AppHelper.width(context, 55),
+                    width: AppHelper.width(context, 46),
                     child: TextFormField(
                       scrollPadding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -98,25 +95,34 @@ class NotesView extends StatelessWidget {
               ],
             ),
             Stack(
-              alignment: Alignment.center,
+              alignment: Alignment.centerRight,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 75),
-                  child: AppIconButton(
-                    AppImages.searchIcon,
-                    padding: const EdgeInsets.all(11),
-                    onTap: () {},
-                  ),
-                ),
-                AppIconButton(
-                  AppImages.deleteIcon,
-                  padding: const EdgeInsets.all(11),
-                  onTap: () {},
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 75),
-                  child: popupMenu(context),
-                )
+                Obx(() {
+                  return Padding(
+                    padding: EdgeInsets.only(
+                        right: controller.notesId.isNotEmpty ? 80 : 40),
+                    child: AppIconButton(
+                      AppImages.searchIcon,
+                      padding: const EdgeInsets.all(11),
+                      onTap: () {},
+                    ),
+                  );
+                }),
+                Obx(() {
+                  return controller.notesId.isNotEmpty
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 40),
+                          child: AppIconButton(
+                            AppImages.deleteIcon,
+                            padding: const EdgeInsets.all(11),
+                            onTap: () {
+                              controller.deleteNotesInFirebase(context);
+                            },
+                          ),
+                        )
+                      : Container();
+                }),
+                popupMenu(context),
               ],
             ),
           ],
@@ -184,31 +190,46 @@ class NotesView extends StatelessWidget {
         ),
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          child: CodeTheme(
-              data: const CodeThemeData(styles: vs2015Theme),
-              child: Obx(() {
-                return CodeField(
-                  textSelectionTheme: TextSelectionThemeData(
-                    cursorColor: Colors.white.withOpacity(0.20),
-                    selectionColor: Colors.white.withOpacity(0.20),
-                    selectionHandleColor: Colors.white.withOpacity(0.20),
-                  ),
-                  onChanged: (p0) {
-                    debugPrint("fieldText ->> $p0");
-                    controller.saveNotes(context);
-                  },
-                  wrap: controller.isWordWrap.value,
-                  horizontalScroll: true,
-                  decoration: BoxDecoration(
-                      color: AppColor.codeFieldClr,
-                      borderRadius: BorderRadius.circular(20)),
-                  controller: controller.codeController,
-                  textStyle: TextStyle(
-                      fontSize: AppHelper.font(context, 11),
-                      fontWeight: FontWeight.w500,
-                      fontFamily: Const.codeFamily),
-                );
-              })),
+          child: Stack(
+            children: [
+              CodeTheme(
+                  data: const CodeThemeData(styles: vs2015Theme),
+                  child: Obx(() {
+                    return CodeField(
+                      textSelectionTheme: TextSelectionThemeData(
+                        cursorColor: Colors.white.withOpacity(0.20),
+                        selectionColor: Colors.white.withOpacity(0.20),
+                        selectionHandleColor: Colors.white.withOpacity(0.20),
+                      ),
+                      onChanged: (p0) {
+                        debugPrint("fieldText ->> $p0");
+                        controller.saveNotes(context);
+                      },
+                      wrap: controller.isWordWrap.value,
+                      horizontalScroll: true,
+                      decoration: BoxDecoration(
+                          color: AppColor.codeFieldClr,
+                          borderRadius: BorderRadius.circular(20)),
+                      controller: controller.codeController,
+                      textStyle: TextStyle(
+                          fontSize: AppHelper.font(context, 11),
+                          fontWeight: FontWeight.w500,
+                          fontFamily: Const.codeFamily),
+                    );
+                  })),
+              Obx(() {
+                return controller.isLoading.isTrue
+                    ? Align(
+                        alignment: Alignment.centerRight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 5),
+                          child: AppFun.appLoader(Colors.white),
+                        ),
+                      )
+                    : Container();
+              }),
+            ],
+          ),
         ),
       ),
     );

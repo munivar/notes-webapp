@@ -2,6 +2,7 @@ import 'package:dnotes/firebase_options.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_routes.dart';
+import 'package:dnotes/helpers/scroll_behavior.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -10,7 +11,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 GlobalKey<NavigatorState> toastNavigatorKey = GlobalKey<NavigatorState>();
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDependencies();
@@ -56,6 +56,7 @@ class StartApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.splash,
       getPages: AppRoutes.getPages(),
+      scrollBehavior: CustomScrollBehavior(),
       title: "DNotes",
       theme: ThemeData(
         brightness: Brightness.dark,

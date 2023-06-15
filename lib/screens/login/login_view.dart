@@ -123,7 +123,8 @@ class LoginView extends StatelessWidget {
           height: 2,
           margin: EdgeInsets.symmetric(horizontal: AppHelper.width(context, 2)),
           decoration: BoxDecoration(
-              color: Colors.grey, borderRadius: BorderRadius.circular(50)),
+              color: AppColor.fontHintClr.withOpacity(0.20),
+              borderRadius: BorderRadius.circular(50)),
           width: AppHelper.width(context, 100),
         ),
         AppHelper.sizedBox(context, 1, null),
@@ -165,7 +166,8 @@ class LoginView extends StatelessWidget {
           height: 2,
           margin: EdgeInsets.symmetric(horizontal: AppHelper.width(context, 2)),
           decoration: BoxDecoration(
-              color: Colors.grey, borderRadius: BorderRadius.circular(50)),
+              color: AppColor.fontHintClr.withOpacity(0.20),
+              borderRadius: BorderRadius.circular(50)),
           width: AppHelper.width(context, 100),
         ),
         AppHelper.sizedBox(context, 3, null),
@@ -188,7 +190,9 @@ class LoginView extends StatelessWidget {
                     () {
                       return controller.isLoading.isTrue
                           ? SizedBox(
-                              height: 29, child: AppFun.appLoader(Colors.white))
+                              height: AppHelper.isWeb ? 27 : 31,
+                              child: AppFun.appLoader(Colors.white),
+                            )
                           : AppText(
                               controller.isRegister.isTrue
                                   ? "Register"
