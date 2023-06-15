@@ -4,41 +4,43 @@ import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_routes.dart';
 import 'package:dnotes/helpers/app_storage.dart';
+import 'package:dnotes/screens/notes/note_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:highlight/languages/dart.dart';
 
 class HomeController extends GetxController {
   final GlobalKey homePopupKey = GlobalKey();
   List<String> popupMenuList = ["ListView", "GridView", "LogOut"];
   CodeController codeController = CodeController();
   TextEditingController titleContrl = TextEditingController();
-  RxBool isMobileListView = true.obs;
+  RxBool isMobileListView = false.obs;
   RxBool isDesktopListView = false.obs;
-  RxBool isOptionShowing = false.obs;
   RxBool isFromEdit = false.obs;
+  RxBool isNewNotes = false.obs;
+  RxInt listItemCount = 1.obs;
+  RxString userId = "".obs;
   late FirebaseFirestore collectionRef;
+  var refreshKey = GlobalKey<RefreshIndicatorState>();
+  RxDouble opacity = 1.0.obs;
 
   @override
   void onInit() {
+    // get user id from get storage
+    getUserIdFromStorage();
+    // setting item count of list view
+    if (AppHelper.isMobile) {
+      listItemCount.value = 1;
+    } else {
+      listItemCount.value = 3;
+    }
     // initializing firebase firestore
     collectionRef = FirebaseFirestore.instance;
-    // initializing code controller
-    codeController = CodeController(
-      text: Const.codeSnippet["dart"],
-      language: dart,
-      // patternMap: {
-      //   r"\B#[a-zA-Z0-9]+\b": const TextStyle(color: Color(0xff4FC1E9)),
-      //   r"\B@[a-zA-Z0-9]+\b": const TextStyle(
-      //     fontWeight: FontWeight.w800,
-      //     color: Color(0xff4FC1E9),
-      //   ),
-      //   r"\B![a-zA-Z0-9]+\b":
-      //       const TextStyle(color: Colors.yellow, fontStyle: FontStyle.italic),
-      // },
-      // stringMap: {"bev": const TextStyle(color: Colors.indigo)},
-    );
     super.onInit();
+  }
+
+  // getUserIdFromStorage
+  getUserIdFromStorage() async {
+    userId.value = await AppStorage.getData(Const.userId);
   }
 
   @override
@@ -47,19 +49,21 @@ class HomeController extends GetxController {
     super.onClose();
   }
 
+  Future<void> refreshList() async {
+    refreshKey.currentState?.show(atTop: false);
+    refresh();
+  }
+
+  // on menu item tap
   void onMenuTap(int index) {
     Get.back();
     if (popupMenuList[index] == "ListView") {
-      if (AppHelper.isMobile) {
-        isMobileListView(true);
-      } else {
-        isDesktopListView(true);
-      }
+      listItemCount.value = 1;
     } else if (popupMenuList[index] == "GridView") {
       if (AppHelper.isMobile) {
-        isMobileListView(false);
+        listItemCount.value = 2;
       } else {
-        isDesktopListView(false);
+        listItemCount.value = 3;
       }
     } else if (popupMenuList[index] == "LogOut") {
       signOutWithFirebase();
@@ -70,5 +74,21 @@ class HomeController extends GetxController {
     await AppStorage.removeAllData();
     await AppStorage.setData(Const.isLogin, false);
     Get.offAllNamed(AppRoutes.login);
+  }
+
+  // - read notes data from firestore
+  Stream<List<NotesList>> readNotes() {
+    if (userId.value.isNotEmpty) {
+      return FirebaseFirestore.instance
+          .collection(Const.fireNotes)
+          .doc(userId.value)
+          .collection(Const.fireUserNotes)
+          .snapshots()
+          .map((event) {
+        return event.docs.map((doc) => NotesList.fromJson(doc.data())).toList();
+      });
+    } else {
+      return const Stream.empty();
+    }
   }
 }

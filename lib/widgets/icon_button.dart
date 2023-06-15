@@ -7,8 +7,6 @@ class AppIconButton extends StatelessWidget {
   final double? height;
   final double? width;
   final Color? color;
-  final double? iconHeight;
-  final double? iconWidth;
   final EdgeInsetsGeometry? padding;
   final void Function()? onTap;
   const AppIconButton(
@@ -18,15 +16,13 @@ class AppIconButton extends StatelessWidget {
     this.color,
     this.height,
     this.width,
-    this.iconHeight,
-    this.iconWidth,
     this.padding,
   });
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height ?? 45,
-      width: width ?? 45,
+      height: height ?? 42,
+      width: width ?? 42,
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -37,8 +33,6 @@ class AppIconButton extends StatelessWidget {
             child: SvgPicture.asset(
               assetName,
               color: color ?? AppColor.fontClr,
-              height: iconHeight,
-              width: iconWidth,
             ),
           ),
         ),

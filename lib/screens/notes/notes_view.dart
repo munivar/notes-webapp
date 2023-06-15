@@ -1,4 +1,5 @@
 import 'package:code_text_field/code_text_field.dart';
+import 'package:dnotes/animations/fade_anim.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_helper.dart';
@@ -17,11 +18,21 @@ class NotesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: AppColor.lightBgClr,
-        appBar: appbarLayout(context),
-        body: mainLayout(context),
+    return WillPopScope(
+      onWillPop: () async {
+        controller.homeContrl.isFromEdit(false);
+        controller.homeContrl.isNewNotes(false);
+        Get.back();
+        return Future(() => false);
+      },
+      child: SafeArea(
+        child: FadeFirstAnimation(
+          child: Scaffold(
+            backgroundColor: AppColor.lightBgClr,
+            appBar: appbarLayout(context),
+            body: mainLayout(context),
+          ),
+        ),
       ),
     );
   }
@@ -42,7 +53,10 @@ class NotesView extends StatelessWidget {
               children: [
                 AppIconButton(
                   AppImages.backIcon,
+                  padding: const EdgeInsets.all(8),
                   onTap: () {
+                    controller.homeContrl.isFromEdit(false);
+                    controller.homeContrl.isNewNotes(false);
                     Get.back();
                   },
                 ),
@@ -50,11 +64,6 @@ class NotesView extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 5),
                   child: SizedBox(
                     width: AppHelper.width(context, 55),
-                    // child: AppText(
-                    //   "Heading Text Heading Text Heading Text",
-                    //   fontSize: AppHelper.font(context, 20),
-                    //   fontWeight: FontWeight.w500,
-                    // ),
                     child: TextFormField(
                       scrollPadding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -63,6 +72,7 @@ class NotesView extends StatelessWidget {
                       maxLines: 1,
                       onChanged: (value) {
                         debugPrint("titleText ->> $value");
+                        controller.saveNotes(context);
                       },
                       style: TextStyle(
                         fontSize: AppHelper.font(context, 16),
@@ -88,16 +98,25 @@ class NotesView extends StatelessWidget {
               ],
             ),
             Stack(
-              alignment: Alignment.centerRight,
+              alignment: Alignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: 45),
+                  padding: const EdgeInsets.only(right: 75),
                   child: AppIconButton(
                     AppImages.searchIcon,
+                    padding: const EdgeInsets.all(11),
                     onTap: () {},
                   ),
                 ),
-                popupMenu(context)
+                AppIconButton(
+                  AppImages.deleteIcon,
+                  padding: const EdgeInsets.all(11),
+                  onTap: () {},
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 75),
+                  child: popupMenu(context),
+                )
               ],
             ),
           ],
@@ -148,9 +167,11 @@ class NotesView extends StatelessWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: Container(
+        width: double.infinity,
+        height: double.infinity,
         margin: EdgeInsets.only(
             left: AppHelper.width(context, 3),
-            bottom: 10,
+            bottom: AppHelper.height(context, 4),
             right: AppHelper.width(context, 3)),
         padding: EdgeInsets.only(
             left: AppHelper.isWeb ? 15 : 0,
@@ -174,6 +195,7 @@ class NotesView extends StatelessWidget {
                   ),
                   onChanged: (p0) {
                     debugPrint("fieldText ->> $p0");
+                    controller.saveNotes(context);
                   },
                   wrap: controller.isWordWrap.value,
                   horizontalScroll: true,

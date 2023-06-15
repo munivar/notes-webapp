@@ -2,10 +2,12 @@ import 'package:code_text_field/code_text_field.dart';
 import 'package:dnotes/animations/fade_anim.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_const.dart';
+import 'package:dnotes/helpers/app_fun.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_images.dart';
 import 'package:dnotes/helpers/app_routes.dart';
 import 'package:dnotes/screens/home/home_contrl.dart';
+import 'package:dnotes/screens/notes/note_list.dart';
 import 'package:dnotes/widgets/app_text.dart';
 import 'package:dnotes/widgets/app_toast.dart';
 import 'package:dnotes/widgets/icon_button.dart';
@@ -13,6 +15,8 @@ import 'package:dnotes/widgets/popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/themes/vs2015.dart';
 import 'package:get/get.dart';
+import 'package:highlight/languages/dart.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({super.key});
@@ -22,18 +26,18 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        if (controller.isOptionShowing.isTrue) {
-          controller.isOptionShowing(false);
-        } else {
-          return true;
-        }
-        return Future(() => false);
+        // make it false if you want to use custom function
+        // use Get.back()
+        // return Future(() => false);
+        return Future(() => true);
       },
       child: SafeArea(
-        child: Scaffold(
-          backgroundColor: AppColor.lightBgClr,
-          appBar: appbarLayout(context),
-          body: mainLayout(context),
+        child: FadeFirstAnimation(
+          child: Scaffold(
+            backgroundColor: AppColor.lightBgClr,
+            appBar: appbarLayout(context),
+            body: mainLayout(context),
+          ),
         ),
       ),
     );
@@ -71,12 +75,14 @@ class HomeView extends StatelessWidget {
                     AppImages.addIcon,
                     onTap: () {
                       controller.isFromEdit(false);
+                      controller.isNewNotes(false);
                       Get.toNamed(AppRoutes.notes);
                     },
                   ),
                 ),
                 AppIconButton(
                   AppImages.searchIcon,
+                  padding: const EdgeInsets.all(11),
                   onTap: () {},
                 ),
                 Padding(
@@ -98,32 +104,19 @@ class HomeView extends StatelessWidget {
             left: AppHelper.width(context, 3),
             bottom: 10,
             right: AppHelper.width(context, 3)),
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: FadeAppAnimation(
+        child: RefreshIndicator(
+          key: controller.refreshKey,
+          onRefresh: () {
+            return controller.refreshList();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                AppHelper.isMobile
-                    ? Obx(() {
-                        return controller.isMobileListView.isTrue
-                            ? buildListLayout(context)
-                            : buildGridLayout(context);
-                      })
-                    : Obx(() {
-                        return controller.isDesktopListView.isTrue
-                            ? buildListLayout(context)
-                            : buildGridLayout(context);
-                      }),
-                AppHelper.sizedBox(context, 1, null),
-                InkWell(
-                  onTap: () {
-                    AppToast.showToast(
-                        context, "This is Custome toast for testing");
-                  },
-                  child: const AppText("Tap Me for Test"),
-                ),
+                buildListLayout(context),
+                // AppHelper.sizedBox(context, 4, null),
               ],
             ),
           ),
@@ -169,37 +162,76 @@ class HomeView extends StatelessWidget {
   }
 
   buildListLayout(BuildContext context) {
-    return ListView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        physics: const BouncingScrollPhysics(),
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return buildChildrenLayout(context, true);
-        });
+    return Obx(() {
+      return StreamBuilder(
+          stream: controller.readNotes(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              final items = snapshot.data!;
+              if (items.isNotEmpty) {
+                return controller.listItemCount.value == 1
+                    ? ListView.builder(
+                        scrollDirection: Axis.vertical,
+                        shrinkWrap: true,
+                        physics: const BouncingScrollPhysics(),
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          // add data from firebase firestore to code controller
+                          controller.codeController = CodeController(
+                            text: items[index].text,
+                            language: dart,
+                          );
+                          //
+                          return buildChildrenLayout(
+                              context, index, items, true);
+                        })
+                    : AlignedGridView.count(
+                        physics: const BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        crossAxisCount: controller.listItemCount.value,
+                        mainAxisSpacing: 8,
+                        crossAxisSpacing: 8,
+                        itemCount: items.length,
+                        itemBuilder: ((context, index) {
+                          // add data from firebase firestore to code controller
+                          controller.codeController = CodeController(
+                            text: items[index].text,
+                            language: dart,
+                          );
+                          //
+                          return buildChildrenLayout(
+                              context, index, items, false);
+                        }));
+              } else {
+                return Center(
+                    child: Column(
+                  children: [
+                    AppText(
+                      "No Notes",
+                      fontWeight: FontWeight.bold,
+                      fontSize: AppHelper.font(context, 14),
+                    ),
+                    AppHelper.sizedBox(context, 2, null),
+                    const AppText("Tap the Add button to create a notes",
+                        fontWeight: FontWeight.w500),
+                  ],
+                ));
+              }
+            } else {
+              return Center(
+                child: SizedBox(
+                  height: 40,
+                  child: AppFun.appLoader(null),
+                ),
+              );
+            }
+          });
+    });
   }
 
-  buildGridLayout(BuildContext context) {
-    return GridView.builder(
-        scrollDirection: Axis.vertical,
-        shrinkWrap: true,
-        physics: const BouncingScrollPhysics(),
-        gridDelegate: AppHelper.isWeb
-            ? const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                childAspectRatio: 1.6,
-              )
-            : SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: AppHelper.isMobile ? 0.65 : 1.5,
-              ),
-        itemCount: 10,
-        itemBuilder: (context, index) {
-          return buildChildrenLayout(context, false);
-        });
-  }
-
-  buildChildrenLayout(BuildContext context, bool isListView) {
+  buildChildrenLayout(
+      BuildContext context, int index, List<NotesList> items, bool isListView) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
       child: Material(
@@ -207,16 +239,14 @@ class HomeView extends StatelessWidget {
         color: AppColor.whiteColor,
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
-          onLongPress: () {
-            if (controller.isOptionShowing.isTrue) {
-              controller.isOptionShowing(false);
-            } else {
-              controller.isOptionShowing(true);
-            }
-          },
           onTap: () {
             controller.isFromEdit(true);
-            Get.toNamed(AppRoutes.notes);
+            controller.isNewNotes(false);
+            Get.toNamed(AppRoutes.notes, arguments: {
+              "id": items[index].id,
+              "title": items[index].title,
+              "text": items[index].text,
+            });
           },
           child: Padding(
             padding: const EdgeInsets.all(12),
@@ -224,41 +254,46 @@ class HomeView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 3),
-                  child: AppText(
-                    "Heading Text This is normal Text I think it is good for first app startup for now !!",
-                    fontSize: AppHelper.font(context, 12),
-                    maxLines: 2,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 5),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.transparent,
-                  ),
-                  child: SingleChildScrollView(
-                    child: CodeTheme(
-                      data: const CodeThemeData(styles: vs2015Theme),
-                      child: CodeField(
-                        enabled: false,
-                        readOnly: true,
-                        maxLines: 8,
-                        wrap: true,
-                        decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            borderRadius: BorderRadius.circular(15)),
-                        controller: controller.codeController,
-                        textStyle: TextStyle(
-                            fontSize: AppHelper.font(context, 10),
-                            fontWeight: FontWeight.w500,
-                            fontFamily: Const.codeFamily),
+                items[index].title.isEmpty
+                    ? Container()
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
+                        child: AppText(
+                          items[index].title,
+                          fontSize: AppHelper.font(context, 12),
+                          maxLines: 2,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                  ),
-                ),
+                items[index].text.isEmpty
+                    ? Container()
+                    : Container(
+                        margin: const EdgeInsets.only(top: 5),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(18),
+                          color: AppColor.codeFieldClr,
+                        ),
+                        child: SingleChildScrollView(
+                          child: CodeTheme(
+                            data: const CodeThemeData(styles: vs2015Theme),
+                            child: CodeField(
+                              enabled: false,
+                              readOnly: true,
+                              wrap: true,
+                              minLines: 1,
+                              maxLines: 8,
+                              decoration: BoxDecoration(
+                                  color: Colors.transparent,
+                                  borderRadius: BorderRadius.circular(15)),
+                              controller: controller.codeController,
+                              textStyle: TextStyle(
+                                  fontSize: AppHelper.font(context, 10),
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: Const.codeFamily),
+                            ),
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),

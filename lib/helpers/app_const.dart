@@ -6,6 +6,8 @@ class Const {
 
   // firebase firestore collection
   static const fireUsers = "users";
+  static const fireNotes = "notes";
+  static const fireUserNotes = "usernotes";
 
   // code snippets
   static const codeSnippet = {

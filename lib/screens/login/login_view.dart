@@ -1,10 +1,10 @@
 import 'package:dnotes/animations/fade_anim.dart';
 import 'package:dnotes/helpers/app_color.dart';
+import 'package:dnotes/helpers/app_fun.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_images.dart';
 import 'package:dnotes/screens/login/login_contrl.dart';
 import 'package:dnotes/widgets/app_text.dart';
-import 'package:dnotes/widgets/loader_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -15,45 +15,46 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: AppColor.lightBgClr,
-        body: mainLayout(context),
+      child: FadeFirstAnimation(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: AppColor.lightBgClr,
+          body: mainLayout(context),
+        ),
       ),
     );
   }
 
   mainLayout(BuildContext context) {
     return Container(
-        color: AppHelper.isWeb == false ? Colors.white : Colors.transparent,
-        height: AppHelper.height(context, 100),
-        margin: AppHelper.isWeb == false
-            ? const EdgeInsets.all(0)
-            : EdgeInsets.only(
-                left: AppHelper.width(context, 3),
-                bottom: 10,
-                right: AppHelper.width(context, 3)),
-        padding: EdgeInsets.symmetric(horizontal: AppHelper.width(context, 5)),
-        child: FadeAppAnimation(
-          child: Center(
-            child: AppHelper.isWeb == false
-                ? SingleChildScrollView(
-                    child: containerLayout(context),
-                  )
-                : Container(
-                    height: AppHelper.height(context, 70),
-                    width: AppHelper.isMobile == false
-                        ? 500
-                        : AppHelper.width(context, 100),
-                    padding: const EdgeInsets.all(15),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: containerLayout(context),
-                  ),
-          ),
-        ));
+      color: AppHelper.isWeb == false ? Colors.white : Colors.transparent,
+      height: AppHelper.height(context, 100),
+      margin: AppHelper.isWeb == false
+          ? const EdgeInsets.all(0)
+          : EdgeInsets.only(
+              left: AppHelper.width(context, 3),
+              bottom: 10,
+              right: AppHelper.width(context, 3)),
+      padding: EdgeInsets.symmetric(horizontal: AppHelper.width(context, 5)),
+      child: Center(
+        child: AppHelper.isWeb == false
+            ? SingleChildScrollView(
+                child: containerLayout(context),
+              )
+            : Container(
+                height: AppHelper.height(context, 70),
+                width: AppHelper.isMobile == false
+                    ? 500
+                    : AppHelper.width(context, 100),
+                padding: const EdgeInsets.all(15),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: containerLayout(context),
+              ),
+      ),
+    );
   }
 
   containerLayout(BuildContext context) {
@@ -186,9 +187,8 @@ class LoginView extends StatelessWidget {
                   child: Obx(
                     () {
                       return controller.isLoading.isTrue
-                          ? const SizedBox(
-                              height: 29,
-                              child: AppLoaderWidget(color: Colors.white))
+                          ? SizedBox(
+                              height: 29, child: AppFun.appLoader(Colors.white))
                           : AppText(
                               controller.isRegister.isTrue
                                   ? "Register"

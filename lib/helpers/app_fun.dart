@@ -1,5 +1,8 @@
+import 'package:dnotes/helpers/app_color.dart';
+import 'package:dnotes/helpers/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lottie/lottie.dart';
 
 // All Common Used Function is here in AppFun Class
 class AppFun {
@@ -12,6 +15,18 @@ class AppFun {
   // closing keyboard
   static void closeKeyboard(BuildContext context) {
     SystemChannels.textInput.invokeMethod('TextInput.hide');
+  }
+
+  // app loader
+  static appLoader(Color? color) {
+    return ColorFiltered(
+      colorFilter: ColorFilter.mode(color ?? AppColor.fontClr, BlendMode.srcIn),
+      child: Lottie.asset(
+        AppImages.loadingJson,
+        width: 30,
+        height: 30,
+      ),
+    );
   }
 
   // function for picking date

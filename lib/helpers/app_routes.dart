@@ -16,25 +16,21 @@ class AppRoutes {
         name: splash,
         page: () => SplashView(),
         transition: Transition.fadeIn,
-        transitionDuration: const Duration(milliseconds: 250),
       ),
       GetPage(
         name: login,
         page: () => LoginView(),
         transition: Transition.fadeIn,
-        transitionDuration: const Duration(milliseconds: 250),
       ),
       GetPage(
         name: home,
         page: () => HomeView(),
         transition: Transition.fadeIn,
-        transitionDuration: const Duration(milliseconds: 250),
       ),
       GetPage(
         name: notes,
         page: () => NotesView(),
-        transition: Transition.cupertino,
-        transitionDuration: const Duration(milliseconds: 250),
+        transition: Transition.fadeIn,
       ),
     ];
   }
