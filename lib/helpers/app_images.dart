@@ -9,4 +9,5 @@ class AppImages {
   static const backIcon = "assets/images/back_icon.svg";
   static const deleteIcon = "assets/images/delete_icon.svg";
   static const refreshIcon = "assets/images/refresh_icon.svg";
+  static const closeIcon = "assets/images/close_icon.svg";
 }

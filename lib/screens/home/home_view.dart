@@ -9,7 +9,6 @@ import 'package:dnotes/helpers/app_routes.dart';
 import 'package:dnotes/screens/home/home_contrl.dart';
 import 'package:dnotes/screens/notes/note_list.dart';
 import 'package:dnotes/widgets/app_text.dart';
-import 'package:dnotes/widgets/app_toast.dart';
 import 'package:dnotes/widgets/icon_button.dart';
 import 'package:dnotes/widgets/popup_menu.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +69,7 @@ class HomeView extends StatelessWidget {
                 child: AppText(
                   "DNotes",
                   fontSize: AppHelper.font(context, 20),
-                  fontWeight: FontWeight.w600,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -106,7 +105,9 @@ class HomeView extends StatelessWidget {
                   child: AppIconButton(
                     AppImages.searchIcon,
                     padding: const EdgeInsets.all(11),
-                    onTap: () {},
+                    onTap: () {
+                      Get.toNamed(AppRoutes.search);
+                    },
                   ),
                 ),
                 popupMenu(context),
@@ -132,7 +133,7 @@ class HomeView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               buildListLayout(context),
-              // AppHelper.sizedBox(context, 4, null),
+              AppHelper.sizedBox(context, 4, null),
             ],
           ),
         ));
@@ -221,23 +222,31 @@ class HomeView extends StatelessWidget {
                 });
               } else {
                 return Center(
-                    child: Column(
-                  children: [
-                    AppText(
-                      "No Notes",
-                      fontWeight: FontWeight.bold,
-                      fontSize: AppHelper.font(context, 14),
-                    ),
-                    AppHelper.sizedBox(context, 2, null),
-                    const AppText("Tap the Add button to create a notes",
-                        fontWeight: FontWeight.w500),
-                  ],
+                    child: Padding(
+                  padding: EdgeInsets.only(top: AppHelper.height(context, 25)),
+                  child: Column(
+                    children: [
+                      AppText(
+                        "No Notes",
+                        fontWeight: FontWeight.w600,
+                        fontSize: AppHelper.font(context, 14),
+                      ),
+                      AppHelper.sizedBox(context, 0.5, null),
+                      AppText(
+                        "Tap the Add button to \n Create a Notes",
+                        maxLines: 2,
+                        fontSize: AppHelper.font(context, 10),
+                        textAlign: TextAlign.center,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ],
+                  ),
                 ));
               }
             } else {
               return Center(
-                child: SizedBox(
-                  height: 40,
+                child: Padding(
+                  padding: EdgeInsets.only(top: AppHelper.height(context, 25)),
                   child: AppFun.appLoader(null),
                 ),
               );
@@ -285,7 +294,7 @@ class HomeView extends StatelessWidget {
                     : Container(
                         margin: const EdgeInsets.only(top: 5),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18),
+                          borderRadius: BorderRadius.circular(12),
                           color: AppColor.codeFieldClr,
                         ),
                         child: SingleChildScrollView(
@@ -299,7 +308,7 @@ class HomeView extends StatelessWidget {
                               maxLines: 9,
                               decoration: BoxDecoration(
                                   color: Colors.transparent,
-                                  borderRadius: BorderRadius.circular(15)),
+                                  borderRadius: BorderRadius.circular(8)),
                               controller: controller.codeController,
                               textStyle: TextStyle(
                                   fontSize: AppHelper.font(context, 10),

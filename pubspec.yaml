@@ -10,38 +10,22 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.2
-  # for improve perfomance and better coding
-  get: ^4.6.5
-  # for using svg image
-  flutter_svg: ^1.1.6
-  # for animation
-  simple_animations: ^5.0.0+3
-  # for showing toast message
-  fluttertoast: ^8.2.1
-  # for checking diffrent device preview
-  device_preview: ^1.1.0
-  # for launching link and url
-  url_launcher: ^6.1.10
-  # for storing data
-  get_storage: ^2.1.1
-  # for formating date
-  intl: ^0.17.0
-  # for formating code
-  code_text_field: ^1.1.0
-  # for highlighting text
-  highlight: ^0.7.0
-  # for highlighting text
-  flutter_highlight: ^0.7.0
-  # for sharing text and image
-  share_plus: ^6.3.0
-  # for using firebase services
-  firebase_core: ^2.14.0
-  # for save data in firebase firestore
-  cloud_firestore: ^4.7.1
-  # for showing data in Grid View
-  flutter_staggered_grid_view: ^0.6.2
-  # for using animation from json
-  lottie: ^2.3.2
+  get: ^4.6.5 # for improve perfomance and better coding
+  flutter_svg: ^1.1.6 # for using svg image
+  simple_animations: ^5.0.0+3 # for using animation
+  fluttertoast: ^8.2.1  # for showing toast message
+  device_preview: ^1.1.0 # for checking diffrent device preview
+  url_launcher: ^6.1.10 # for launching link and url
+  get_storage: ^2.1.1 # for storing data
+  intl: ^0.17.0 # for formating date
+  code_text_field: ^1.1.0 # for formating code
+  highlight: ^0.7.0 # for highlighting text
+  flutter_highlight: ^0.7.0 # for highlighting text
+  share_plus: ^6.3.0 # for sharing text and image
+  firebase_core: ^2.14.0 # for using firebase services
+  cloud_firestore: ^4.7.1 # for save data in firebase firestore
+  flutter_staggered_grid_view: ^0.6.2 # for showing data in Grid View
+  lottie: ^2.3.2 # for using animation from json
   
 
 dev_dependencies:

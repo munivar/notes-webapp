@@ -21,7 +21,9 @@ class NotesView extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Get.back();
+        if (controller.isLoading.isFalse) {
+          Get.back();
+        }
         return Future(() => false);
       },
       child: SafeArea(
@@ -54,7 +56,9 @@ class NotesView extends StatelessWidget {
                   AppImages.backIcon,
                   padding: const EdgeInsets.all(8),
                   onTap: () {
-                    Get.back();
+                    if (controller.isLoading.isFalse) {
+                      Get.back();
+                    }
                   },
                 ),
                 Padding(
@@ -68,13 +72,12 @@ class NotesView extends StatelessWidget {
                       keyboardType: TextInputType.text,
                       maxLines: 1,
                       onChanged: (value) {
-                        debugPrint("titleText ->> $value");
                         controller.saveNotes(context);
                       },
                       style: TextStyle(
                         fontSize: AppHelper.font(context, 16),
                         color: AppColor.fontClr,
-                        fontWeight: FontWeight.w500,
+                        fontWeight: FontWeight.bold,
                       ),
                       cursorColor: AppColor.primaryClr,
                       decoration: InputDecoration(
@@ -98,25 +101,16 @@ class NotesView extends StatelessWidget {
               alignment: Alignment.centerRight,
               children: [
                 Obx(() {
-                  return Padding(
-                    padding: EdgeInsets.only(
-                        right: controller.notesId.isNotEmpty ? 80 : 40),
-                    child: AppIconButton(
-                      AppImages.searchIcon,
-                      padding: const EdgeInsets.all(11),
-                      onTap: () {},
-                    ),
-                  );
-                }),
-                Obx(() {
                   return controller.notesId.isNotEmpty
                       ? Padding(
                           padding: const EdgeInsets.only(right: 40),
                           child: AppIconButton(
                             AppImages.deleteIcon,
-                            padding: const EdgeInsets.all(11),
+                            padding: const EdgeInsets.all(12),
                             onTap: () {
-                              controller.deleteNotesInFirebase(context);
+                              if (controller.isLoading.isFalse) {
+                                controller.deleteNotesInFirebase(context);
+                              }
                             },
                           ),
                         )
@@ -135,8 +129,10 @@ class NotesView extends StatelessWidget {
     return AppPopupMenu(
       menuKey: controller.notePopupKey,
       onTap: () {
-        dynamic state = controller.notePopupKey.currentState;
-        state.showButtonMenu();
+        if (controller.isLoading.isFalse) {
+          dynamic state = controller.notePopupKey.currentState;
+          state.showButtonMenu();
+        }
       },
       child: SizedBox(
         width: 190,
@@ -189,7 +185,7 @@ class NotesView extends StatelessWidget {
           color: AppColor.codeFieldClr,
         ),
         child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
+          physics: const ScrollPhysics(),
           child: Stack(
             children: [
               CodeTheme(
@@ -202,7 +198,6 @@ class NotesView extends StatelessWidget {
                         selectionHandleColor: Colors.white.withOpacity(0.20),
                       ),
                       onChanged: (p0) {
-                        debugPrint("fieldText ->> $p0");
                         controller.saveNotes(context);
                       },
                       wrap: controller.isWordWrap.value,
