@@ -1,4 +1,3 @@
-import 'package:dnotes/animations/fade_anim.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_images.dart';
@@ -13,11 +12,7 @@ class SplashView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: FadeFirstAnimation(
-        child: Scaffold(
-          body: mainLayout(context),
-        ),
-      ),
+      child: Scaffold(body: mainLayout(context)),
     );
   }
 

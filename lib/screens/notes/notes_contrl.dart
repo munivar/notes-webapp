@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_text_field/code_text_field.dart';
 import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_helper.dart';
-import 'package:dnotes/helpers/app_storage.dart';
 import 'package:dnotes/screens/home/home_contrl.dart';
 import 'package:dnotes/screens/notes/note_list.dart';
 import 'package:dnotes/widgets/app_toast.dart';
@@ -25,6 +24,8 @@ class NotesController extends GetxController {
   RxString notesId = "".obs;
   RxString newNotesId = "".obs;
   RxString dateValue = "".obs;
+  RxBool isFromTrash = false.obs;
+  RxBool isFromSearch = false.obs;
   RxBool isDeletedValue = false.obs;
   Timer apiTimer = Timer(const Duration(milliseconds: 600), () {});
   List<String> popupMenuList = AppHelper.isWeb
@@ -36,7 +37,10 @@ class NotesController extends GetxController {
     // initializing firebase firestore
     collectionRef = FirebaseFirestore.instance;
     // getting notes data
-    NotesList notes = Get.arguments as NotesList;
+    var arguments = Get.arguments;
+    NotesList notes = arguments["notes"] as NotesList;
+    isFromTrash.value = arguments["isFromTrash"];
+    isFromSearch.value = arguments["isFromSearch"];
     if (notes.id != "dnotes") {
       notesId.value = notes.id;
       dateValue.value = notes.date;
@@ -181,11 +185,47 @@ class NotesController extends GetxController {
           .doc(homeContrl.userId.value)
           .collection(Const.fireUserNotes)
           .doc(notesId.value);
-      await notesRef.update({
-        "isDeleted": true,
-      });
+      await notesRef.update({"isDeleted": true});
       isLoading(false);
+      // refresh notes data in home screen
+      homeContrl.getDataFromFirebase();
       Get.back();
+    } catch (e) {
+      isLoading(false);
+      debugPrint("firebaseError ->> $e");
+    }
+  }
+
+  // revert back notes in trash in firebase firestore
+  Future revertBackFromFirebase(BuildContext context) async {
+    try {
+      isLoading(true);
+      final notesRef = collectionRef
+          .collection(Const.fireNotes)
+          .doc(homeContrl.userId.value)
+          .collection(Const.fireUserNotes)
+          .doc(notesId.value);
+      await notesRef.update({"isDeleted": false});
+      isLoading(false);
+      Get.back(result: true);
+    } catch (e) {
+      isLoading(false);
+      debugPrint("firebaseError ->> $e");
+    }
+  }
+
+  // delete notes in trash in firebase firestore
+  Future deleteNotesInFirebase(BuildContext context) async {
+    try {
+      isLoading(true);
+      final notesRef = collectionRef
+          .collection(Const.fireNotes)
+          .doc(homeContrl.userId.value)
+          .collection(Const.fireUserNotes)
+          .doc(notesId.value);
+      await notesRef.delete();
+      isLoading(false);
+      Get.back(result: true);
     } catch (e) {
       isLoading(false);
       debugPrint("firebaseError ->> $e");

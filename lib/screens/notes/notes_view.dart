@@ -11,6 +11,7 @@ import 'package:dnotes/widgets/icon_button.dart';
 import 'package:dnotes/widgets/popup_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/themes/vs2015.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 
 class NotesView extends StatelessWidget {
@@ -22,17 +23,17 @@ class NotesView extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         if (controller.isLoading.isFalse) {
+          // refresh notes data in home screen
+          controller.homeContrl.getDataFromFirebase();
           Get.back();
         }
         return Future(() => false);
       },
       child: SafeArea(
-        child: FadeFirstAnimation(
-          child: Scaffold(
-            backgroundColor: AppColor.lightBgClr,
-            appBar: appbarLayout(context),
-            body: mainLayout(context),
-          ),
+        child: Scaffold(
+          backgroundColor: AppColor.lightBgClr,
+          appBar: appbarLayout(context),
+          body: mainLayout(context),
         ),
       ),
     );
@@ -57,6 +58,8 @@ class NotesView extends StatelessWidget {
                   padding: const EdgeInsets.all(9),
                   onTap: () {
                     if (controller.isLoading.isFalse) {
+                      // refresh notes data in home screen
+                      controller.homeContrl.getDataFromFirebase();
                       Get.back();
                     }
                   },
@@ -64,7 +67,7 @@ class NotesView extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 5),
                   child: SizedBox(
-                    width: AppHelper.width(context, 46),
+                    width: AppHelper.width(context, 50),
                     child: TextFormField(
                       scrollPadding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -101,14 +104,36 @@ class NotesView extends StatelessWidget {
               alignment: Alignment.centerRight,
               children: [
                 Obx(() {
+                  return controller.isFromTrash.isTrue
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 80),
+                          child: AppIconButton(
+                            AppImages.revertIcon,
+                            color: Colors.green,
+                            padding: const EdgeInsets.all(12),
+                            onTap: () {
+                              if (controller.isLoading.isFalse) {
+                                controller.revertBackFromFirebase(context);
+                              }
+                            },
+                          ),
+                        )
+                      : Container();
+                }),
+                Obx(() {
                   return controller.notesId.isNotEmpty
                       ? Padding(
                           padding: const EdgeInsets.only(right: 40),
                           child: AppIconButton(
                             AppImages.deleteIcon,
+                            color: controller.isFromTrash.isTrue
+                                ? Colors.red
+                                : Colors.green,
                             padding: const EdgeInsets.all(12),
                             onTap: () {
-                              if (controller.isLoading.isFalse) {
+                              if (controller.isFromTrash.isTrue) {
+                                deleteDialog(context);
+                              } else {
                                 controller.moveToTrashInFirebase(context);
                               }
                             },
@@ -120,6 +145,94 @@ class NotesView extends StatelessWidget {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  // -- dialog for delete confirmation
+  deleteDialog(BuildContext context) {
+    Get.dialog(
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: SizedBox(
+          width: 120,
+          height: 210,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(18),
+            ),
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(height: 10),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: AppColor.fontClr,
+                      width: 1.5,
+                    ),
+                    borderRadius: BorderRadius.circular(50),
+                  ),
+                  padding: const EdgeInsets.all(5),
+                  child: SvgPicture.asset(AppImages.deleteIcon),
+                ),
+                const SizedBox(height: 15),
+                const AppText(
+                  "Are you sure to Delete this Notes Permanently ?",
+                  maxLines: 2,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(50),
+                        onTap: () {
+                          Get.back();
+                        },
+                        child: const Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                          child: AppText("Cancel"),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(50),
+                        onTap: () {
+                          Get.back();
+                          controller.deleteNotesInFirebase(context);
+                        },
+                        child: const Padding(
+                          padding:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+                          child: AppText(
+                            "Delete Notes",
+                            fontColor: Colors.red,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -146,7 +259,8 @@ class NotesView extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: (() {
-                  controller.onMenuTap(context, controller.popupMenuList[index]);
+                  controller.onMenuTap(
+                      context, controller.popupMenuList[index]);
                 }),
                 borderRadius: BorderRadius.circular(15),
                 child: Padding(

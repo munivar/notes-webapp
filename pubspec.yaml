@@ -14,7 +14,7 @@ dependencies:
   flutter_svg: ^1.1.6 # for using svg image
   simple_animations: ^5.0.0+3 # for using animation
   fluttertoast: ^8.2.1  # for showing toast message
-  device_preview: ^1.1.0 # for checking diffrent device preview
+  # device_preview: ^1.1.0 # for checking diffrent device preview
   url_launcher: ^6.1.10 # for launching link and url
   get_storage: ^2.1.1 # for storing data
   intl: ^0.17.0 # for formating date

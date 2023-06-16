@@ -1,4 +1,3 @@
-import 'package:dnotes/animations/fade_anim.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_fun.dart';
 import 'package:dnotes/helpers/app_helper.dart';
@@ -15,12 +14,10 @@ class LoginView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: FadeFirstAnimation(
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: AppColor.lightBgClr,
-          body: mainLayout(context),
-        ),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: AppColor.lightBgClr,
+        body: mainLayout(context),
       ),
     );
   }

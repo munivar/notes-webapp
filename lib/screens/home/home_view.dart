@@ -2,7 +2,6 @@ import 'package:code_text_field/code_text_field.dart';
 import 'package:dnotes/animations/fade_anim.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_const.dart';
-import 'package:dnotes/helpers/app_fun.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_images.dart';
 import 'package:dnotes/helpers/app_routes.dart';
@@ -31,12 +30,10 @@ class HomeView extends StatelessWidget {
         return Future(() => true);
       },
       child: SafeArea(
-        child: FadeFirstAnimation(
-          child: Scaffold(
-            backgroundColor: AppColor.lightBgClr,
-            appBar: appbarLayout(context),
-            body: mainLayout(context),
-          ),
+        child: Scaffold(
+          backgroundColor: AppColor.lightBgClr,
+          appBar: appbarLayout(context),
+          body: mainLayout(context),
         ),
       ),
     );
@@ -77,7 +74,7 @@ class HomeView extends StatelessWidget {
               alignment: Alignment.centerRight,
               children: [
                 Padding(
-                  padding: const EdgeInsets.only(right: 120),
+                  padding: const EdgeInsets.only(right: 80),
                   child: AppIconButton(
                     AppImages.addIcon,
                     onTap: () {
@@ -87,17 +84,11 @@ class HomeView extends StatelessWidget {
                           text: "",
                           date: "",
                           isDeleted: false);
-                      Get.toNamed(AppRoutes.notes, arguments: notes);
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 80),
-                  child: AppIconButton(
-                    AppImages.refreshIcon,
-                    padding: const EdgeInsets.all(12),
-                    onTap: () {
-                      Get.offAllNamed(AppRoutes.home);
+                      Get.toNamed(AppRoutes.notes, arguments: {
+                        "notes": notes,
+                        "isFromTrash": false,
+                        "isFromSearch": false,
+                      });
                     },
                   ),
                 ),
@@ -159,7 +150,7 @@ class HomeView extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: (() {
-                  controller.onMenuTap(index);
+                  controller.onMenuTap(controller.popupMenuList[index]);
                 }),
                 borderRadius: BorderRadius.circular(15),
                 child: Padding(
@@ -181,34 +172,31 @@ class HomeView extends StatelessWidget {
   buildListLayout(BuildContext context) {
     return Obx(() {
       if (controller.isLoading.isTrue) {
-        return Center(
-          child: Padding(
-            padding: EdgeInsets.only(top: AppHelper.height(context, 25)),
-            child: AppFun.appLoader(null),
-          ),
-        );
+        return FadeAppAnimation(child: Container());
       } else if (controller.notesList.isEmpty) {
-        return Center(
-            child: Padding(
-          padding: EdgeInsets.only(top: AppHelper.height(context, 25)),
-          child: Column(
-            children: [
-              AppText(
-                "No Notes",
-                fontWeight: FontWeight.w600,
-                fontSize: AppHelper.font(context, 14),
-              ),
-              AppHelper.sizedBox(context, 0.5, null),
-              AppText(
-                "Tap the Add button to \n Create a Notes",
-                maxLines: 2,
-                fontSize: AppHelper.font(context, 10),
-                textAlign: TextAlign.center,
-                fontWeight: FontWeight.w500,
-              ),
-            ],
-          ),
-        ));
+        return FadeAppAnimation(
+          child: Center(
+              child: Padding(
+            padding: EdgeInsets.only(top: AppHelper.height(context, 25)),
+            child: Column(
+              children: [
+                AppText(
+                  "No Notes",
+                  fontWeight: FontWeight.w600,
+                  fontSize: AppHelper.font(context, 14),
+                ),
+                AppHelper.sizedBox(context, 0.5, null),
+                AppText(
+                  "Tap the Add button to \n Create a Notes",
+                  maxLines: 2,
+                  fontSize: AppHelper.font(context, 10),
+                  textAlign: TextAlign.center,
+                  fontWeight: FontWeight.w500,
+                ),
+              ],
+            ),
+          )),
+        );
       } else {
         return controller.listItemCount.value == 1
             ? ListView.builder(
@@ -248,80 +236,86 @@ class HomeView extends StatelessWidget {
   }
 
   buildChildrenLayout(BuildContext context, NotesList items) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-      child: Material(
-        borderRadius: BorderRadius.circular(20),
-        color: AppColor.whiteColor,
-        child: InkWell(
+    return FadeAppAnimation(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+        child: Material(
           borderRadius: BorderRadius.circular(20),
-          onTap: () {
-            NotesList notes = NotesList(
-                id: items.id,
-                title: items.title,
-                text: items.text,
-                date: items.date,
-                isDeleted: items.isDeleted);
-            Get.toNamed(AppRoutes.notes, arguments: notes);
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                items.title.isEmpty
-                    ? Container()
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 3),
-                        child: AppText(
-                          items.title,
-                          fontSize: AppHelper.font(context, 12),
-                          maxLines: 2,
-                          fontWeight: FontWeight.bold,
+          color: AppColor.whiteColor,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(20),
+            onTap: () {
+              NotesList notes = NotesList(
+                  id: items.id,
+                  title: items.title,
+                  text: items.text,
+                  date: items.date,
+                  isDeleted: items.isDeleted);
+              Get.toNamed(AppRoutes.notes, arguments: {
+                "notes": notes,
+                "isFromTrash": false,
+                "isFromSearch": false,
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  items.title.isEmpty
+                      ? Container()
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 3),
+                          child: AppText(
+                            items.title,
+                            fontSize: AppHelper.font(context, 12),
+                            maxLines: 2,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                items.text.isEmpty
-                    ? Container()
-                    : Container(
-                        margin: const EdgeInsets.only(top: 5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: AppColor.codeFieldClr,
-                        ),
-                        child: SingleChildScrollView(
-                          child: CodeTheme(
-                            data: const CodeThemeData(styles: vs2015Theme),
-                            child: CodeField(
-                              enabled: false,
-                              readOnly: true,
-                              wrap: true,
-                              minLines: 1,
-                              maxLines: 9,
-                              decoration: BoxDecoration(
-                                  color: Colors.transparent,
-                                  borderRadius: BorderRadius.circular(8)),
-                              controller: controller.codeController,
-                              textStyle: TextStyle(
-                                  fontSize: AppHelper.font(context, 10),
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: Const.codeFamily),
+                  items.text.isEmpty
+                      ? Container()
+                      : Container(
+                          margin: const EdgeInsets.only(top: 5),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            color: AppColor.codeFieldClr,
+                          ),
+                          child: SingleChildScrollView(
+                            child: CodeTheme(
+                              data: const CodeThemeData(styles: vs2015Theme),
+                              child: CodeField(
+                                enabled: false,
+                                readOnly: true,
+                                wrap: true,
+                                minLines: 1,
+                                maxLines: 9,
+                                decoration: BoxDecoration(
+                                    color: Colors.transparent,
+                                    borderRadius: BorderRadius.circular(8)),
+                                controller: controller.codeController,
+                                textStyle: TextStyle(
+                                    fontSize: AppHelper.font(context, 10),
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: Const.codeFamily),
+                              ),
                             ),
                           ),
                         ),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: AppText(
+                        "Created on ${items.date}",
+                        fontSize: AppHelper.font(context, 10),
+                        fontColor: AppColor.fontHintClr,
                       ),
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: AppText(
-                      "Created on ${items.date}",
-                      fontSize: AppHelper.font(context, 10),
-                      fontColor: AppColor.fontHintClr,
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

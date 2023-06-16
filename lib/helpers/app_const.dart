@@ -16,4 +16,8 @@ class Const {
   static const String wordWrapOff = "WordWrap (Off)";
   static const String copyText = "Copy Text";
   static const String shareText = "Share Text";
+  static const String listView = "ListView";
+  static const String gridView = "GridView";
+  static const String trash = "Trash";
+  static const String logOut = "LogOut";
 }
