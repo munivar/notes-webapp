@@ -3,6 +3,7 @@ import 'package:dnotes/screens/login/login_view.dart';
 import 'package:dnotes/screens/notes/notes_view.dart';
 import 'package:dnotes/screens/search/search_view.dart';
 import 'package:dnotes/screens/splash/splash_view.dart';
+import 'package:dnotes/screens/trash/trash_view.dart';
 import 'package:get/get.dart';
 
 class AppRoutes {
@@ -11,6 +12,7 @@ class AppRoutes {
   static const String login = "/login";
   static const String notes = "/notes";
   static const String search = "/search";
+  static const String trash = "/trash";
 
   static getPages() {
     return [
@@ -37,6 +39,11 @@ class AppRoutes {
       GetPage(
         name: search,
         page: () => SearchView(),
+        transition: Transition.fadeIn,
+      ),
+      GetPage(
+        name: trash,
+        page: () => TrashView(),
         transition: Transition.fadeIn,
       ),
     ];

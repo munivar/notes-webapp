@@ -10,18 +10,19 @@ import 'package:get/get.dart';
 
 class HomeController extends GetxController {
   final GlobalKey homePopupKey = GlobalKey();
-  List<String> popupMenuList = ["ListView", "GridView", "LogOut"];
+  List<String> popupMenuList = ["ListView", "GridView", "Trash", "LogOut"];
   CodeController codeController = CodeController();
-  TextEditingController titleContrl = TextEditingController();
+  RxList<NotesList> notesList = RxList<NotesList>([]);
+  RxBool isLoading = false.obs;
   RxInt listItemCount = 1.obs;
   RxString userId = "".obs;
   late FirebaseFirestore collectionRef;
 
   @override
   void onInit() {
-    // get user id from get storage
-    getUserIdFromStorage();
-    // setting item count of list view
+    // getDataFromFirebase
+    getDataFromFirebase();
+    // setup item count of list view
     if (AppHelper.isMobile) {
       listItemCount.value = 1;
     } else {
@@ -33,15 +34,26 @@ class HomeController extends GetxController {
   }
 
   // getUserIdFromStorage
-  getUserIdFromStorage() async {
-    userId.value = await AppStorage.getData(Const.userId);
+  getDataFromFirebase() async {
+    try {
+      isLoading(true);
+      notesList.clear();
+      userId.value = await AppStorage.getData(Const.userId);
+      var querySnapshot = await FirebaseFirestore.instance
+          .collection(Const.fireNotes)
+          .doc(userId.value)
+          .collection(Const.fireUserNotes)
+          .where("isDeleted", isEqualTo: false)
+          .get();
+      final firebaseNotesList = querySnapshot.docs
+          .map((doc) => NotesList.fromJson(doc.data()))
+          .toList();
+      notesList.value = firebaseNotesList;
+      isLoading(false);
+    } catch (e) {
+      debugPrint("firebaseError ->> $e");
+    }
   }
-
-  // @override
-  // void onClose() {
-  //   codeController.dispose();
-  //   super.onClose();
-  // }
 
   // on menu item tap
   void onMenuTap(int index) {
@@ -54,6 +66,8 @@ class HomeController extends GetxController {
       } else {
         listItemCount.value = 3;
       }
+    } else if (popupMenuList[index] == "Trash") {
+      Get.toNamed(AppRoutes.trash);
     } else if (popupMenuList[index] == "LogOut") {
       signOutWithFirebase();
     }

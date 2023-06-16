@@ -157,12 +157,9 @@ class SearchView extends StatelessWidget {
             itemCount: controller.notesList.length,
             reverse: true,
             itemBuilder: (context, index) {
-              final document = controller.notesList[index];
-              var title = document["title"];
-              var text = document["text"];
-              var date = document["date"];
+              final items = controller.notesList[index];
               controller.codeController =
-                  CodeController(text: text, language: dart);
+                  CodeController(text: items.text, language: dart);
               return FadeAppAnimation(
                 child: Padding(
                   padding:
@@ -176,13 +173,13 @@ class SearchView extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          title == ""
+                          items.title == ""
                               ? Container()
                               : Padding(
                                   padding:
                                       const EdgeInsets.symmetric(horizontal: 3),
                                   child: TextWithHighlight(
-                                    text: title,
+                                    text: items.title,
                                     searchText: controller.searchContrl.text,
                                     style: TextStyle(
                                       color: AppColor.fontClr,
@@ -204,7 +201,7 @@ class SearchView extends StatelessWidget {
                                   //   fontWeight: FontWeight.bold,
                                   // ),
                                 ),
-                          text == ""
+                          items.text == ""
                               ? Container()
                               : Container(
                                   margin: const EdgeInsets.only(top: 5),
@@ -216,7 +213,7 @@ class SearchView extends StatelessWidget {
                                     width: AppHelper.width(context, 100),
                                     padding: const EdgeInsets.all(10),
                                     child: TextWithHighlight(
-                                      text: text,
+                                      text: items.text,
                                       searchText: controller.searchContrl.text,
                                       style: TextStyle(
                                           color: AppColor.fontClr,
@@ -237,7 +234,7 @@ class SearchView extends StatelessWidget {
                             child: Padding(
                               padding: const EdgeInsets.only(right: 8),
                               child: TextWithHighlight(
-                                text: "Created on $date",
+                                text: "Created on ${items.date}",
                                 searchText: controller.searchContrl.text,
                                 style: TextStyle(
                                     fontSize: AppHelper.font(context, 10),

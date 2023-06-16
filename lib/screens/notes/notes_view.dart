@@ -54,7 +54,7 @@ class NotesView extends StatelessWidget {
               children: [
                 AppIconButton(
                   AppImages.backIcon,
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(9),
                   onTap: () {
                     if (controller.isLoading.isFalse) {
                       Get.back();
@@ -109,7 +109,7 @@ class NotesView extends StatelessWidget {
                             padding: const EdgeInsets.all(12),
                             onTap: () {
                               if (controller.isLoading.isFalse) {
-                                controller.deleteNotesInFirebase(context);
+                                controller.moveToTrashInFirebase(context);
                               }
                             },
                           ),
@@ -146,7 +146,7 @@ class NotesView extends StatelessWidget {
               color: Colors.transparent,
               child: InkWell(
                 onTap: (() {
-                  controller.onMenuTap(context, index);
+                  controller.onMenuTap(context, controller.popupMenuList[index]);
                 }),
                 borderRadius: BorderRadius.circular(15),
                 child: Padding(

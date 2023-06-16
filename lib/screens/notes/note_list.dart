@@ -1,22 +1,16 @@
-import 'dart:convert';
-
-List<NotesList> languageListFromJson(String str) =>
-    List<NotesList>.from(json.decode(str).map((x) => NotesList.fromJson(x)));
-
-String languageListToJson(List<NotesList> data) =>
-    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
 class NotesList {
   String id;
   String title;
   String text;
   String date;
+  bool isDeleted;
 
   NotesList({
     required this.id,
     required this.title,
     required this.text,
     required this.date,
+    required this.isDeleted,
   });
 
   factory NotesList.fromJson(Map<String, dynamic> json) => NotesList(
@@ -24,6 +18,7 @@ class NotesList {
         title: json["title"],
         text: json["text"],
         date: json["date"],
+        isDeleted: json["isDeleted"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -31,5 +26,6 @@ class NotesList {
         "title": title,
         "text": text,
         "date": date,
+        "isDeleted": isDeleted,
       };
 }

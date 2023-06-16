@@ -81,12 +81,13 @@ class HomeView extends StatelessWidget {
                   child: AppIconButton(
                     AppImages.addIcon,
                     onTap: () {
-                      Get.toNamed(AppRoutes.notes, arguments: {
-                        "id": "dnotes",
-                        "title": "",
-                        "text": "",
-                        "date": "",
-                      });
+                      NotesList notes = NotesList(
+                          id: "dnotes",
+                          title: "",
+                          text: "",
+                          date: "",
+                          isDeleted: false);
+                      Get.toNamed(AppRoutes.notes, arguments: notes);
                     },
                   ),
                 ),
@@ -179,84 +180,74 @@ class HomeView extends StatelessWidget {
 
   buildListLayout(BuildContext context) {
     return Obx(() {
-      return StreamBuilder(
-          stream: controller.readNotes(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              final items = snapshot.data!;
-              if (items.isNotEmpty) {
-                return Obx(() {
-                  return controller.listItemCount.value == 1
-                      ? ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          physics: const ScrollPhysics(),
-                          itemCount: items.length,
-                          reverse: true,
-                          itemBuilder: (context, index) {
-                            // add data from firebase firestore to code controller
-                            controller.codeController = CodeController(
-                              text: items[index].text,
-                              language: dart,
-                            );
-                            //
-                            return buildChildrenLayout(
-                                context, index, items, true);
-                          })
-                      : MasonryGridView.count(
-                          shrinkWrap: true,
-                          physics: const ScrollPhysics(),
-                          scrollDirection: Axis.vertical,
-                          crossAxisCount: controller.listItemCount.value,
-                          itemCount: items.length,
-                          itemBuilder: ((context, index) {
-                            // add data from firebase firestore to code controller
-                            controller.codeController = CodeController(
-                              text: items[index].text,
-                              language: dart,
-                            );
-                            //
-                            return buildChildrenLayout(
-                                context, index, items, false);
-                          }));
-                });
-              } else {
-                return Center(
-                    child: Padding(
-                  padding: EdgeInsets.only(top: AppHelper.height(context, 25)),
-                  child: Column(
-                    children: [
-                      AppText(
-                        "No Notes",
-                        fontWeight: FontWeight.w600,
-                        fontSize: AppHelper.font(context, 14),
-                      ),
-                      AppHelper.sizedBox(context, 0.5, null),
-                      AppText(
-                        "Tap the Add button to \n Create a Notes",
-                        maxLines: 2,
-                        fontSize: AppHelper.font(context, 10),
-                        textAlign: TextAlign.center,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ],
-                  ),
-                ));
-              }
-            } else {
-              return Center(
-                child: Padding(
-                  padding: EdgeInsets.only(top: AppHelper.height(context, 25)),
-                  child: AppFun.appLoader(null),
-                ),
-              );
-            }
-          });
+      if (controller.isLoading.isTrue) {
+        return Center(
+          child: Padding(
+            padding: EdgeInsets.only(top: AppHelper.height(context, 25)),
+            child: AppFun.appLoader(null),
+          ),
+        );
+      } else if (controller.notesList.isEmpty) {
+        return Center(
+            child: Padding(
+          padding: EdgeInsets.only(top: AppHelper.height(context, 25)),
+          child: Column(
+            children: [
+              AppText(
+                "No Notes",
+                fontWeight: FontWeight.w600,
+                fontSize: AppHelper.font(context, 14),
+              ),
+              AppHelper.sizedBox(context, 0.5, null),
+              AppText(
+                "Tap the Add button to \n Create a Notes",
+                maxLines: 2,
+                fontSize: AppHelper.font(context, 10),
+                textAlign: TextAlign.center,
+                fontWeight: FontWeight.w500,
+              ),
+            ],
+          ),
+        ));
+      } else {
+        return controller.listItemCount.value == 1
+            ? ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                itemCount: controller.notesList.length,
+                reverse: true,
+                itemBuilder: (context, index) {
+                  var items = controller.notesList[index];
+                  // add data from firebase firestore to code controller
+                  controller.codeController = CodeController(
+                    text: items.text,
+                    language: dart,
+                  );
+                  //
+                  return buildChildrenLayout(context, items);
+                })
+            : MasonryGridView.count(
+                shrinkWrap: true,
+                physics: const ScrollPhysics(),
+                scrollDirection: Axis.vertical,
+                crossAxisCount: controller.listItemCount.value,
+                itemCount: controller.notesList.length,
+                itemBuilder: ((context, index) {
+                  var items = controller.notesList[index];
+                  // add data from firebase firestore to code controller
+                  controller.codeController = CodeController(
+                    text: items.text,
+                    language: dart,
+                  );
+                  //
+                  return buildChildrenLayout(context, items);
+                }));
+      }
     });
   }
 
-  buildChildrenLayout(
-      BuildContext context, int index, List<NotesList> items, bool isListView) {
+  buildChildrenLayout(BuildContext context, NotesList items) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
       child: Material(
@@ -265,12 +256,13 @@ class HomeView extends StatelessWidget {
         child: InkWell(
           borderRadius: BorderRadius.circular(20),
           onTap: () {
-            Get.toNamed(AppRoutes.notes, arguments: {
-              "id": items[index].id,
-              "title": items[index].title,
-              "text": items[index].text,
-              "date": items[index].date,
-            });
+            NotesList notes = NotesList(
+                id: items.id,
+                title: items.title,
+                text: items.text,
+                date: items.date,
+                isDeleted: items.isDeleted);
+            Get.toNamed(AppRoutes.notes, arguments: notes);
           },
           child: Padding(
             padding: const EdgeInsets.all(12),
@@ -278,18 +270,18 @@ class HomeView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                items[index].title.isEmpty
+                items.title.isEmpty
                     ? Container()
                     : Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 3),
                         child: AppText(
-                          items[index].title,
+                          items.title,
                           fontSize: AppHelper.font(context, 12),
                           maxLines: 2,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                items[index].text.isEmpty
+                items.text.isEmpty
                     ? Container()
                     : Container(
                         margin: const EdgeInsets.only(top: 5),
@@ -323,7 +315,7 @@ class HomeView extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(right: 8),
                     child: AppText(
-                      "Created on ${items[index].date}",
+                      "Created on ${items.date}",
                       fontSize: AppHelper.font(context, 10),
                       fontColor: AppColor.fontHintClr,
                     ),

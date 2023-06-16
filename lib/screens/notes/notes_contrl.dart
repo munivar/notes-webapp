@@ -22,64 +22,39 @@ class NotesController extends GetxController {
   RxBool isLoading = false.obs;
   RxBool isWordWrap = false.obs;
   late FirebaseFirestore collectionRef;
-  RxString userId = "".obs;
   RxString notesId = "".obs;
   RxString newNotesId = "".obs;
   RxString dateValue = "".obs;
+  RxBool isDeletedValue = false.obs;
   Timer apiTimer = Timer(const Duration(milliseconds: 600), () {});
   List<String> popupMenuList = AppHelper.isWeb
-      ? [
-          "Copy Text",
-          "WordWrap (Off)",
-          "WordWrap (On)",
-        ]
-      : [
-          "Copy Text",
-          "Share Text",
-          "WordWrap (Off)",
-          "WordWrap (On)",
-        ];
+      ? [Const.copyText, Const.wordWrapOn, Const.wordWrapOff]
+      : [Const.copyText, Const.shareText, Const.wordWrapOn, Const.wordWrapOff];
 
   @override
   void onInit() {
     // initializing firebase firestore
     collectionRef = FirebaseFirestore.instance;
-    // get notes data
-    dynamic argumentData = Get.arguments;
-    var getId = argumentData["id"];
-    var getTitle = argumentData["title"];
-    var getText = argumentData["text"];
-    var getDate = argumentData["date"];
-    if (getId != "dnotes") {
-      // adding data to text controllers and value
-      notesId.value = getId;
-      dateValue.value = getDate;
-      titleContrl.text = getTitle;
-      codeController = CodeController(
-        text: getText,
-        // text: "",
-        language: dart,
-        // patternMap: {
-        //   r"\B#[a-zA-Z0-9]+\b": const TextStyle(color: Color(0xff4FC1E9)),
-        //   r"\B@[a-zA-Z0-9]+\b": const TextStyle(
-        //     fontWeight: FontWeight.w800,
-        //     color: Color(0xff4FC1E9),
-        //   ),
-        //   r"\B![a-zA-Z0-9]+\b":
-        //       const TextStyle(color: Colors.yellow, fontStyle: FontStyle.italic),
-        // },
-        // stringMap: {"bev": const TextStyle(color: Colors.indigo)},
-      );
+    // getting notes data
+    NotesList notes = Get.arguments as NotesList;
+    if (notes.id != "dnotes") {
+      notesId.value = notes.id;
+      dateValue.value = notes.date;
+      titleContrl.text = notes.title;
+      isDeletedValue.value = notes.isDeleted;
+      codeController = CodeController(text: notes.text, language: dart);
     }
-
-    // get user id from get storage
-    getUserIdFromStorage();
+    // patternMap: {
+    //   r"\B#[a-zA-Z0-9]+\b": const TextStyle(color: Color(0xff4FC1E9)),
+    //   r"\B@[a-zA-Z0-9]+\b": const TextStyle(
+    //     fontWeight: FontWeight.w800,
+    //     color: Color(0xff4FC1E9),
+    //   ),
+    //   r"\B![a-zA-Z0-9]+\b":
+    //       const TextStyle(color: Colors.yellow, fontStyle: FontStyle.italic),
+    // },
+    // stringMap: {"bev": const TextStyle(color: Colors.indigo)},
     super.onInit();
-  }
-
-  // getUserIdFromStorage
-  getUserIdFromStorage() async {
-    userId.value = await AppStorage.getData(Const.userId);
   }
 
   @override
@@ -88,21 +63,37 @@ class NotesController extends GetxController {
     super.onClose();
   }
 
-  // on menu item tap
-  void onMenuTap(BuildContext context, int index) async {
+  void onMenuTap(BuildContext context, String selectedMenuItem) async {
     Get.back();
-    if (popupMenuList[index] == "WordWrap (On)") {
-      isWordWrap(true);
-    } else if (popupMenuList[index] == "WordWrap (Off)") {
-      isWordWrap(false);
-    } else if (popupMenuList[index] == "Copy Text") {
-      copyTextToClipboard(context, codeController.text);
-    } else if (popupMenuList[index] == "Share Text") {
-      shareText(codeController.text);
+    switch (selectedMenuItem) {
+      case Const.wordWrapOn:
+        enableWordWrap();
+        break;
+      case Const.wordWrapOff:
+        disableWordWrap();
+        break;
+      case Const.copyText:
+        copyTextToClipboard(context, codeController.text);
+        break;
+      case Const.shareText:
+        shareText(codeController.text);
+        break;
+      default:
+        break;
     }
   }
 
-  // copy text to clipboard
+  // Enable word wrapping logic
+  void enableWordWrap() {
+    isWordWrap(true);
+  }
+
+  // Disable word wrapping logic
+  void disableWordWrap() {
+    isWordWrap(false);
+  }
+
+  // Copy text to clipboard logic
   void copyTextToClipboard(BuildContext context, String text) async {
     isLoading(true);
     await Clipboard.setData(ClipboardData(text: text)).then((value) {
@@ -111,7 +102,7 @@ class NotesController extends GetxController {
     });
   }
 
-  // share first text
+  // Share text logic
   void shareText(String text) async {
     isLoading(true);
     await Share.share(text);
@@ -134,7 +125,7 @@ class NotesController extends GetxController {
         // Get a instance to the Firestore collection
         final notesRef = collectionRef
             .collection(Const.fireNotes)
-            .doc(userId.value)
+            .doc(homeContrl.userId.value)
             .collection(Const.fireUserNotes)
             .doc(notesId.value);
         // create notes jsonReq
@@ -143,6 +134,7 @@ class NotesController extends GetxController {
           title: titleContrl.text.trim(),
           text: codeController.text.trim(),
           date: dateValue.value,
+          isDeleted: isDeletedValue.value,
         );
         final jsonReq = notes.toJson();
         // create doc and write data in firebase firestore
@@ -156,17 +148,19 @@ class NotesController extends GetxController {
         // add new notes
         final notesRef = collectionRef
             .collection(Const.fireNotes)
-            .doc(userId.value)
+            .doc(homeContrl.userId.value)
             .collection(Const.fireUserNotes)
             .doc();
         notesId.value = notesRef.id;
         dateValue.value = formattedDate;
+        isDeletedValue.value = false;
         // create notes jsonReq
         final notes = NotesList(
           id: notesRef.id,
           title: titleContrl.text.trim(),
           text: codeController.text.trim(),
           date: formattedDate,
+          isDeleted: false,
         );
         final jsonReq = notes.toJson();
         await notesRef.set(jsonReq);
@@ -178,16 +172,18 @@ class NotesController extends GetxController {
     }
   }
 
-  // delete notes in firebase firestore
-  Future deleteNotesInFirebase(BuildContext context) async {
+  // move notes in trash in firebase firestore
+  Future moveToTrashInFirebase(BuildContext context) async {
     try {
       isLoading(true);
       final notesRef = collectionRef
           .collection(Const.fireNotes)
-          .doc(userId.value)
+          .doc(homeContrl.userId.value)
           .collection(Const.fireUserNotes)
           .doc(notesId.value);
-      await notesRef.delete();
+      await notesRef.update({
+        "isDeleted": true,
+      });
       isLoading(false);
       Get.back();
     } catch (e) {
