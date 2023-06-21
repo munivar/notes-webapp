@@ -54,45 +54,48 @@ class SearchView extends StatelessWidget {
                     Get.back();
                   },
                 ),
-                SizedBox(
-                  width: AppHelper.width(context, 65),
-                  child: GetBuilder<SearchController>(builder: (controller) {
-                    return TextFormField(
-                      scrollPadding: EdgeInsets.only(
-                          bottom: MediaQuery.of(context).viewInsets.bottom),
-                      textInputAction: TextInputAction.done,
-                      keyboardType: TextInputType.text,
-                      maxLines: 1,
-                      onChanged: (value) {
-                        controller.notesList.clear();
-                        controller.resultList.clear();
-                        controller.searchQueryInDatabase(value.toString());
-                        if (value.isNotEmpty) {
-                          controller.isCloseShow(true);
-                        } else {
-                          controller.isCloseShow(false);
-                        }
-                      },
-                      style: TextStyle(
-                        fontSize: AppHelper.font(context, 15),
-                        color: AppColor.fontClr,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      cursorColor: AppColor.primaryClr,
-                      decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Search your notes...',
-                        hintStyle: TextStyle(
+                Padding(
+                  padding: const EdgeInsets.only(top: 3),
+                  child: SizedBox(
+                    width: AppHelper.width(context, 65),
+                    child: GetBuilder<SearchController>(builder: (controller) {
+                      return TextFormField(
+                        scrollPadding: EdgeInsets.only(
+                            bottom: MediaQuery.of(context).viewInsets.bottom),
+                        textInputAction: TextInputAction.done,
+                        keyboardType: TextInputType.text,
+                        maxLines: 1,
+                        onChanged: (value) {
+                          controller.notesList.clear();
+                          controller.resultList.clear();
+                          controller.searchQueryInDatabase(value.toString());
+                          if (value.isNotEmpty) {
+                            controller.isCloseShow(true);
+                          } else {
+                            controller.isCloseShow(false);
+                          }
+                        },
+                        style: TextStyle(
                           fontSize: AppHelper.font(context, 15),
-                          color: AppColor.fontHintClr,
-                          fontWeight: FontWeight.w500,
+                          color: AppColor.fontClr,
+                          fontWeight: FontWeight.bold,
                         ),
-                        contentPadding: const EdgeInsets.only(
-                            left: 14.0, bottom: 14.0, top: 14.0),
-                      ),
-                      controller: controller.searchContrl,
-                    );
-                  }),
+                        cursorColor: AppColor.primaryClr,
+                        decoration: InputDecoration(
+                          border: InputBorder.none,
+                          hintText: 'Search your notes...',
+                          hintStyle: TextStyle(
+                            fontSize: AppHelper.font(context, 15),
+                            color: AppColor.fontHintClr,
+                            fontWeight: FontWeight.w500,
+                          ),
+                          contentPadding: const EdgeInsets.only(
+                              left: 14.0, bottom: 14.0, top: 14.0),
+                        ),
+                        controller: controller.searchContrl,
+                      );
+                    }),
+                  ),
                 ),
               ],
             ),

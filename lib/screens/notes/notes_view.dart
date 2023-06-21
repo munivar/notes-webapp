@@ -321,6 +321,11 @@ class NotesView extends StatelessWidget {
                         wrap: controller.isWordWrap.value,
                         horizontalScroll: true,
                         lineNumbers: false,
+                        enabled: AppHelper.isWeb
+                            ? true
+                            : AppHelper.isLandscape
+                                ? false
+                                : true,
                         smartQuotesType: SmartQuotesType.enabled,
                         decoration: BoxDecoration(
                             color: AppColor.codeFieldClr,
