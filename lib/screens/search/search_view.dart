@@ -1,8 +1,6 @@
-import 'package:code_text_field/code_text_field.dart';
 import 'package:dnotes/animations/fade_anim.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_const.dart';
-import 'package:dnotes/helpers/app_fun.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_images.dart';
 import 'package:dnotes/helpers/app_routes.dart';
@@ -11,7 +9,6 @@ import 'package:dnotes/screens/search/search_contrl.dart';
 import 'package:dnotes/widgets/icon_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:highlight/languages/dart.dart';
 
 class SearchView extends StatelessWidget {
   SearchView({super.key});
@@ -42,7 +39,9 @@ class SearchView extends StatelessWidget {
       automaticallyImplyLeading: false,
       flexibleSpace: Container(
         height: 75,
-        padding: EdgeInsets.symmetric(horizontal: AppHelper.width(context, 3)),
+        padding: AppHelper.isMobile == false
+            ? EdgeInsets.symmetric(horizontal: AppHelper.width(context, 3))
+            : const EdgeInsets.all(0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -50,67 +49,67 @@ class SearchView extends StatelessWidget {
               children: [
                 AppIconButton(
                   AppImages.backIcon,
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(9),
                   onTap: () {
                     Get.back();
                   },
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 5),
-                  child: SizedBox(
-                    width: AppHelper.width(context, 70),
-                    child: GetBuilder<SearchController>(builder: (controller) {
-                      return TextFormField(
-                        scrollPadding: EdgeInsets.only(
-                            bottom: MediaQuery.of(context).viewInsets.bottom),
-                        textInputAction: TextInputAction.done,
-                        keyboardType: TextInputType.text,
-                        maxLines: 1,
-                        onChanged: (value) {
-                          controller.notesList.clear();
-                          controller.resultList.clear();
-                          controller.searchQueryInDatabase(value.toString());
-                          if (value.isNotEmpty) {
-                            controller.isCloseShow(true);
-                          } else {
-                            controller.isCloseShow(false);
-                          }
-                        },
-                        style: TextStyle(
-                          fontSize: AppHelper.font(context, 16),
-                          color: AppColor.fontClr,
-                          fontWeight: FontWeight.bold,
+                SizedBox(
+                  width: AppHelper.width(context, 65),
+                  child: GetBuilder<SearchController>(builder: (controller) {
+                    return TextFormField(
+                      scrollPadding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
+                      textInputAction: TextInputAction.done,
+                      keyboardType: TextInputType.text,
+                      maxLines: 1,
+                      onChanged: (value) {
+                        controller.notesList.clear();
+                        controller.resultList.clear();
+                        controller.searchQueryInDatabase(value.toString());
+                        if (value.isNotEmpty) {
+                          controller.isCloseShow(true);
+                        } else {
+                          controller.isCloseShow(false);
+                        }
+                      },
+                      style: TextStyle(
+                        fontSize: AppHelper.font(context, 15),
+                        color: AppColor.fontClr,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      cursorColor: AppColor.primaryClr,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        hintText: 'Search your notes...',
+                        hintStyle: TextStyle(
+                          fontSize: AppHelper.font(context, 15),
+                          color: AppColor.fontHintClr,
+                          fontWeight: FontWeight.w500,
                         ),
-                        cursorColor: AppColor.primaryClr,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: 'Search your notes...',
-                          hintStyle: TextStyle(
-                            fontSize: AppHelper.font(context, 16),
-                            color: AppColor.fontHintClr,
-                            fontWeight: FontWeight.normal,
-                          ),
-                          contentPadding: const EdgeInsets.only(
-                              left: 14.0, bottom: 14.0, top: 14.0),
-                        ),
-                        controller: controller.searchContrl,
-                      );
-                    }),
-                  ),
+                        contentPadding: const EdgeInsets.only(
+                            left: 14.0, bottom: 14.0, top: 14.0),
+                      ),
+                      controller: controller.searchContrl,
+                    );
+                  }),
                 ),
               ],
             ),
             Obx(() {
               return controller.isCloseShow.isTrue
-                  ? AppIconButton(
-                      AppImages.closeIcon,
-                      padding: const EdgeInsets.all(11),
-                      onTap: () {
-                        controller.searchContrl.text = "";
-                        controller.notesList.clear();
-                        controller.resultList.clear();
-                        controller.isCloseShow(false);
-                      },
+                  ? Padding(
+                      padding: const EdgeInsets.only(right: 5),
+                      child: AppIconButton(
+                        AppImages.closeIcon,
+                        padding: const EdgeInsets.all(11),
+                        onTap: () {
+                          controller.searchContrl.text = "";
+                          controller.notesList.clear();
+                          controller.resultList.clear();
+                          controller.isCloseShow(false);
+                        },
+                      ),
                     )
                   : Container();
             }),
@@ -124,9 +123,14 @@ class SearchView extends StatelessWidget {
     return Container(
         height: double.infinity,
         margin: EdgeInsets.only(
-            left: AppHelper.width(context, 3),
-            bottom: 10,
-            right: AppHelper.width(context, 3)),
+          left: AppHelper.isMobile == false
+              ? AppHelper.width(context, 3)
+              : AppHelper.width(context, 2),
+          bottom: 10,
+          right: AppHelper.isMobile == false
+              ? AppHelper.width(context, 3)
+              : AppHelper.width(context, 2),
+        ),
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
@@ -151,19 +155,19 @@ class SearchView extends StatelessWidget {
               shrinkWrap: true,
               physics: const ScrollPhysics(),
               itemCount: controller.notesList.length,
-              reverse: true,
               itemBuilder: (context, index) {
                 final items = controller.notesList[index];
-                controller.codeController =
-                    CodeController(text: items.text, language: dart);
+                // controller.codeController =
+                //     CodeController(text: items.text, language: dart);
                 return FadeAppAnimation(
                   child: Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
                     child: Material(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(13),
                       color: AppColor.whiteColor,
                       child: InkWell(
+                        borderRadius: BorderRadius.circular(13),
                         onTap: () {
                           Get.back();
                           NotesList notes = NotesList(
@@ -179,16 +183,17 @@ class SearchView extends StatelessWidget {
                           });
                         },
                         child: Padding(
-                          padding: const EdgeInsets.all(12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 8),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              items.title == ""
+                              items.title.isEmpty
                                   ? Container()
                                   : Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 3),
+                                      padding: const EdgeInsets.only(
+                                          top: 3, left: 5, right: 5),
                                       child: TextWithHighlight(
                                         text: items.title,
                                         searchText:
@@ -196,73 +201,46 @@ class SearchView extends StatelessWidget {
                                         style: TextStyle(
                                           color: AppColor.fontClr,
                                           fontSize: AppHelper.font(context, 12),
-                                          fontWeight: FontWeight.bold,
+                                          fontWeight: FontWeight.w600,
                                           fontFamily: Const.fontFamily,
+                                          letterSpacing: 0.7,
                                         ),
                                         highlightStyle: TextStyle(
                                           color: AppColor.primaryClr,
                                           fontSize: AppHelper.font(context, 12),
                                           fontWeight: FontWeight.bold,
                                           fontFamily: Const.fontFamily,
+                                          letterSpacing: 0.7,
                                         ),
                                       ),
-                                      // AppText(
-                                      //   title,
-                                      //   fontSize: AppHelper.font(context, 12),
-                                      //   maxLines: 2,
-                                      //   fontWeight: FontWeight.bold,
-                                      // ),
                                     ),
-                              items.text == ""
+                              items.text.isEmpty
                                   ? Container()
                                   : Container(
-                                      margin: const EdgeInsets.only(top: 5),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: AppColor.lightBgClr,
-                                      ),
-                                      child: Container(
-                                        width: AppHelper.width(context, 100),
-                                        padding: const EdgeInsets.all(10),
-                                        child: TextWithHighlight(
-                                          text: items.text,
-                                          searchText:
-                                              controller.searchContrl.text,
-                                          style: TextStyle(
-                                              color: AppColor.fontClr,
-                                              fontSize:
-                                                  AppHelper.font(context, 10),
-                                              fontWeight: FontWeight.w500,
-                                              fontFamily: Const.codeFamily),
-                                          highlightStyle: TextStyle(
-                                            color: AppColor.primaryClr,
-                                            fontSize:
-                                                AppHelper.font(context, 10),
-                                            fontWeight: FontWeight.w500,
-                                            fontFamily: Const.codeFamily,
-                                          ),
+                                      width: AppHelper.width(context, 100),
+                                      padding: const EdgeInsets.only(
+                                          left: 5, right: 5, bottom: 5, top: 8),
+                                      child: TextWithHighlight(
+                                        text: items.text,
+                                        searchText:
+                                            controller.searchContrl.text,
+                                        style: TextStyle(
+                                          color: AppColor.fontHintClr,
+                                          fontSize: AppHelper.font(context, 10),
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: Const.fontFamily,
+                                          letterSpacing: 0.7,
+                                        ),
+                                        highlightStyle: TextStyle(
+                                          color: AppColor.primaryClr
+                                              .withOpacity(0.50),
+                                          fontSize: AppHelper.font(context, 10),
+                                          fontWeight: FontWeight.w500,
+                                          fontFamily: Const.fontFamily,
+                                          letterSpacing: 0.7,
                                         ),
                                       ),
                                     ),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: Padding(
-                                  padding: const EdgeInsets.only(right: 8),
-                                  child: TextWithHighlight(
-                                    text: "Created on ${items.date}",
-                                    searchText: controller.searchContrl.text,
-                                    style: TextStyle(
-                                        fontSize: AppHelper.font(context, 10),
-                                        color: AppColor.fontHintClr,
-                                        fontFamily: Const.fontFamily),
-                                    highlightStyle: TextStyle(
-                                      color: AppColor.primaryClr,
-                                      fontSize: AppHelper.font(context, 10),
-                                      fontFamily: Const.fontFamily,
-                                    ),
-                                  ),
-                                ),
-                              ),
                             ],
                           ),
                         ),

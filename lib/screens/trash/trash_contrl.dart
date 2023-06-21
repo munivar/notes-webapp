@@ -13,6 +13,7 @@ class TrashController extends GetxController {
   RxList<NotesList> notesList = RxList<NotesList>([]);
   RxBool isLoading = false.obs;
   RxInt listItemCount = 1.obs;
+  RxBool isGetBack = false.obs;
   late FirebaseFirestore collectionRef;
 
   @override
@@ -38,6 +39,7 @@ class TrashController extends GetxController {
           .collection(Const.fireNotes)
           .doc(homeContrl.userId.value)
           .collection(Const.fireUserNotes)
+          .orderBy(FieldPath.fromString("date"), descending: true)
           .where("isDeleted", isEqualTo: true)
           .get();
       final firebaseNotesList = querySnapshot.docs

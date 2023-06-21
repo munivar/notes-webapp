@@ -1,8 +1,6 @@
 import 'package:code_text_field/code_text_field.dart';
 import 'package:dnotes/animations/fade_anim.dart';
 import 'package:dnotes/helpers/app_color.dart';
-import 'package:dnotes/helpers/app_const.dart';
-import 'package:dnotes/helpers/app_fun.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_images.dart';
 import 'package:dnotes/helpers/app_routes.dart';
@@ -11,7 +9,6 @@ import 'package:dnotes/screens/trash/trash_contrl.dart';
 import 'package:dnotes/widgets/app_text.dart';
 import 'package:dnotes/widgets/icon_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_highlight/themes/vs2015.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
 import 'package:highlight/languages/dart.dart';
@@ -24,9 +21,7 @@ class TrashView extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // refresh notes data in home screen
-        controller.homeContrl.getDataFromFirebase();
-        Get.back();
+        Get.back(result: controller.isGetBack.value);
         return Future(() => false);
       },
       child: SafeArea(
@@ -50,7 +45,9 @@ class TrashView extends StatelessWidget {
         width: AppHelper.isDesktop
             ? AppHelper.width(context, 60)
             : AppHelper.width(context, 100),
-        padding: EdgeInsets.symmetric(horizontal: AppHelper.width(context, 3)),
+        padding: AppHelper.isMobile == false
+            ? EdgeInsets.symmetric(horizontal: AppHelper.width(context, 3))
+            : const EdgeInsets.all(0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -62,9 +59,7 @@ class TrashView extends StatelessWidget {
                   AppImages.backIcon,
                   padding: const EdgeInsets.all(9),
                   onTap: () {
-                    // refresh notes data in home screen
-                    controller.homeContrl.getDataFromFirebase();
-                    Get.back();
+                    Get.back(result: controller.isGetBack.value);
                   },
                 ),
                 Padding(
@@ -87,9 +82,14 @@ class TrashView extends StatelessWidget {
     return Container(
         height: double.infinity,
         margin: EdgeInsets.only(
-            left: AppHelper.width(context, 3),
-            bottom: 10,
-            right: AppHelper.width(context, 3)),
+          left: AppHelper.isMobile == false
+              ? AppHelper.width(context, 3)
+              : AppHelper.width(context, 2),
+          bottom: 10,
+          right: AppHelper.isMobile == false
+              ? AppHelper.width(context, 3)
+              : AppHelper.width(context, 2),
+        ),
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
@@ -126,7 +126,6 @@ class TrashView extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const ScrollPhysics(),
                 itemCount: controller.notesList.length,
-                reverse: true,
                 itemBuilder: (context, index) {
                   var items = controller.notesList[index];
                   // add data from firebase firestore to code controller
@@ -162,10 +161,10 @@ class TrashView extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
         child: Material(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(13),
           color: AppColor.whiteColor,
           child: InkWell(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(13),
             onTap: () async {
               NotesList notes = NotesList(
                   id: items.id,
@@ -173,15 +172,22 @@ class TrashView extends StatelessWidget {
                   text: items.text,
                   date: items.date,
                   isDeleted: items.isDeleted);
-              await Get.toNamed(AppRoutes.notes, arguments: {
+              var result = await Get.toNamed(AppRoutes.notes, arguments: {
                 "notes": notes,
                 "isFromTrash": true,
                 "isFromSearch": false
               });
-              controller.getDataFromFirebase();
+              debugPrint("result ->>> $result");
+              if (result == true) {
+                controller.isGetBack(true);
+                // refresh notes data in trash screen
+                controller.getDataFromFirebase();
+              } else {
+                controller.isGetBack(false);
+              }
             },
             child: Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -194,49 +200,23 @@ class TrashView extends StatelessWidget {
                             items.title,
                             fontSize: AppHelper.font(context, 12),
                             maxLines: 2,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                   items.text.isEmpty
                       ? Container()
                       : Container(
-                          margin: const EdgeInsets.only(top: 5),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: AppColor.codeFieldClr,
-                          ),
-                          child: SingleChildScrollView(
-                            child: CodeTheme(
-                              data: const CodeThemeData(styles: vs2015Theme),
-                              child: CodeField(
-                                enabled: false,
-                                readOnly: true,
-                                wrap: true,
-                                minLines: 1,
-                                maxLines: 9,
-                                decoration: BoxDecoration(
-                                    color: Colors.transparent,
-                                    borderRadius: BorderRadius.circular(8)),
-                                controller: controller.codeController,
-                                textStyle: TextStyle(
-                                    fontSize: AppHelper.font(context, 10),
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: Const.codeFamily),
-                              ),
-                            ),
+                          width: AppHelper.width(context, 100),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 0),
+                          child: AppText(
+                            items.text,
+                            maxLines: 8,
+                            fontColor: AppColor.fontHintClr,
+                            fontSize: AppHelper.font(context, 10),
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: AppText(
-                        "Created on ${items.date}",
-                        fontSize: AppHelper.font(context, 10),
-                        fontColor: AppColor.fontHintClr,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

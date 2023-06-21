@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:code_text_field/code_text_field.dart';
 import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_routes.dart';
@@ -16,7 +15,7 @@ class HomeController extends GetxController {
     Const.trash,
     Const.logOut
   ];
-  CodeController codeController = CodeController();
+  // CodeController codeController = CodeController();
   RxList<NotesList> notesList = RxList<NotesList>([]);
   RxBool isLoading = false.obs;
   RxInt listItemCount = 1.obs;
@@ -48,6 +47,7 @@ class HomeController extends GetxController {
           .collection(Const.fireNotes)
           .doc(userId.value)
           .collection(Const.fireUserNotes)
+          .orderBy(FieldPath.fromString("date"), descending: true)
           .where("isDeleted", isEqualTo: false)
           .get();
       final firebaseNotesList = querySnapshot.docs
@@ -92,8 +92,12 @@ class HomeController extends GetxController {
     }
   }
 
-  goToTrash() {
-    Get.toNamed(AppRoutes.trash);
+  goToTrash() async {
+    var result = await Get.toNamed(AppRoutes.trash);
+    if (result == true) {
+      // refresh data
+      getDataFromFirebase();
+    }
   }
 
   Future signOutWithFirebase() async {

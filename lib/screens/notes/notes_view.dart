@@ -1,5 +1,4 @@
 import 'package:code_text_field/code_text_field.dart';
-import 'package:dnotes/animations/fade_anim.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_fun.dart';
@@ -23,8 +22,6 @@ class NotesView extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         if (controller.isLoading.isFalse) {
-          // refresh notes data in home screen
-          controller.homeContrl.getDataFromFirebase();
           Get.back();
         }
         return Future(() => false);
@@ -47,7 +44,9 @@ class NotesView extends StatelessWidget {
       automaticallyImplyLeading: false,
       flexibleSpace: Container(
         height: 75,
-        padding: EdgeInsets.symmetric(horizontal: AppHelper.width(context, 3)),
+        padding: AppHelper.isMobile == false
+            ? EdgeInsets.symmetric(horizontal: AppHelper.width(context, 3))
+            : const EdgeInsets.all(0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -58,16 +57,14 @@ class NotesView extends StatelessWidget {
                   padding: const EdgeInsets.all(9),
                   onTap: () {
                     if (controller.isLoading.isFalse) {
-                      // refresh notes data in home screen
-                      controller.homeContrl.getDataFromFirebase();
                       Get.back();
                     }
                   },
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 5),
+                  padding: const EdgeInsets.only(top: 3),
                   child: SizedBox(
-                    width: AppHelper.width(context, 50),
+                    width: AppHelper.width(context, 46),
                     child: TextFormField(
                       scrollPadding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -80,7 +77,8 @@ class NotesView extends StatelessWidget {
                       style: TextStyle(
                         fontSize: AppHelper.font(context, 16),
                         color: AppColor.fontClr,
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w600,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       cursorColor: AppColor.primaryClr,
                       decoration: InputDecoration(
@@ -90,6 +88,7 @@ class NotesView extends StatelessWidget {
                           fontSize: AppHelper.font(context, 16),
                           color: AppColor.fontHintClr,
                           fontWeight: FontWeight.normal,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         contentPadding: const EdgeInsets.only(
                             left: 14.0, bottom: 14.0, top: 14.0),
@@ -109,8 +108,7 @@ class NotesView extends StatelessWidget {
                           padding: const EdgeInsets.only(right: 80),
                           child: AppIconButton(
                             AppImages.revertIcon,
-                            color: Colors.green,
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(13),
                             onTap: () {
                               if (controller.isLoading.isFalse) {
                                 controller.revertBackFromFirebase(context);
@@ -123,13 +121,10 @@ class NotesView extends StatelessWidget {
                 Obx(() {
                   return controller.notesId.isNotEmpty
                       ? Padding(
-                          padding: const EdgeInsets.only(right: 40),
+                          padding: const EdgeInsets.only(right: 43),
                           child: AppIconButton(
                             AppImages.deleteIcon,
-                            color: controller.isFromTrash.isTrue
-                                ? Colors.red
-                                : Colors.green,
-                            padding: const EdgeInsets.all(12),
+                            padding: const EdgeInsets.all(13),
                             onTap: () {
                               if (controller.isFromTrash.isTrue) {
                                 deleteDialog(context);
@@ -185,10 +180,14 @@ class NotesView extends StatelessWidget {
                   child: SvgPicture.asset(AppImages.deleteIcon),
                 ),
                 const SizedBox(height: 15),
-                const AppText(
-                  "Are you sure to Delete this Notes Permanently ?",
-                  maxLines: 2,
-                  textAlign: TextAlign.center,
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  child: AppText(
+                    "Are you sure to Delete this Notes Permanently ?",
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
                 const SizedBox(height: 8),
                 Row(
@@ -205,7 +204,10 @@ class NotesView extends StatelessWidget {
                         child: const Padding(
                           padding:
                               EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-                          child: AppText("Cancel"),
+                          child: AppText(
+                            "Cancel",
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ),
                     ),
@@ -222,8 +224,9 @@ class NotesView extends StatelessWidget {
                           padding:
                               EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                           child: AppText(
-                            "Delete Notes",
+                            "Delete Note",
                             fontColor: Colors.red,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ),
@@ -262,10 +265,10 @@ class NotesView extends StatelessWidget {
                   controller.onMenuTap(
                       context, controller.popupMenuList[index]);
                 }),
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(13),
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   child: AppText(
                     controller.popupMenuList[index],
                     fontWeight: FontWeight.w500,
@@ -290,55 +293,71 @@ class NotesView extends StatelessWidget {
             bottom: AppHelper.height(context, 4),
             right: AppHelper.width(context, 3)),
         padding: EdgeInsets.only(
-            left: AppHelper.isWeb ? 15 : 0,
-            top: 15,
-            bottom: 15,
-            right: AppHelper.isWeb ? 15 : 10),
+            left: AppHelper.isWeb ? 15 : 5,
+            top: 5,
+            bottom: 5,
+            right: AppHelper.isWeb ? 15 : 5),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(13),
           color: AppColor.codeFieldClr,
         ),
-        child: SingleChildScrollView(
-          physics: const ScrollPhysics(),
-          child: Stack(
-            children: [
-              CodeTheme(
-                  data: const CodeThemeData(styles: vs2015Theme),
-                  child: Obx(() {
-                    return CodeField(
-                      textSelectionTheme: TextSelectionThemeData(
-                        cursorColor: Colors.white.withOpacity(0.20),
-                        selectionColor: Colors.white.withOpacity(0.20),
-                        selectionHandleColor: Colors.white.withOpacity(0.20),
-                      ),
-                      onChanged: (p0) {
-                        controller.saveNotes(context);
-                      },
-                      wrap: controller.isWordWrap.value,
-                      horizontalScroll: true,
-                      decoration: BoxDecoration(
-                          color: AppColor.codeFieldClr,
-                          borderRadius: BorderRadius.circular(20)),
-                      controller: controller.codeController,
-                      textStyle: TextStyle(
-                          fontSize: AppHelper.font(context, 11),
-                          fontWeight: FontWeight.w500,
-                          fontFamily: Const.codeFamily),
-                    );
-                  })),
-              Obx(() {
-                return controller.isLoading.isTrue
-                    ? Align(
-                        alignment: Alignment.centerRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 5),
-                          child: AppFun.appLoader(Colors.white),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Stack(
+              children: [
+                CodeTheme(
+                    data: const CodeThemeData(styles: vs2015Theme),
+                    child: Obx(() {
+                      return CodeField(
+                        textSelectionTheme: TextSelectionThemeData(
+                          cursorColor: Colors.white.withOpacity(0.20),
+                          selectionColor: Colors.white.withOpacity(0.20),
+                          selectionHandleColor: Colors.white.withOpacity(0.20),
                         ),
-                      )
-                    : Container();
-              }),
-            ],
-          ),
+                        onChanged: (p0) {
+                          controller.saveNotes(context);
+                        },
+                        wrap: controller.isWordWrap.value,
+                        horizontalScroll: true,
+                        lineNumbers: false,
+                        smartQuotesType: SmartQuotesType.enabled,
+                        decoration: BoxDecoration(
+                            color: AppColor.codeFieldClr,
+                            borderRadius: BorderRadius.circular(13)),
+                        controller: controller.codeController,
+                        textStyle: TextStyle(
+                            fontSize: AppHelper.font(context, 11),
+                            fontWeight: FontWeight.w500,
+                            fontFamily: Const.codeFamily),
+                      );
+                    })),
+                Obx(() {
+                  return controller.isLoading.isTrue
+                      ? Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: AppFun.appLoader(Colors.white),
+                          ),
+                        )
+                      : Container();
+                }),
+              ],
+            ),
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8),
+                child: AppText(
+                  "Created on ${controller.dateValue.value}",
+                  fontSize: AppHelper.font(context, 10),
+                  fontColor: AppColor.fontHintClr,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );

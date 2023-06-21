@@ -1,7 +1,5 @@
-import 'package:code_text_field/code_text_field.dart';
 import 'package:dnotes/animations/fade_anim.dart';
 import 'package:dnotes/helpers/app_color.dart';
-import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_images.dart';
 import 'package:dnotes/helpers/app_routes.dart';
@@ -11,9 +9,7 @@ import 'package:dnotes/widgets/app_text.dart';
 import 'package:dnotes/widgets/icon_button.dart';
 import 'package:dnotes/widgets/popup_menu.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_highlight/themes/vs2015.dart';
 import 'package:get/get.dart';
-import 'package:highlight/languages/dart.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomeView extends StatelessWidget {
@@ -50,12 +46,14 @@ class HomeView extends StatelessWidget {
         width: AppHelper.isDesktop
             ? AppHelper.width(context, 60)
             : AppHelper.width(context, 100),
-        padding: EdgeInsets.symmetric(horizontal: AppHelper.width(context, 3)),
+        padding: AppHelper.isMobile == false
+            ? EdgeInsets.symmetric(horizontal: AppHelper.width(context, 3))
+            : const EdgeInsets.all(0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 10),
+              padding: const EdgeInsets.only(left: 17),
               child: InkWell(
                 highlightColor: Colors.transparent,
                 focusColor: Colors.transparent,
@@ -93,10 +91,10 @@ class HomeView extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(right: 40),
+                  padding: const EdgeInsets.only(right: 43),
                   child: AppIconButton(
                     AppImages.searchIcon,
-                    padding: const EdgeInsets.all(11),
+                    padding: const EdgeInsets.all(12),
                     onTap: () {
                       Get.toNamed(AppRoutes.search);
                     },
@@ -115,9 +113,14 @@ class HomeView extends StatelessWidget {
     return Container(
         height: double.infinity,
         margin: EdgeInsets.only(
-            left: AppHelper.width(context, 3),
-            bottom: 10,
-            right: AppHelper.width(context, 3)),
+          left: AppHelper.isMobile == false
+              ? AppHelper.width(context, 3)
+              : AppHelper.width(context, 2),
+          bottom: 10,
+          right: AppHelper.isMobile == false
+              ? AppHelper.width(context, 3)
+              : AppHelper.width(context, 2),
+        ),
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           child: Column(
@@ -152,10 +155,10 @@ class HomeView extends StatelessWidget {
                 onTap: (() {
                   controller.onMenuTap(controller.popupMenuList[index]);
                 }),
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(13),
                 child: Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   child: AppText(
                     controller.popupMenuList[index],
                     fontWeight: FontWeight.w500,
@@ -204,14 +207,13 @@ class HomeView extends StatelessWidget {
                 shrinkWrap: true,
                 physics: const ScrollPhysics(),
                 itemCount: controller.notesList.length,
-                reverse: true,
                 itemBuilder: (context, index) {
                   var items = controller.notesList[index];
                   // add data from firebase firestore to code controller
-                  controller.codeController = CodeController(
-                    text: items.text,
-                    language: dart,
-                  );
+                  // controller.codeController = CodeController(
+                  //   text: items.text,
+                  //   language: dart,
+                  // );
                   //
                   return buildChildrenLayout(context, items);
                 })
@@ -224,10 +226,10 @@ class HomeView extends StatelessWidget {
                 itemBuilder: ((context, index) {
                   var items = controller.notesList[index];
                   // add data from firebase firestore to code controller
-                  controller.codeController = CodeController(
-                    text: items.text,
-                    language: dart,
-                  );
+                  // controller.codeController = CodeController(
+                  //   text: items.text,
+                  //   language: dart,
+                  // );
                   //
                   return buildChildrenLayout(context, items);
                 }));
@@ -240,10 +242,10 @@ class HomeView extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
         child: Material(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(13),
           color: AppColor.whiteColor,
           child: InkWell(
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(13),
             onTap: () {
               NotesList notes = NotesList(
                   id: items.id,
@@ -258,7 +260,7 @@ class HomeView extends StatelessWidget {
               });
             },
             child: Padding(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,49 +273,23 @@ class HomeView extends StatelessWidget {
                             items.title,
                             fontSize: AppHelper.font(context, 12),
                             maxLines: 2,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                   items.text.isEmpty
                       ? Container()
                       : Container(
-                          margin: const EdgeInsets.only(top: 5),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            color: AppColor.codeFieldClr,
-                          ),
-                          child: SingleChildScrollView(
-                            child: CodeTheme(
-                              data: const CodeThemeData(styles: vs2015Theme),
-                              child: CodeField(
-                                enabled: false,
-                                readOnly: true,
-                                wrap: true,
-                                minLines: 1,
-                                maxLines: 9,
-                                decoration: BoxDecoration(
-                                    color: Colors.transparent,
-                                    borderRadius: BorderRadius.circular(8)),
-                                controller: controller.codeController,
-                                textStyle: TextStyle(
-                                    fontSize: AppHelper.font(context, 10),
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: Const.codeFamily),
-                              ),
-                            ),
+                          width: AppHelper.width(context, 100),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 0),
+                          child: AppText(
+                            items.text,
+                            maxLines: 8,
+                            fontColor: AppColor.fontHintClr,
+                            fontSize: AppHelper.font(context, 10),
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(right: 8),
-                      child: AppText(
-                        "Created on ${items.date}",
-                        fontSize: AppHelper.font(context, 10),
-                        fontColor: AppColor.fontHintClr,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ),

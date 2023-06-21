@@ -84,7 +84,7 @@ class AppHelper {
       return screenWidth * (fontSize / 4) / 100;
     } else {
       // Other devices font size calculation
-      return screenWidth * (fontSize / 2.7) / 100;
+      return screenWidth * (fontSize / 2.65) / 100;
     }
   }
 

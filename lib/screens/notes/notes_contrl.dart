@@ -144,6 +144,8 @@ class NotesController extends GetxController {
         // create doc and write data in firebase firestore
         await notesRef.set(jsonReq);
         isLoading(false);
+        // refresh notes data in home screen
+        homeContrl.getDataFromFirebase();
       } else {
         // formating date
         DateTime now = DateTime.now();
@@ -169,6 +171,8 @@ class NotesController extends GetxController {
         final jsonReq = notes.toJson();
         await notesRef.set(jsonReq);
         isLoading(false);
+        // refresh notes data in home screen
+        homeContrl.getDataFromFirebase();
       }
     } catch (e) {
       debugPrint("firebaseError ->> $e");

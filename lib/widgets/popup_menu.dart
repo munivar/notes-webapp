@@ -35,7 +35,7 @@ class AppPopupMenu extends StatelessWidget {
         splashRadius: 2,
         tooltip: "",
         enabled: false,
-        iconSize: 42,
+        iconSize: 45,
         offset: offset ?? const Offset(-10, 15),
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20))),
