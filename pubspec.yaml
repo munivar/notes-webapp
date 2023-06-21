@@ -96,6 +96,6 @@ flutter:
 
 
 
-  # flutter build web --web-renderer=html
-  # flutter build web --web-renderer canvaskit
+  # flutter build web --web-renderer html --release
+  # flutter build web --web-renderer canvaskit --release
   # flutter build apk --obfuscate --split-debug-info=/<project-name>/<directory>
