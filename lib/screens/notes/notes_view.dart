@@ -252,55 +252,103 @@ class NotesView extends StatelessWidget {
       },
       child: SizedBox(
         width: 190,
-        child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          physics: const ScrollPhysics(),
-          itemCount: controller.popupMenuList.length,
-          itemBuilder: ((context, index) {
-            return Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: (() {
-                  controller.onMenuTap(
-                      context, controller.popupMenuList[index]);
-                }),
-                borderRadius: BorderRadius.circular(13),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  child: AppText(
-                    controller.popupMenuList[index],
-                    fontWeight: FontWeight.w500,
+        child: Column(
+          children: [
+            ListView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              physics: const ScrollPhysics(),
+              itemCount: controller.popupMenuList.length,
+              itemBuilder: ((context, index) {
+                return Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: (() {
+                      controller.onMenuTap(
+                          context, controller.popupMenuList[index]);
+                    }),
+                    borderRadius: BorderRadius.circular(13),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 15, vertical: 10),
+                      child: AppText(
+                        controller.popupMenuList[index],
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ),
-                ),
+                );
+              }),
+            ),
+            Container(
+              height: 2,
+              width: 190,
+              color: AppColor.fontHintClr.withOpacity(0.2),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 5, top: 15, bottom: 10),
+              child: SizedBox(
+                height: 30,
+                child: GetBuilder<NotesController>(builder: (controller) {
+                  return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      itemCount: controller.colorList.length,
+                      itemBuilder: (context, index) {
+                        var items = controller.colorList[index];
+                        return Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(50),
+                            border: Border.all(
+                              width: 1,
+                              color: AppColor.fontHintClr,
+                            ),
+                          ),
+                          child: Material(
+                            color: Color(int.parse(items)),
+                            borderRadius: BorderRadius.circular(50),
+                            child: InkWell(
+                              onTap: () {
+                                controller.changeNoteColorInFirebase(
+                                    context, items);
+                              },
+                              borderRadius: BorderRadius.circular(50),
+                              child: const SizedBox(
+                                width: 27,
+                                height: 30,
+                              ),
+                            ),
+                          ),
+                        );
+                      });
+                }),
               ),
-            );
-          }),
+            ),
+          ],
         ),
       ),
     );
   }
 
   mainLayout(BuildContext context) {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: Container(
-        width: double.infinity,
-        height: double.infinity,
-        margin: EdgeInsets.only(
-            left: AppHelper.width(context, 3),
-            bottom: AppHelper.height(context, 4),
-            right: AppHelper.width(context, 3)),
-        padding: EdgeInsets.only(
-            left: AppHelper.isWeb ? 15 : 5,
-            top: 5,
-            bottom: 5,
-            right: AppHelper.isWeb ? 15 : 5),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(13),
-          color: AppColor.codeFieldClr,
-        ),
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      margin: EdgeInsets.only(
+          left: AppHelper.width(context, 3),
+          bottom: AppHelper.height(context, 4),
+          right: AppHelper.width(context, 3)),
+      padding: EdgeInsets.only(
+          left: AppHelper.isWeb ? 15 : 5,
+          top: 5,
+          bottom: 5,
+          right: AppHelper.isWeb ? 15 : 5),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(13),
+        color: AppColor.codeFieldClr,
+      ),
+      child: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -351,7 +399,7 @@ class NotesView extends StatelessWidget {
               ],
             ),
             Align(
-              alignment: Alignment.topRight,
+              alignment: Alignment.bottomRight,
               child: Padding(
                 padding: const EdgeInsets.only(right: 8),
                 child: AppText(

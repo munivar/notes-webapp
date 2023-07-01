@@ -162,7 +162,7 @@ class TrashView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
         child: Material(
           borderRadius: BorderRadius.circular(13),
-          color: AppColor.whiteColor,
+          color: Color(int.parse(items.noteColor)),
           child: InkWell(
             borderRadius: BorderRadius.circular(13),
             onTap: () async {
@@ -171,7 +171,8 @@ class TrashView extends StatelessWidget {
                   title: items.title,
                   text: items.text,
                   date: items.date,
-                  isDeleted: items.isDeleted);
+                  isDeleted: items.isDeleted,
+                  noteColor: items.noteColor);
               var result = await Get.toNamed(AppRoutes.notes, arguments: {
                 "notes": notes,
                 "isFromTrash": true,

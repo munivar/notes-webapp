@@ -77,11 +77,13 @@ class HomeView extends StatelessWidget {
                     AppImages.addIcon,
                     onTap: () {
                       NotesList notes = NotesList(
-                          id: "dnotes",
-                          title: "",
-                          text: "",
-                          date: "",
-                          isDeleted: false);
+                        id: "dnotes",
+                        title: "",
+                        text: "",
+                        date: "",
+                        isDeleted: false,
+                        noteColor: "0xffFFFFFF",
+                      );
                       Get.toNamed(AppRoutes.notes, arguments: {
                         "notes": notes,
                         "isFromTrash": false,
@@ -243,16 +245,18 @@ class HomeView extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
         child: Material(
           borderRadius: BorderRadius.circular(13),
-          color: AppColor.whiteColor,
+          color: Color(int.parse(items.noteColor)),
           child: InkWell(
             borderRadius: BorderRadius.circular(13),
             onTap: () {
               NotesList notes = NotesList(
-                  id: items.id,
-                  title: items.title,
-                  text: items.text,
-                  date: items.date,
-                  isDeleted: items.isDeleted);
+                id: items.id,
+                title: items.title,
+                text: items.text,
+                date: items.date,
+                isDeleted: items.isDeleted,
+                noteColor: items.noteColor,
+              );
               Get.toNamed(AppRoutes.notes, arguments: {
                 "notes": notes,
                 "isFromTrash": false,

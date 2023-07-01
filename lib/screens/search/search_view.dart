@@ -174,11 +174,13 @@ class SearchView extends StatelessWidget {
                         onTap: () {
                           Get.back();
                           NotesList notes = NotesList(
-                              id: items.id,
-                              title: items.title,
-                              text: items.text,
-                              date: items.date,
-                              isDeleted: items.isDeleted);
+                            id: items.id,
+                            title: items.title,
+                            text: items.text,
+                            date: items.date,
+                            isDeleted: items.isDeleted,
+                            noteColor: items.noteColor,
+                          );
                           Get.toNamed(AppRoutes.notes, arguments: {
                             "notes": notes,
                             "isFromTrash": false,

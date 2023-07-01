@@ -10,4 +10,8 @@ class AppColor {
   static const Color fontClr = Color(0xff1F272E);
   static const Color fontHintClr = Color(0xff53596A);
   static const Color codeFieldClr = Color(0xff2D333B);
+  static const Color redNoteClr = Color(0xffFFBBBC);
+  static const Color greenNoteClr = Color(0xffD1FFD8);
+  static const Color yellowNoteClr = Color(0xffFFFDBA);
+  static const Color blueNoteClr = Color(0xffBAFEFD);
 }

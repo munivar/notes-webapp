@@ -4,6 +4,7 @@ class NotesList {
   String text;
   String date;
   bool isDeleted;
+  String noteColor;
 
   NotesList({
     required this.id,
@@ -11,15 +12,16 @@ class NotesList {
     required this.text,
     required this.date,
     required this.isDeleted,
+    required this.noteColor,
   });
 
   factory NotesList.fromJson(Map<String, dynamic> json) => NotesList(
-        id: json["id"],
-        title: json["title"],
-        text: json["text"],
-        date: json["date"],
-        isDeleted: json["isDeleted"],
-      );
+      id: json["id"],
+      title: json["title"],
+      text: json["text"],
+      date: json["date"],
+      isDeleted: json["isDeleted"],
+      noteColor: json["noteColor"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -27,5 +29,6 @@ class NotesList {
         "text": text,
         "date": date,
         "isDeleted": isDeleted,
+        "noteColor": noteColor,
       };
 }

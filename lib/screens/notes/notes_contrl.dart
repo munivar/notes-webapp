@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_text_field/code_text_field.dart';
+import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/screens/home/home_contrl.dart';
@@ -27,13 +28,27 @@ class NotesController extends GetxController {
   RxBool isFromTrash = false.obs;
   RxBool isFromSearch = false.obs;
   RxBool isDeletedValue = false.obs;
+  RxString noteColor = "0xffFFFFFF".obs;
   Timer apiTimer = Timer(const Duration(milliseconds: 600), () {});
+  List colorList = [
+    "0xffFFFFFF",
+    "0xffFFBBBC",
+    "0xffD1FFD8",
+    "0xffFFFDBA",
+    "0xffBAFEFD"
+  ];
   List<String> popupMenuList = AppHelper.isWeb
       ? [Const.copyText, Const.wordWrapOn, Const.wordWrapOff]
       : [Const.copyText, Const.shareText, Const.wordWrapOn, Const.wordWrapOff];
 
   @override
   void onInit() {
+    // word wrap code
+    if (AppHelper.isMobile) {
+      isWordWrap(true);
+    } else {
+      isWordWrap(false);
+    }
     // initializing firebase firestore
     collectionRef = FirebaseFirestore.instance;
     // getting notes data
@@ -139,6 +154,7 @@ class NotesController extends GetxController {
           text: codeController.text.trim(),
           date: dateValue.value,
           isDeleted: isDeletedValue.value,
+          noteColor: noteColor.value,
         );
         final jsonReq = notes.toJson();
         // create doc and write data in firebase firestore
@@ -160,6 +176,7 @@ class NotesController extends GetxController {
         notesId.value = notesRef.id;
         dateValue.value = formattedDate;
         isDeletedValue.value = false;
+        noteColor.value = "0xffFFFFFF";
         // create notes jsonReq
         final notes = NotesList(
           id: notesRef.id,
@@ -167,6 +184,7 @@ class NotesController extends GetxController {
           text: codeController.text.trim(),
           date: formattedDate,
           isDeleted: false,
+          noteColor: noteColor.value,
         );
         final jsonReq = notes.toJson();
         await notesRef.set(jsonReq);
@@ -177,6 +195,27 @@ class NotesController extends GetxController {
     } catch (e) {
       debugPrint("firebaseError ->> $e");
       isLoading(false);
+    }
+  }
+
+  // change notes color in firebase firestore
+  Future changeNoteColorInFirebase(
+      BuildContext context, String noteColor) async {
+    try {
+      isLoading(true);
+      Get.back();
+      final notesRef = collectionRef
+          .collection(Const.fireNotes)
+          .doc(homeContrl.userId.value)
+          .collection(Const.fireUserNotes)
+          .doc(notesId.value);
+      await notesRef.update({"noteColor": noteColor});
+      isLoading(false);
+      // refresh notes data in home screen
+      homeContrl.getDataFromFirebase();
+    } catch (e) {
+      isLoading(false);
+      debugPrint("firebaseError ->> $e");
     }
   }
 
