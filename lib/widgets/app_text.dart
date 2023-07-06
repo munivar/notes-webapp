@@ -41,7 +41,7 @@ class AppText extends StatelessWidget {
         textAlign: textAlign ?? TextAlign.left,
         style: TextStyle(
           decoration: decoration,
-          fontSize: fontSize ?? AppHelper.font(context, 12),
+          fontSize: fontSize ?? 12.sp,
           color: fontColor ?? AppColor.fontClr,
           fontWeight: fontWeight ?? FontWeight.w400,
           letterSpacing: letterSpacing ?? 0.7,

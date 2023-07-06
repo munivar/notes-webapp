@@ -36,41 +36,37 @@ class TrashView extends StatelessWidget {
 
   appbarLayout(BuildContext context) {
     return AppBar(
-      toolbarHeight: 75,
+      toolbarHeight: 60,
       elevation: 0,
       backgroundColor: AppColor.lightBgClr,
       automaticallyImplyLeading: false,
       flexibleSpace: Container(
-        height: 75,
-        width: AppHelper.isDesktop
-            ? AppHelper.width(context, 60)
-            : AppHelper.width(context, 100),
+        height: 60,
+        width: AppHelper.isDesktop ? 60.w : 100.w,
         padding: AppHelper.isMobile == false
-            ? EdgeInsets.symmetric(horizontal: AppHelper.width(context, 3))
-            : const EdgeInsets.all(0),
+            ? EdgeInsets.symmetric(horizontal: 3.w)
+            : const EdgeInsets.symmetric(horizontal: 5),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                AppIconButton(
-                  AppImages.backIcon,
-                  padding: const EdgeInsets.all(9),
-                  onTap: () {
-                    Get.back(result: controller.isGetBack.value);
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 5),
-                  child: AppText(
-                    "Trash",
-                    fontSize: AppHelper.font(context, 20),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: AppIconButton(
+                AppImages.backIcon,
+                padding: const EdgeInsets.all(9),
+                onTap: () {
+                  Get.back(result: controller.isGetBack.value);
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: AppText(
+                "Trash",
+                fontSize: 22.sp,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -82,13 +78,9 @@ class TrashView extends StatelessWidget {
     return Container(
         height: double.infinity,
         margin: EdgeInsets.only(
-          left: AppHelper.isMobile == false
-              ? AppHelper.width(context, 3)
-              : AppHelper.width(context, 2),
+          left: AppHelper.isMobile == false ? 3.w : 2.w,
           bottom: 10,
-          right: AppHelper.isMobile == false
-              ? AppHelper.width(context, 3)
-              : AppHelper.width(context, 2),
+          right: AppHelper.isMobile == false ? 3.w : 2.w,
         ),
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
@@ -97,7 +89,7 @@ class TrashView extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               buildListLayout(context),
-              AppHelper.sizedBox(context, 4, null),
+              AppHelper.sizedBox(4, null),
             ],
           ),
         ));
@@ -111,11 +103,11 @@ class TrashView extends StatelessWidget {
         return FadeAppAnimation(
           child: Center(
               child: Padding(
-            padding: EdgeInsets.only(top: AppHelper.height(context, 25)),
+            padding: EdgeInsets.only(top: 25.h),
             child: AppText(
               "No Notes",
               fontWeight: FontWeight.w500,
-              fontSize: AppHelper.font(context, 14),
+              fontSize: 18.sp,
             ),
           )),
         );
@@ -124,7 +116,7 @@ class TrashView extends StatelessWidget {
             ? ListView.builder(
                 scrollDirection: Axis.vertical,
                 shrinkWrap: true,
-                physics: const ScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 itemCount: controller.notesList.length,
                 itemBuilder: (context, index) {
                   var items = controller.notesList[index];
@@ -138,7 +130,7 @@ class TrashView extends StatelessWidget {
                 })
             : MasonryGridView.count(
                 shrinkWrap: true,
-                physics: const ScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 scrollDirection: Axis.vertical,
                 crossAxisCount: controller.listItemCount.value,
                 itemCount: controller.notesList.length,
@@ -199,7 +191,7 @@ class TrashView extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 3),
                           child: AppText(
                             items.title,
-                            fontSize: AppHelper.font(context, 12),
+                            fontSize: 16.sp,
                             maxLines: 2,
                             fontWeight: FontWeight.w600,
                           ),
@@ -207,14 +199,14 @@ class TrashView extends StatelessWidget {
                   items.text.isEmpty
                       ? Container()
                       : Container(
-                          width: AppHelper.width(context, 100),
+                          width: 100.w,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 5, vertical: 0),
                           child: AppText(
                             items.text,
                             maxLines: 8,
                             fontColor: AppColor.fontHintClr,
-                            fontSize: AppHelper.font(context, 10),
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
                           ),
                         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io';
@@ -46,6 +47,7 @@ class AppHelper {
     }
   }
 
+  // returning value
   static bool get isMobile => deviceType == DeviceType.isMobile;
   static bool get isTablet => deviceType == DeviceType.isTablet;
   static bool get isDesktop => deviceType == DeviceType.isDesktop;
@@ -57,47 +59,9 @@ class AppHelper {
   static bool get isLandscape =>
       deviceOrientation == DeviceOrientation.isLandscape;
 
-  // sized box
-  static sizedBox(BuildContext context, double? height, double? width) {
-    double deviceScreenWidth = MediaQuery.of(context).size.width;
-    double deviceScreenHeight = MediaQuery.of(context).size.height;
-    return SizedBox(
-      height: height == null ? 0.0 : deviceScreenHeight * height / 100,
-      width: width == null ? 0.0 : deviceScreenWidth * width / 100,
-    );
-  }
-
-  // responsive font
-  static double font(BuildContext context, double fontSize) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    bool isDesktopWidth = screenWidth > 1008;
-    bool isTabletWidth = screenWidth > 600 && screenWidth < 1008;
-    // Adjust font size based on device width
-    if (isDesktopWidth) {
-      // Desktop font size calculation
-      return screenWidth * (fontSize / 13) / 100;
-    } else if (isTabletWidth) {
-      // Tablet font size calculation
-      return screenWidth * (fontSize / 8) / 100;
-    } else if (AppHelper.isWeb && screenWidth < 600) {
-      // Desktop Mobile View Size Calculation
-      return screenWidth * (fontSize / 4) / 100;
-    } else {
-      // Other devices font size calculation
-      return screenWidth * (fontSize / 2.65) / 100;
-    }
-  }
-
-  // responsive height
-  static height(BuildContext context, double height) {
-    // Returned Responsive Height based on Device Height
-    return MediaQuery.of(context).size.height * height / 100;
-  }
-
-  // responsive width
-  static width(BuildContext context, double width) {
-    // Returned Responsive Width based on Device Width
-    return MediaQuery.of(context).size.width * width / 100;
+  // responsive sizedbox
+  static SizedBox sizedBox(double? height, double? width) {
+    return SizedBox(width: width?.w, height: height?.h);
   }
 
   // Format date
@@ -144,4 +108,11 @@ class AppHelper {
       return "";
     }
   }
+}
+
+// responsive height, width and font
+extension ResponsiveSizeExtension on num {
+  double get h => Get.height * (this / 100);
+  double get w => Get.width * (this / 100);
+  double get sp => Get.textScaleFactor * this;
 }

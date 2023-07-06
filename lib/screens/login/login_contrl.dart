@@ -88,13 +88,19 @@ class LoginController extends GetxController {
         for (var document in querySnapshot.docs) {
           // Get the data from the document
           var data = document.data() as Map<String, dynamic>;
-          AppStorage.setData(Const.userId, data["id"]);
+          if (data["password"] == passwordContrl.text.trim()) {
+            AppStorage.setData(Const.userId, data["id"]);
+            // going to next screen and setup isLogin true
+            AppStorage.setData(Const.isLogin, true);
+            isLoading(false);
+            Get.offAllNamed(AppRoutes.home);
+            //
+          } else {
+            isLoading(false);
+            // ignore: use_build_context_synchronously
+            AppToast.showToast(context, "Password is Invalid");
+          }
         }
-        // going to next screen and setup isLogin true
-        AppStorage.setData(Const.isLogin, true);
-        isLoading(false);
-        Get.offAllNamed(AppRoutes.home);
-        //
       } else {
         // ignore: use_build_context_synchronously
         AppToast.showToast(context, "Username not found");

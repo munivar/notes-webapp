@@ -27,7 +27,7 @@ class AppToast {
               ClipOval(
                 child: Image.asset(
                   AppImages.notesLogo,
-                  height: AppHelper.height(context, 4),
+                  height: 4.h,
                 ),
               ),
               const SizedBox(width: 10),
@@ -36,14 +36,14 @@ class AppToast {
                       message,
                       maxLines: 2,
                       fontWeight: FontWeight.w600,
-                      fontSize: AppHelper.font(context, 11),
+                      fontSize: 14.sp,
                     )
                   : Flexible(
                       child: AppText(
                         message,
                         maxLines: 2,
                         fontWeight: FontWeight.w600,
-                        fontSize: AppHelper.font(context, 11),
+                        fontSize: 14.sp,
                       ),
                     ),
             ],

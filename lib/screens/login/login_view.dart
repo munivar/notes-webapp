@@ -25,24 +25,19 @@ class LoginView extends StatelessWidget {
   mainLayout(BuildContext context) {
     return Container(
       color: AppHelper.isWeb == false ? Colors.white : Colors.transparent,
-      height: AppHelper.height(context, 100),
+      height: 100.h,
       margin: AppHelper.isWeb == false
           ? const EdgeInsets.all(0)
-          : EdgeInsets.only(
-              left: AppHelper.width(context, 3),
-              bottom: 10,
-              right: AppHelper.width(context, 3)),
-      padding: EdgeInsets.symmetric(horizontal: AppHelper.width(context, 5)),
+          : EdgeInsets.only(left: 3.w, bottom: 10, right: 3.w),
+      padding: EdgeInsets.symmetric(horizontal: 5.w),
       child: Center(
         child: AppHelper.isWeb == false
             ? SingleChildScrollView(
                 child: containerLayout(context),
               )
             : Container(
-                height: AppHelper.height(context, 70),
-                width: AppHelper.isMobile == false
-                    ? 500
-                    : AppHelper.width(context, 100),
+                height: 70.h,
+                width: AppHelper.isMobile == false ? 500 : 100.w,
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -59,35 +54,46 @@ class LoginView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        AppHelper.sizedBox(context, 1, null),
-        Obx(() {
-          return AppText(
-            controller.isRegister.isTrue ? "Register in" : "Login to your",
-            fontSize: AppHelper.font(context, 24),
-            fontWeight: FontWeight.w900,
-          );
-        }),
+        AppHelper.sizedBox(1, null),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              AppImages.notesLogo,
-              height: 25,
+            ClipOval(
+              child: Image.asset(
+                AppImages.notesLogo,
+                height: 7.h,
+              ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 5),
+              padding: const EdgeInsets.only(left: 10),
               child: AppText(
-                "DNotes Account",
-                fontSize: AppHelper.font(context, 14),
-                fontWeight: FontWeight.w900,
+                "DNotes",
+                fontSize: 32.sp,
+                fontWeight: FontWeight.bold,
               ),
             )
           ],
         ),
-        AppHelper.sizedBox(context, 4, null),
+        AppHelper.sizedBox(10, null),
+        Obx(() {
+          return Align(
+            alignment: Alignment.centerLeft,
+            child: Padding(
+              padding: EdgeInsets.only(left: 2.w),
+              child: AppText(
+                controller.isRegister.isTrue
+                    ? "Looks like you're new here!"
+                    : "Login to your Account",
+                fontSize: 24.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          );
+        }),
+        AppHelper.sizedBox(1, null),
         Padding(
           padding: AppHelper.isMobile == false
-              ? EdgeInsets.symmetric(horizontal: AppHelper.width(context, 1.4))
+              ? EdgeInsets.symmetric(horizontal: 1.4.w)
               : const EdgeInsets.all(0),
           child: TextFormField(
             scrollPadding: EdgeInsets.only(
@@ -97,7 +103,7 @@ class LoginView extends StatelessWidget {
             maxLines: 1,
             onChanged: (value) {},
             style: TextStyle(
-              fontSize: AppHelper.font(context, 12),
+              fontSize: 16.sp,
               color: AppColor.fontClr,
               fontWeight: FontWeight.w500,
             ),
@@ -106,7 +112,7 @@ class LoginView extends StatelessWidget {
               border: InputBorder.none,
               hintText: 'Username',
               hintStyle: TextStyle(
-                fontSize: AppHelper.font(context, 12),
+                fontSize: 14.sp,
                 color: AppColor.fontHintClr,
                 fontWeight: FontWeight.normal,
               ),
@@ -118,16 +124,16 @@ class LoginView extends StatelessWidget {
         ),
         Container(
           height: 2,
-          margin: EdgeInsets.symmetric(horizontal: AppHelper.width(context, 2)),
+          margin: EdgeInsets.symmetric(horizontal: 2.w),
           decoration: BoxDecoration(
               color: AppColor.fontHintClr.withOpacity(0.20),
               borderRadius: BorderRadius.circular(50)),
-          width: AppHelper.width(context, 100),
+          width: 100.w,
         ),
-        AppHelper.sizedBox(context, 1, null),
+        AppHelper.sizedBox(1, null),
         Padding(
           padding: AppHelper.isMobile == false
-              ? EdgeInsets.symmetric(horizontal: AppHelper.width(context, 1.4))
+              ? EdgeInsets.symmetric(horizontal: 1.4.w)
               : const EdgeInsets.all(0),
           child: TextFormField(
               scrollPadding: EdgeInsets.only(
@@ -137,7 +143,7 @@ class LoginView extends StatelessWidget {
               maxLines: 1,
               onChanged: (value) {},
               style: TextStyle(
-                fontSize: AppHelper.font(context, 12),
+                fontSize: 16.sp,
                 color: AppColor.fontClr,
                 fontWeight: FontWeight.w500,
               ),
@@ -150,7 +156,7 @@ class LoginView extends StatelessWidget {
                 border: InputBorder.none,
                 hintText: 'Password',
                 hintStyle: TextStyle(
-                  fontSize: AppHelper.font(context, 12),
+                  fontSize: 14.sp,
                   color: AppColor.fontHintClr,
                   fontWeight: FontWeight.normal,
                 ),
@@ -161,16 +167,16 @@ class LoginView extends StatelessWidget {
         ),
         Container(
           height: 2,
-          margin: EdgeInsets.symmetric(horizontal: AppHelper.width(context, 2)),
+          margin: EdgeInsets.symmetric(horizontal: 2.w),
           decoration: BoxDecoration(
               color: AppColor.fontHintClr.withOpacity(0.20),
               borderRadius: BorderRadius.circular(50)),
-          width: AppHelper.width(context, 100),
+          width: 100.w,
         ),
-        AppHelper.sizedBox(context, 3, null),
+        AppHelper.sizedBox(3, null),
         Padding(
           padding: AppHelper.isMobile == false
-              ? EdgeInsets.symmetric(horizontal: AppHelper.width(context, 1.8))
+              ? EdgeInsets.symmetric(horizontal: 1.8.w)
               : const EdgeInsets.symmetric(horizontal: 10),
           child: Material(
             color: AppColor.primaryClr,
@@ -196,6 +202,7 @@ class LoginView extends StatelessWidget {
                                   : "Login",
                               fontColor: Colors.white,
                               fontWeight: FontWeight.w500,
+                              fontSize: 16.sp,
                             );
                     },
                   ),
@@ -204,12 +211,13 @@ class LoginView extends StatelessWidget {
             ),
           ),
         ),
-        AppHelper.sizedBox(context, 1, null),
+        AppHelper.sizedBox(2, null),
         const AppText(
           "or",
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.w400,
           fontColor: AppColor.fontHintClr,
         ),
+        AppHelper.sizedBox(1, null),
         Material(
           color: Colors.transparent,
           child: InkWell(
@@ -230,6 +238,7 @@ class LoginView extends StatelessWidget {
                         ? "Login to your Account"
                         : "Register in DNotes Account",
                     fontWeight: FontWeight.w500,
+                    fontSize: 16.sp,
                     decoration: TextDecoration.underline,
                   );
                 })),

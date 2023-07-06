@@ -37,23 +37,22 @@ class HomeView extends StatelessWidget {
 
   appbarLayout(BuildContext context) {
     return AppBar(
-      toolbarHeight: 75,
+      toolbarHeight: 60,
       elevation: 0,
       backgroundColor: AppColor.lightBgClr,
       automaticallyImplyLeading: false,
       flexibleSpace: Container(
-        height: 75,
-        width: AppHelper.isDesktop
-            ? AppHelper.width(context, 60)
-            : AppHelper.width(context, 100),
+        height: 60,
+        width: AppHelper.isDesktop ? 60.w : 100.w,
         padding: AppHelper.isMobile == false
-            ? EdgeInsets.symmetric(horizontal: AppHelper.width(context, 3))
+            ? EdgeInsets.symmetric(horizontal: 3.w)
             : const EdgeInsets.all(0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 17),
+              padding: const EdgeInsets.only(left: 20),
               child: InkWell(
                 highlightColor: Colors.transparent,
                 focusColor: Colors.transparent,
@@ -63,47 +62,50 @@ class HomeView extends StatelessWidget {
                 },
                 child: AppText(
                   "DNotes",
-                  fontSize: AppHelper.font(context, 20),
+                  fontSize: 24.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            Stack(
-              alignment: Alignment.centerRight,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 80),
-                  child: AppIconButton(
-                    AppImages.addIcon,
-                    onTap: () {
-                      NotesList notes = NotesList(
-                        id: "dnotes",
-                        title: "",
-                        text: "",
-                        date: "",
-                        isDeleted: false,
-                        noteColor: "0xffFFFFFF",
-                      );
-                      Get.toNamed(AppRoutes.notes, arguments: {
-                        "notes": notes,
-                        "isFromTrash": false,
-                        "isFromSearch": false,
-                      });
-                    },
+            Padding(
+              padding: const EdgeInsets.only(top: 2),
+              child: Stack(
+                alignment: Alignment.centerRight,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 80),
+                    child: AppIconButton(
+                      AppImages.addIcon,
+                      onTap: () {
+                        NotesList notes = NotesList(
+                          id: "dnotes",
+                          title: "",
+                          text: "",
+                          date: "",
+                          isDeleted: false,
+                          noteColor: "0xffFFFFFF",
+                        );
+                        Get.toNamed(AppRoutes.notes, arguments: {
+                          "notes": notes,
+                          "isFromTrash": false,
+                          "isFromSearch": false,
+                        });
+                      },
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 43),
-                  child: AppIconButton(
-                    AppImages.searchIcon,
-                    padding: const EdgeInsets.all(12),
-                    onTap: () {
-                      Get.toNamed(AppRoutes.search);
-                    },
+                  Padding(
+                    padding: const EdgeInsets.only(right: 43),
+                    child: AppIconButton(
+                      AppImages.searchIcon,
+                      padding: const EdgeInsets.all(12),
+                      onTap: () {
+                        Get.toNamed(AppRoutes.search);
+                      },
+                    ),
                   ),
-                ),
-                popupMenu(context),
-              ],
+                  popupMenu(context),
+                ],
+              ),
             ),
           ],
         ),
@@ -115,22 +117,18 @@ class HomeView extends StatelessWidget {
     return Container(
         height: double.infinity,
         margin: EdgeInsets.only(
-          left: AppHelper.isMobile == false
-              ? AppHelper.width(context, 3)
-              : AppHelper.width(context, 2),
+          left: AppHelper.isMobile == false ? 3.w : 2.w,
           bottom: 10,
-          right: AppHelper.isMobile == false
-              ? AppHelper.width(context, 3)
-              : AppHelper.width(context, 2),
+          right: AppHelper.isMobile == false ? 3.w : 2.w,
         ),
         child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               buildListLayout(context),
-              AppHelper.sizedBox(context, 4, null),
+              AppHelper.sizedBox(4, null),
             ],
           ),
         ));
@@ -163,7 +161,8 @@ class HomeView extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
                   child: AppText(
                     controller.popupMenuList[index],
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 15.sp,
                   ),
                 ),
               ),
@@ -182,19 +181,19 @@ class HomeView extends StatelessWidget {
         return FadeAppAnimation(
           child: Center(
               child: Padding(
-            padding: EdgeInsets.only(top: AppHelper.height(context, 25)),
+            padding: EdgeInsets.only(top: 25.h),
             child: Column(
               children: [
                 AppText(
                   "No Notes",
                   fontWeight: FontWeight.w600,
-                  fontSize: AppHelper.font(context, 14),
+                  fontSize: 18.sp,
                 ),
-                AppHelper.sizedBox(context, 0.5, null),
+                AppHelper.sizedBox(0.5, null),
                 AppText(
                   "Tap the Add button to \n Create a Notes",
                   maxLines: 2,
-                  fontSize: AppHelper.font(context, 10),
+                  fontSize: 14.sp,
                   textAlign: TextAlign.center,
                   fontWeight: FontWeight.w500,
                 ),
@@ -275,7 +274,7 @@ class HomeView extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(horizontal: 3),
                           child: AppText(
                             items.title,
-                            fontSize: AppHelper.font(context, 12),
+                            fontSize: 16.sp,
                             maxLines: 2,
                             fontWeight: FontWeight.w600,
                           ),
@@ -283,14 +282,14 @@ class HomeView extends StatelessWidget {
                   items.text.isEmpty
                       ? Container()
                       : Container(
-                          width: AppHelper.width(context, 100),
+                          width: 100.w,
                           padding: const EdgeInsets.symmetric(
                               horizontal: 5, vertical: 0),
                           child: AppText(
                             items.text,
                             maxLines: 8,
                             fontColor: AppColor.fontHintClr,
-                            fontSize: AppHelper.font(context, 10),
+                            fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
                           ),
                         ),

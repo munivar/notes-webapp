@@ -34,14 +34,14 @@ class SearchView extends StatelessWidget {
   appbarLayout(BuildContext context) {
     return AppBar(
       backgroundColor: AppColor.lightBgClr,
-      toolbarHeight: 75,
+      toolbarHeight: 60,
       elevation: 0,
       automaticallyImplyLeading: false,
       flexibleSpace: Container(
-        height: 75,
+        height: 60,
         padding: AppHelper.isMobile == false
-            ? EdgeInsets.symmetric(horizontal: AppHelper.width(context, 3))
-            : const EdgeInsets.all(0),
+            ? EdgeInsets.symmetric(horizontal: 3.w)
+            : const EdgeInsets.symmetric(horizontal: 5),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -55,9 +55,9 @@ class SearchView extends StatelessWidget {
                   },
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(top: 3),
+                  padding: const EdgeInsets.only(top: 1),
                   child: SizedBox(
-                    width: AppHelper.width(context, 65),
+                    width: 65.w,
                     child: GetBuilder<SearchController>(builder: (controller) {
                       return TextFormField(
                         scrollPadding: EdgeInsets.only(
@@ -76,7 +76,7 @@ class SearchView extends StatelessWidget {
                           }
                         },
                         style: TextStyle(
-                          fontSize: AppHelper.font(context, 15),
+                          fontSize: 18.sp,
                           color: AppColor.fontClr,
                           fontWeight: FontWeight.bold,
                         ),
@@ -85,7 +85,7 @@ class SearchView extends StatelessWidget {
                           border: InputBorder.none,
                           hintText: 'Search your notes...',
                           hintStyle: TextStyle(
-                            fontSize: AppHelper.font(context, 15),
+                            fontSize: 16.sp,
                             color: AppColor.fontHintClr,
                             fontWeight: FontWeight.w500,
                           ),
@@ -101,18 +101,15 @@ class SearchView extends StatelessWidget {
             ),
             Obx(() {
               return controller.isCloseShow.isTrue
-                  ? Padding(
-                      padding: const EdgeInsets.only(right: 5),
-                      child: AppIconButton(
-                        AppImages.closeIcon,
-                        padding: const EdgeInsets.all(11),
-                        onTap: () {
-                          controller.searchContrl.text = "";
-                          controller.notesList.clear();
-                          controller.resultList.clear();
-                          controller.isCloseShow(false);
-                        },
-                      ),
+                  ? AppIconButton(
+                      AppImages.closeIcon,
+                      padding: const EdgeInsets.all(11),
+                      onTap: () {
+                        controller.searchContrl.text = "";
+                        controller.notesList.clear();
+                        controller.resultList.clear();
+                        controller.isCloseShow(false);
+                      },
                     )
                   : Container();
             }),
@@ -126,22 +123,18 @@ class SearchView extends StatelessWidget {
     return Container(
         height: double.infinity,
         margin: EdgeInsets.only(
-          left: AppHelper.isMobile == false
-              ? AppHelper.width(context, 3)
-              : AppHelper.width(context, 2),
+          left: AppHelper.isMobile == false ? 3.w : 2.w,
           bottom: 10,
-          right: AppHelper.isMobile == false
-              ? AppHelper.width(context, 3)
-              : AppHelper.width(context, 2),
+          right: AppHelper.isMobile == false ? 3.w : 2.w,
         ),
         child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               buildListLayout(context),
-              AppHelper.sizedBox(context, 4, null),
+              AppHelper.sizedBox(4, null),
             ],
           ),
         ));
@@ -168,7 +161,7 @@ class SearchView extends StatelessWidget {
                         const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
                     child: Material(
                       borderRadius: BorderRadius.circular(13),
-                      color: AppColor.whiteColor,
+                      color: Color(int.parse(items.noteColor)),
                       child: InkWell(
                         borderRadius: BorderRadius.circular(13),
                         onTap: () {
@@ -205,14 +198,14 @@ class SearchView extends StatelessWidget {
                                             controller.searchContrl.text,
                                         style: TextStyle(
                                           color: AppColor.fontClr,
-                                          fontSize: AppHelper.font(context, 12),
+                                          fontSize: 16.sp,
                                           fontWeight: FontWeight.w600,
                                           fontFamily: Const.fontFamily,
                                           letterSpacing: 0.7,
                                         ),
                                         highlightStyle: TextStyle(
                                           color: AppColor.primaryClr,
-                                          fontSize: AppHelper.font(context, 12),
+                                          fontSize: 16.sp,
                                           fontWeight: FontWeight.bold,
                                           fontFamily: Const.fontFamily,
                                           letterSpacing: 0.7,
@@ -222,7 +215,7 @@ class SearchView extends StatelessWidget {
                               items.text.isEmpty
                                   ? Container()
                                   : Container(
-                                      width: AppHelper.width(context, 100),
+                                      width: 100.w,
                                       padding: const EdgeInsets.only(
                                           left: 5, right: 5, bottom: 5, top: 8),
                                       child: TextWithHighlight(
@@ -231,7 +224,7 @@ class SearchView extends StatelessWidget {
                                             controller.searchContrl.text,
                                         style: TextStyle(
                                           color: AppColor.fontHintClr,
-                                          fontSize: AppHelper.font(context, 10),
+                                          fontSize: 14.sp,
                                           fontWeight: FontWeight.w500,
                                           fontFamily: Const.fontFamily,
                                           letterSpacing: 0.7,
@@ -239,7 +232,7 @@ class SearchView extends StatelessWidget {
                                         highlightStyle: TextStyle(
                                           color: AppColor.primaryClr
                                               .withOpacity(0.50),
-                                          fontSize: AppHelper.font(context, 10),
+                                          fontSize: 14.sp,
                                           fontWeight: FontWeight.w500,
                                           fontFamily: Const.fontFamily,
                                           letterSpacing: 0.7,
