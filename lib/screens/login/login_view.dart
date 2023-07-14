@@ -1,5 +1,4 @@
 import 'package:dnotes/helpers/app_color.dart';
-import 'package:dnotes/helpers/app_fun.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_images.dart';
 import 'package:dnotes/screens/login/login_contrl.dart';
@@ -193,8 +192,8 @@ class LoginView extends StatelessWidget {
                     () {
                       return controller.isLoading.isTrue
                           ? SizedBox(
-                              height: AppHelper.isWeb ? 27 : 31,
-                              child: AppFun.appLoader(Colors.white),
+                              height: 28,
+                              child: AppHelper.appLoader(Colors.white),
                             )
                           : AppText(
                               controller.isRegister.isTrue

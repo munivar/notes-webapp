@@ -1,13 +1,12 @@
 import 'package:code_text_field/code_text_field.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_const.dart';
-import 'package:dnotes/helpers/app_fun.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_images.dart';
 import 'package:dnotes/screens/notes/notes_contrl.dart';
 import 'package:dnotes/widgets/app_text.dart';
-import 'package:dnotes/widgets/icon_button.dart';
 import 'package:dnotes/widgets/popup_menu.dart';
+import 'package:dnotes/widgets/svg_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_highlight/themes/vs2015.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -53,9 +52,8 @@ class NotesView extends StatelessWidget {
               padding: const EdgeInsets.only(left: 5),
               child: Row(
                 children: [
-                  AppIconButton(
+                  AppSvgIcon(
                     AppImages.backIcon,
-                    padding: const EdgeInsets.all(9),
                     onTap: () {
                       if (controller.isLoading.isFalse) {
                         Get.back();
@@ -111,9 +109,8 @@ class NotesView extends StatelessWidget {
                   return controller.isFromTrash.isTrue
                       ? Padding(
                           padding: const EdgeInsets.only(right: 80),
-                          child: AppIconButton(
+                          child: AppSvgIcon(
                             AppImages.revertIcon,
-                            padding: const EdgeInsets.all(13),
                             onTap: () {
                               if (controller.isLoading.isFalse) {
                                 controller.revertBackFromFirebase(context);
@@ -127,9 +124,8 @@ class NotesView extends StatelessWidget {
                   return controller.notesId.isNotEmpty
                       ? Padding(
                           padding: const EdgeInsets.only(right: 43),
-                          child: AppIconButton(
+                          child: AppSvgIcon(
                             AppImages.deleteIcon,
-                            padding: const EdgeInsets.all(13),
                             onTap: () {
                               if (controller.isFromTrash.isTrue) {
                                 deleteDialog(context);
@@ -413,7 +409,7 @@ class NotesView extends StatelessWidget {
                           alignment: Alignment.centerRight,
                           child: Padding(
                             padding: const EdgeInsets.only(right: 5),
-                            child: AppFun.appLoader(Colors.white),
+                            child: AppHelper.appLoader(Colors.white),
                           ),
                         )
                       : Container();

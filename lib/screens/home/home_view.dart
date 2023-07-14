@@ -1,4 +1,4 @@
-import 'package:dnotes/animations/fade_anim.dart';
+import 'package:dnotes/animations/fade_in.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_images.dart';
@@ -6,8 +6,8 @@ import 'package:dnotes/helpers/app_routes.dart';
 import 'package:dnotes/screens/home/home_contrl.dart';
 import 'package:dnotes/screens/notes/note_list.dart';
 import 'package:dnotes/widgets/app_text.dart';
-import 'package:dnotes/widgets/icon_button.dart';
 import 'package:dnotes/widgets/popup_menu.dart';
+import 'package:dnotes/widgets/svg_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -58,10 +58,10 @@ class HomeView extends StatelessWidget {
                 focusColor: Colors.transparent,
                 splashColor: Colors.transparent,
                 onTap: () {
-                  Get.offAllNamed(AppRoutes.home);
+                  Get.offAllNamed(AppRoutes.homeRoute);
                 },
                 child: AppText(
-                  "DNotes",
+                  "Notes",
                   fontSize: 24.sp,
                   fontWeight: FontWeight.bold,
                 ),
@@ -74,7 +74,7 @@ class HomeView extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(right: 80),
-                    child: AppIconButton(
+                    child: AppSvgIcon(
                       AppImages.addIcon,
                       onTap: () {
                         NotesList notes = NotesList(
@@ -85,7 +85,7 @@ class HomeView extends StatelessWidget {
                           isDeleted: false,
                           noteColor: "0xffFFFFFF",
                         );
-                        Get.toNamed(AppRoutes.notes, arguments: {
+                        Get.toNamed(AppRoutes.notesRoute, arguments: {
                           "notes": notes,
                           "isFromTrash": false,
                           "isFromSearch": false,
@@ -94,15 +94,13 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(right: 43),
-                    child: AppIconButton(
-                      AppImages.searchIcon,
-                      padding: const EdgeInsets.all(12),
-                      onTap: () {
-                        Get.toNamed(AppRoutes.search);
-                      },
-                    ),
-                  ),
+                      padding: const EdgeInsets.only(right: 43),
+                      child: AppSvgIcon(
+                        AppImages.searchIcon,
+                        onTap: () {
+                          Get.toNamed(AppRoutes.searchRoute);
+                        },
+                      )),
                   popupMenu(context),
                 ],
               ),
@@ -176,9 +174,9 @@ class HomeView extends StatelessWidget {
   buildListLayout(BuildContext context) {
     return Obx(() {
       if (controller.isLoading.isTrue) {
-        return FadeAppAnimation(child: Container());
+        return FadeInAnything(child: Container());
       } else if (controller.notesList.isEmpty) {
-        return FadeAppAnimation(
+        return FadeInAnything(
           child: Center(
               child: Padding(
             padding: EdgeInsets.only(top: 25.h),
@@ -239,7 +237,7 @@ class HomeView extends StatelessWidget {
   }
 
   buildChildrenLayout(BuildContext context, NotesList items) {
-    return FadeAppAnimation(
+    return FadeInAnything(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
         child: Material(
@@ -256,7 +254,7 @@ class HomeView extends StatelessWidget {
                 isDeleted: items.isDeleted,
                 noteColor: items.noteColor,
               );
-              Get.toNamed(AppRoutes.notes, arguments: {
+              Get.toNamed(AppRoutes.notesRoute, arguments: {
                 "notes": notes,
                 "isFromTrash": false,
                 "isFromSearch": false,

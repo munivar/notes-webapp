@@ -6,7 +6,7 @@ import 'package:dnotes/screens/notes/note_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SearchController extends GetxController {
+class SearchhController extends GetxController {
   TextEditingController searchContrl = TextEditingController();
   // CodeController codeController = CodeController();
   RxList<NotesList> notesList = RxList<NotesList>([]);

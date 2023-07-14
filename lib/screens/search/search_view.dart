@@ -1,4 +1,4 @@
-import 'package:dnotes/animations/fade_anim.dart';
+import 'package:dnotes/animations/fade_in.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_helper.dart';
@@ -6,13 +6,13 @@ import 'package:dnotes/helpers/app_images.dart';
 import 'package:dnotes/helpers/app_routes.dart';
 import 'package:dnotes/screens/notes/note_list.dart';
 import 'package:dnotes/screens/search/search_contrl.dart';
-import 'package:dnotes/widgets/icon_button.dart';
+import 'package:dnotes/widgets/svg_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SearchView extends StatelessWidget {
   SearchView({super.key});
-  final SearchController controller = Get.put(SearchController());
+  final SearchhController controller = Get.put(SearchhController());
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +47,8 @@ class SearchView extends StatelessWidget {
           children: [
             Row(
               children: [
-                AppIconButton(
+                AppSvgIcon(
                   AppImages.backIcon,
-                  padding: const EdgeInsets.all(9),
                   onTap: () {
                     Get.back();
                   },
@@ -58,7 +57,7 @@ class SearchView extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 1),
                   child: SizedBox(
                     width: 65.w,
-                    child: GetBuilder<SearchController>(builder: (controller) {
+                    child: GetBuilder<SearchhController>(builder: (controller) {
                       return TextFormField(
                         scrollPadding: EdgeInsets.only(
                             bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -101,9 +100,8 @@ class SearchView extends StatelessWidget {
             ),
             Obx(() {
               return controller.isCloseShow.isTrue
-                  ? AppIconButton(
+                  ? AppSvgIcon(
                       AppImages.closeIcon,
-                      padding: const EdgeInsets.all(11),
                       onTap: () {
                         controller.searchContrl.text = "";
                         controller.notesList.clear();
@@ -143,9 +141,9 @@ class SearchView extends StatelessWidget {
   buildListLayout(BuildContext context) {
     return Center(child: Obx(() {
       if (controller.isLoading.isTrue) {
-        return FadeAppAnimation(child: Container());
+        return FadeInAnything(child: Container());
       } else {
-        return FadeAppAnimation(
+        return FadeInAnything(
           child: ListView.builder(
               scrollDirection: Axis.vertical,
               shrinkWrap: true,
@@ -155,7 +153,7 @@ class SearchView extends StatelessWidget {
                 final items = controller.notesList[index];
                 // controller.codeController =
                 //     CodeController(text: items.text, language: dart);
-                return FadeAppAnimation(
+                return FadeInAnything(
                   child: Padding(
                     padding:
                         const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
@@ -174,7 +172,7 @@ class SearchView extends StatelessWidget {
                             isDeleted: items.isDeleted,
                             noteColor: items.noteColor,
                           );
-                          Get.toNamed(AppRoutes.notes, arguments: {
+                          Get.toNamed(AppRoutes.notesRoute, arguments: {
                             "notes": notes,
                             "isFromTrash": false,
                             "isFromSearch": true,

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:code_text_field/code_text_field.dart';
-import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/screens/home/home_contrl.dart';

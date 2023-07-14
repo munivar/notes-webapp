@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dnotes/helpers/app_const.dart';
-import 'package:dnotes/helpers/app_fun.dart';
+import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_routes.dart';
 import 'package:dnotes/helpers/app_storage.dart';
 import 'package:dnotes/widgets/app_toast.dart';
@@ -32,11 +32,11 @@ class LoginController extends GetxController {
         }
       } else {
         AppToast.showToast(context, "Password field is Required");
-        AppFun.closeKeyboard(context);
+        AppHelper.closeKeyboard(context);
       }
     } else {
       AppToast.showToast(context, "Username field is Required");
-      AppFun.closeKeyboard(context);
+      AppHelper.closeKeyboard(context);
     }
   }
 
@@ -52,6 +52,7 @@ class LoginController extends GetxController {
       if (querySnapshot.size > 0) {
         // ignore: use_build_context_synchronously
         AppToast.showToast(context, "Username is not available");
+        Const.isAuthSucess = false;
         isLoading(false);
       } else {
         // register user with details in firebase firestore
@@ -62,13 +63,15 @@ class LoginController extends GetxController {
           "password": passwordContrl.text.trim(),
         });
         // going to next screen and setup isLogin true
+        Const.isAuthSucess = true;
         AppStorage.setData(Const.isLogin, true);
         AppStorage.setData(Const.userId, userRef.id);
         isLoading(false);
-        Get.offAllNamed(AppRoutes.home);
+        Get.offAllNamed(AppRoutes.homeRoute);
         //
       }
     } catch (e) {
+      Const.isAuthSucess = false;
       isLoading(false);
       debugPrint("firebaseError ->> $e");
     }
@@ -91,22 +94,26 @@ class LoginController extends GetxController {
           if (data["password"] == passwordContrl.text.trim()) {
             AppStorage.setData(Const.userId, data["id"]);
             // going to next screen and setup isLogin true
+            Const.isAuthSucess = true;
             AppStorage.setData(Const.isLogin, true);
             isLoading(false);
-            Get.offAllNamed(AppRoutes.home);
+            Get.offAllNamed(AppRoutes.homeRoute);
             //
           } else {
+            Const.isAuthSucess = false;
             isLoading(false);
             // ignore: use_build_context_synchronously
             AppToast.showToast(context, "Password is Invalid");
           }
         }
       } else {
+        Const.isAuthSucess = false;
         // ignore: use_build_context_synchronously
         AppToast.showToast(context, "Username not found");
         isLoading(false);
       }
     } catch (e) {
+      Const.isAuthSucess = false;
       isLoading(false);
       debugPrint("firebaseError ->> $e");
     }

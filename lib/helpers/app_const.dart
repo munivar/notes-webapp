@@ -1,4 +1,8 @@
 class Const {
+  // static value
+  static bool isAuthSucess = false;
+
+  // get storage value
   static const isLogin = "isLogin";
   static const userId = "userId";
   static const fontFamily = "AnekGujarati";

@@ -1,8 +1,12 @@
+import 'package:dnotes/helpers/app_color.dart';
+import 'package:dnotes/helpers/app_images.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io';
+import 'package:lottie/lottie.dart';
 
 enum DeviceType { isMobile, isTablet, isDesktop }
 
@@ -11,35 +15,23 @@ enum DeviceOrientation { isPortrait, isLandscape }
 class AppHelper {
   // getting device type
   static DeviceType get deviceType {
-    final double deviceWidth =
-        MediaQueryData.fromWindow(WidgetsBinding.instance.window).size.width;
-    final double devicePixelRatio =
-        MediaQueryData.fromWindow(WidgetsBinding.instance.window)
-            .devicePixelRatio;
-
-    if (devicePixelRatio < 2.0) {
-      // Non-Retina devices
-      if (deviceWidth >= 600) {
-        return DeviceType.isTablet;
-      } else {
-        return DeviceType.isMobile;
-      }
+    final mediaQueryData = MediaQueryData.fromView(
+        WidgetsBinding.instance.platformDispatcher.implicitView!);
+    final double width = mediaQueryData.size.width;
+    if (width >= 960) {
+      return DeviceType.isDesktop;
+    } else if (width >= 600) {
+      return DeviceType.isTablet;
     } else {
-      // Retina devices
-      if (deviceWidth >= 960) {
-        return DeviceType.isDesktop;
-      } else if (deviceWidth >= 600) {
-        return DeviceType.isTablet;
-      } else {
-        return DeviceType.isMobile;
-      }
+      return DeviceType.isMobile;
     }
   }
 
   // getting device orientation
   static DeviceOrientation get deviceOrientation {
     final orientation =
-        MediaQueryData.fromWindow(WidgetsBinding.instance.window).orientation;
+        // ignore: deprecated_member_use
+        MediaQueryData.fromView(WidgetsBinding.instance.window).orientation;
     if (orientation == Orientation.portrait) {
       return DeviceOrientation.isPortrait;
     } else {
@@ -47,7 +39,6 @@ class AppHelper {
     }
   }
 
-  // returning value
   static bool get isMobile => deviceType == DeviceType.isMobile;
   static bool get isTablet => deviceType == DeviceType.isTablet;
   static bool get isDesktop => deviceType == DeviceType.isDesktop;
@@ -106,6 +97,51 @@ class AppHelper {
       }
     } else {
       return "";
+    }
+  }
+
+  // opening keyboard
+  static void openKeyboard(BuildContext context, FocusNode? focusNode) {
+    SystemChannels.textInput.invokeMethod('TextInput.show');
+    FocusScope.of(context).requestFocus(focusNode);
+  }
+
+  // closing keyboard
+  static void closeKeyboard(BuildContext context) {
+    SystemChannels.textInput.invokeMethod('TextInput.hide');
+  }
+
+  // app loader
+  static appLoader(Color? color) {
+    return ColorFiltered(
+      colorFilter: ColorFilter.mode(color ?? AppColor.fontClr, BlendMode.srcIn),
+      child: Lottie.asset(
+        AppImages.loadingJson,
+        width: 28,
+        height: 28,
+      ),
+    );
+  }
+
+  // function for picking date
+  static pickDate(BuildContext context) async {
+    try {
+      DateTime? dateValue = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(1700),
+        lastDate: DateTime(2101),
+        locale: const Locale("en"), // Specify the desired locale
+      );
+      if (dateValue != null) {
+        return dateValue;
+      } else {
+        throw Exception(
+            "No date selected"); // Throw an error if no date is selected
+      }
+    } catch (e) {
+      throw Exception(
+          "Failed to show date picker: $e"); // Propagate the error with more information
     }
   }
 }

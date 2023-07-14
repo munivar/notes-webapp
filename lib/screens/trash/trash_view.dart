@@ -1,5 +1,5 @@
 import 'package:code_text_field/code_text_field.dart';
-import 'package:dnotes/animations/fade_anim.dart';
+import 'package:dnotes/animations/fade_in.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_images.dart';
@@ -7,7 +7,7 @@ import 'package:dnotes/helpers/app_routes.dart';
 import 'package:dnotes/screens/notes/note_list.dart';
 import 'package:dnotes/screens/trash/trash_contrl.dart';
 import 'package:dnotes/widgets/app_text.dart';
-import 'package:dnotes/widgets/icon_button.dart';
+import 'package:dnotes/widgets/svg_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
@@ -52,9 +52,8 @@ class TrashView extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(top: 2),
-              child: AppIconButton(
+              child: AppSvgIcon(
                 AppImages.backIcon,
-                padding: const EdgeInsets.all(9),
                 onTap: () {
                   Get.back(result: controller.isGetBack.value);
                 },
@@ -98,9 +97,9 @@ class TrashView extends StatelessWidget {
   buildListLayout(BuildContext context) {
     return Obx(() {
       if (controller.isLoading.isTrue) {
-        return FadeAppAnimation(child: Container());
+        return FadeInAnything(child: Container());
       } else if (controller.notesList.isEmpty) {
-        return FadeAppAnimation(
+        return FadeInAnything(
           child: Center(
               child: Padding(
             padding: EdgeInsets.only(top: 25.h),
@@ -149,7 +148,7 @@ class TrashView extends StatelessWidget {
   }
 
   buildChildrenLayout(BuildContext context, NotesList items) {
-    return FadeAppAnimation(
+    return FadeInAnything(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
         child: Material(
@@ -165,12 +164,11 @@ class TrashView extends StatelessWidget {
                   date: items.date,
                   isDeleted: items.isDeleted,
                   noteColor: items.noteColor);
-              var result = await Get.toNamed(AppRoutes.notes, arguments: {
+              var result = await Get.toNamed(AppRoutes.notesRoute, arguments: {
                 "notes": notes,
                 "isFromTrash": true,
                 "isFromSearch": false
               });
-              debugPrint("result ->>> $result");
               if (result == true) {
                 controller.isGetBack(true);
                 // refresh notes data in trash screen

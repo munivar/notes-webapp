@@ -93,7 +93,7 @@ class HomeController extends GetxController {
   }
 
   goToTrash() async {
-    var result = await Get.toNamed(AppRoutes.trash);
+    var result = await Get.toNamed(AppRoutes.trashRoute);
     if (result == true) {
       // refresh data
       getDataFromFirebase();
@@ -103,6 +103,6 @@ class HomeController extends GetxController {
   Future signOutWithFirebase() async {
     await AppStorage.removeAllData();
     await AppStorage.setData(Const.isLogin, false);
-    Get.offAllNamed(AppRoutes.login);
+    Get.offAllNamed(AppRoutes.loginRoute);
   }
 }
