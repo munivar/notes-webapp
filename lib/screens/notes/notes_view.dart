@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_highlight/themes/vs2015.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:vector_graphics/vector_graphics.dart';
 
 class NotesView extends StatelessWidget {
   NotesView({super.key});
@@ -38,107 +39,140 @@ class NotesView extends StatelessWidget {
   appbarLayout(BuildContext context) {
     return AppBar(
       backgroundColor: AppColor.lightBgClr,
-      toolbarHeight: 60,
+      toolbarHeight: 122,
       elevation: 0,
       automaticallyImplyLeading: false,
       flexibleSpace: Container(
         padding: AppHelper.isMobile == false
             ? EdgeInsets.symmetric(horizontal: 3.w)
             : const EdgeInsets.all(0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 5),
-              child: Row(
-                children: [
-                  AppSvgIcon(
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 5),
+                  child: AppSvgIcon(
                     AppImages.backIcon,
+                    height: 30,
+                    width: 30,
+                    padding: const EdgeInsets.all(7),
                     onTap: () {
                       if (controller.isLoading.isFalse) {
                         Get.back();
                       }
                     },
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 1),
-                    child: SizedBox(
-                      width: 46.w,
-                      child: Center(
-                        child: TextFormField(
-                          scrollPadding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).viewInsets.bottom),
-                          textInputAction: TextInputAction.done,
-                          keyboardType: TextInputType.text,
-                          textAlign: TextAlign.left,
-                          textAlignVertical: TextAlignVertical.center,
-                          onChanged: (value) {
-                            controller.saveNotes(context);
-                          },
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            color: AppColor.fontClr,
-                            fontWeight: FontWeight.w600,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          cursorColor: AppColor.primaryClr,
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: 'Title',
-                            hintStyle: TextStyle(
-                              fontSize: 16.sp,
-                              color: AppColor.fontHintClr,
-                              fontWeight: FontWeight.normal,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            contentPadding: const EdgeInsets.only(
-                                left: 14.0, bottom: 14.0, top: 14.0),
-                          ),
-                          controller: controller.titleContrl,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Stack(
-              alignment: Alignment.centerRight,
-              children: [
-                Obx(() {
-                  return controller.isFromTrash.isTrue
-                      ? Padding(
-                          padding: const EdgeInsets.only(right: 80),
-                          child: AppSvgIcon(
-                            AppImages.revertIcon,
-                            onTap: () {
-                              if (controller.isLoading.isFalse) {
-                                controller.revertBackFromFirebase(context);
-                              }
-                            },
-                          ),
-                        )
-                      : Container();
-                }),
-                Obx(() {
-                  return controller.notesId.isNotEmpty
-                      ? Padding(
-                          padding: const EdgeInsets.only(right: 43),
-                          child: AppSvgIcon(
-                            AppImages.deleteIcon,
-                            onTap: () {
-                              if (controller.isFromTrash.isTrue) {
-                                deleteDialog(context);
-                              } else {
-                                controller.moveToTrashInFirebase(context);
-                              }
-                            },
-                          ),
-                        )
-                      : Container();
-                }),
-                popupMenu(context),
+                ),
+                Stack(
+                  alignment: Alignment.centerRight,
+                  children: [
+                    Obx(() {
+                      return controller.isFromTrash.isTrue
+                          ? Padding(
+                              padding: const EdgeInsets.only(right: 92, top: 1),
+                              child: AppSvgIcon(
+                                AppImages.revertIcon,
+                                height: 20,
+                                width: 20,
+                                padding: const EdgeInsets.all(12.5),
+                                onTap: () {
+                                  if (controller.isLoading.isFalse) {
+                                    controller.revertBackFromFirebase(context);
+                                  }
+                                },
+                              ),
+                            )
+                          : Container();
+                    }),
+                    Obx(() {
+                      return controller.notesId.isNotEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.only(right: 48),
+                              child: AppSvgIcon(
+                                AppImages.deleteIcon,
+                                height: 21,
+                                width: 21,
+                                padding: const EdgeInsets.all(12),
+                                onTap: () {
+                                  if (controller.isFromTrash.isTrue) {
+                                    deleteDialog(context);
+                                  } else {
+                                    controller.moveToTrashInFirebase(context);
+                                  }
+                                },
+                              ),
+                            )
+                          : Container();
+                    }),
+                    popupMenu(context),
+                  ],
+                ),
               ],
+            ),
+            SizedBox(
+              width: 92.w,
+              height: 60,
+              child: Center(
+                child: TextFormField(
+                  scrollPadding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom),
+                  expands: true,
+                  maxLines: null,
+                  minLines: null,
+                  textInputAction: TextInputAction.done,
+                  keyboardType: TextInputType.text,
+                  textAlign: TextAlign.left,
+                  textAlignVertical: TextAlignVertical.center,
+                  onChanged: (value) {
+                    controller.saveNotes(context);
+                  },
+                  style: TextStyle(
+                    fontSize: 18.sp,
+                    color: AppColor.fontClr,
+                    fontWeight: FontWeight.w600,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  cursorColor: AppColor.primaryClr,
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Colors.transparent,
+                        style: BorderStyle.solid,
+                      ),
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Colors.transparent,
+                        style: BorderStyle.solid,
+                      ),
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: const BorderSide(
+                        width: 1,
+                        color: Colors.transparent,
+                        style: BorderStyle.solid,
+                      ),
+                      borderRadius: BorderRadius.circular(0),
+                    ),
+                    hintText: 'Enter notes title here...',
+                    hintStyle: TextStyle(
+                      fontSize: 18.sp,
+                      color: AppColor.fontHintClr,
+                      fontWeight: FontWeight.w500,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    contentPadding:
+                        const EdgeInsets.only(left: 10, right: 10, top: 5),
+                  ),
+                  controller: controller.titleContrl,
+                ),
+              ),
             ),
           ],
         ),
@@ -178,7 +212,14 @@ class NotesView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(50),
                   ),
                   padding: const EdgeInsets.all(5),
-                  child: SvgPicture.asset(AppImages.deleteIcon),
+                  child: const SvgPicture(
+                    AssetBytesLoader(AppImages.deleteIcon),
+                    colorFilter:
+                        ColorFilter.mode(AppColor.fontClr, BlendMode.srcIn),
+                    excludeFromSemantics: false,
+                    fit: BoxFit.contain,
+                    alignment: Alignment.center,
+                  ),
                 ),
                 const SizedBox(height: 15),
                 Padding(
@@ -191,9 +232,9 @@ class NotesView extends StatelessWidget {
                     fontSize: 14.sp,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 15),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Material(
@@ -209,7 +250,7 @@ class NotesView extends StatelessWidget {
                           child: AppText(
                             "Cancel",
                             fontWeight: FontWeight.w500,
-                            fontSize: 14.sp,
+                            fontSize: 16.sp,
                           ),
                         ),
                       ),
@@ -229,8 +270,8 @@ class NotesView extends StatelessWidget {
                           child: AppText(
                             "Delete Note",
                             fontColor: Colors.red,
-                            fontWeight: FontWeight.w500,
-                            fontSize: 14.sp,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16.sp,
                           ),
                         ),
                       ),
@@ -341,7 +382,7 @@ class NotesView extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: double.infinity,
-      margin: EdgeInsets.only(left: 3.w, bottom: 4.h, right: 3.w),
+      margin: EdgeInsets.only(left: 3.w, bottom: 2.h, right: 3.w),
       padding: EdgeInsets.only(
           left: AppHelper.isWeb ? 15 : 5,
           top: 5,
@@ -354,23 +395,23 @@ class NotesView extends StatelessWidget {
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         scrollDirection: Axis.vertical,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: Stack(
           children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 12, top: 5),
-                child: AppText(
-                  "Created on ${controller.dateValue.value}",
-                  fontSize: 12.sp,
-                  fontColor: AppColor.fontHintClr,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            Stack(
+            Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8, top: 5),
+                    child: AppText(
+                      "Created on ${controller.dateValue.value}",
+                      fontSize: 13.sp,
+                      fontColor: AppColor.fontHintClr,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
                 CodeTheme(
                     data: const CodeThemeData(styles: vs2015Theme),
                     child: Obx(() {
@@ -397,25 +438,25 @@ class NotesView extends StatelessWidget {
                             borderRadius: BorderRadius.circular(13)),
                         controller: controller.codeController,
                         textStyle: TextStyle(
-                            fontSize: 14.sp,
+                            fontSize: 16.sp,
                             fontWeight: FontWeight.w500,
                             fontFamily: Const.fontFamily,
                             letterSpacing: 1),
                       );
                     })),
-                Obx(() {
-                  return controller.isLoading.isTrue
-                      ? Align(
-                          alignment: Alignment.centerRight,
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 5),
-                            child: AppHelper.appLoader(Colors.white),
-                          ),
-                        )
-                      : Container();
-                }),
               ],
             ),
+            Obx(() {
+              return controller.isLoading.isTrue
+                  ? Align(
+                      alignment: Alignment.centerRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 2, right: 4),
+                        child: AppHelper.appLoader(Colors.white),
+                      ),
+                    )
+                  : Container();
+            }),
           ],
         ),
       ),

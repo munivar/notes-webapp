@@ -102,6 +102,7 @@ class HomeController extends GetxController {
 
   Future signOutWithFirebase() async {
     await AppStorage.removeAllData();
+    Const.isAuthSucess = false;
     await AppStorage.setData(Const.isLogin, false);
     Get.offAllNamed(AppRoutes.loginRoute);
   }

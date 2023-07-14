@@ -11,7 +11,6 @@ dependencies:
     sdk: flutter
   cupertino_icons: ^1.0.2
   get: ^4.6.5 # for improve perfomance and better coding
-  flutter_svg: ^1.1.6 # for using svg image
   simple_animations: ^5.0.0+3 # for using animation
   fluttertoast: ^8.2.1  # for showing toast message
   url_launcher: ^6.1.10 # for launching link and url
@@ -25,6 +24,7 @@ dependencies:
   cloud_firestore: ^4.7.1 # for save data in firebase firestore
   flutter_staggered_grid_view: ^0.6.2 # for showing data in Grid View
   lottie: ^2.3.2 # for using animation from json
+  flutter_svg: ^2.0.7 # for using svg pictures
   vector_graphics: ^1.1.7 # for rendering svg images
   
 

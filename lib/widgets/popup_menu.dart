@@ -1,6 +1,8 @@
+import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_images.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:vector_graphics/vector_graphics.dart';
 
 class AppPopupMenu extends StatelessWidget {
   final Widget child;
@@ -35,7 +37,7 @@ class AppPopupMenu extends StatelessWidget {
         splashRadius: 2,
         tooltip: "",
         enabled: false,
-        iconSize: 45,
+        iconSize: 44,
         offset: offset ?? const Offset(-10, 15),
         shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(20))),
@@ -44,10 +46,15 @@ class AppPopupMenu extends StatelessWidget {
           child: InkWell(
             onTap: onTap,
             borderRadius: BorderRadius.circular(50),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              child: SvgPicture.asset(
-                AppImages.menuIcon,
+            child: const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 9, vertical: 10),
+              child: SvgPicture(
+                AssetBytesLoader(AppImages.menuIcon),
+                colorFilter:
+                    ColorFilter.mode(AppColor.fontClr, BlendMode.srcIn),
+                excludeFromSemantics: false,
+                fit: BoxFit.contain,
+                alignment: Alignment.center,
               ),
             ),
           ),

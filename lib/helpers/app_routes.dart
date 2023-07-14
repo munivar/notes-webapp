@@ -22,6 +22,7 @@ class AppRoutes {
     GetPage(
       name: homeRoute,
       page: () => HomeView(),
+      transition: Transition.fadeIn,
       middlewares: [RouteMiddleWare()],
     ),
     GetPage(

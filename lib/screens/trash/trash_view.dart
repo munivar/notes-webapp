@@ -54,8 +54,11 @@ class TrashView extends StatelessWidget {
               padding: const EdgeInsets.only(top: 2),
               child: AppSvgIcon(
                 AppImages.backIcon,
+                height: 30,
+                width: 30,
+                padding: const EdgeInsets.all(7),
                 onTap: () {
-                  Get.back(result: controller.isGetBack.value);
+                  Get.back();
                 },
               ),
             ),
@@ -190,7 +193,7 @@ class TrashView extends StatelessWidget {
                           child: AppText(
                             items.title,
                             fontSize: 16.sp,
-                            maxLines: 2,
+                            maxLines: 10,
                             fontWeight: FontWeight.w600,
                           ),
                         ),

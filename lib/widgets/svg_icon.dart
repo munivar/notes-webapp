@@ -25,7 +25,7 @@ class AppSvgIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FadeInAnything(
+    return FadeInIcon(
       child: Material(
         color: Colors.transparent,
         child: InkWell(
@@ -39,9 +39,9 @@ class AppSvgIcon extends StatelessWidget {
                   ColorFilter.mode(color ?? AppColor.fontClr, BlendMode.srcIn),
               excludeFromSemantics: false,
               alignment: Alignment.center,
-              fit: fit ?? BoxFit.none,
-              height: height,
-              width: width,
+              fit: fit ?? BoxFit.contain,
+              height: height ?? 25,
+              width: width ?? 25,
             ),
           ),
         ),

@@ -14,6 +14,7 @@ import 'package:firebase_core/firebase_core.dart';
 GlobalKey<NavigatorState> toastNavigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await initAndGetDataFromGetStorage();
   await initializeDependencies();
   runApp(const StartApp());
 }
@@ -27,8 +28,6 @@ Future<void> initializeDependencies() async {
   ]);
   await setupSystemUIOverlayStyle();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  await initializeGetStorage();
-  await getDataFromStorage();
 }
 
 Future<void> setupSystemUIOverlayStyle() async {
@@ -38,11 +37,8 @@ Future<void> setupSystemUIOverlayStyle() async {
   ));
 }
 
-Future<void> initializeGetStorage() async {
+Future<void> initAndGetDataFromGetStorage() async {
   await GetStorage.init();
-}
-
-Future<void> getDataFromStorage() async {
   await AppStorage.getData(Const.isLogin).then((value) {
     if (value == true) {
       Const.isAuthSucess = true;

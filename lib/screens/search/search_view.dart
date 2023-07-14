@@ -19,7 +19,7 @@ class SearchView extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         Get.back();
-        return Future(() => false);
+        return Future(() => true);
       },
       child: SafeArea(
         child: Scaffold(
@@ -49,6 +49,9 @@ class SearchView extends StatelessWidget {
               children: [
                 AppSvgIcon(
                   AppImages.backIcon,
+                  height: 30,
+                  width: 30,
+                  padding: const EdgeInsets.all(7),
                   onTap: () {
                     Get.back();
                   },
@@ -229,7 +232,7 @@ class SearchView extends StatelessWidget {
                                         ),
                                         highlightStyle: TextStyle(
                                           color: AppColor.primaryClr
-                                              .withOpacity(0.50),
+                                              .withOpacity(0.85),
                                           fontSize: 14.sp,
                                           fontWeight: FontWeight.w500,
                                           fontFamily: Const.fontFamily,

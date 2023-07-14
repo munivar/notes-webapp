@@ -52,7 +52,6 @@ class LoginController extends GetxController {
       if (querySnapshot.size > 0) {
         // ignore: use_build_context_synchronously
         AppToast.showToast(context, "Username is not available");
-        Const.isAuthSucess = false;
         isLoading(false);
       } else {
         // register user with details in firebase firestore
@@ -71,7 +70,6 @@ class LoginController extends GetxController {
         //
       }
     } catch (e) {
-      Const.isAuthSucess = false;
       isLoading(false);
       debugPrint("firebaseError ->> $e");
     }
@@ -100,20 +98,17 @@ class LoginController extends GetxController {
             Get.offAllNamed(AppRoutes.homeRoute);
             //
           } else {
-            Const.isAuthSucess = false;
             isLoading(false);
             // ignore: use_build_context_synchronously
             AppToast.showToast(context, "Password is Invalid");
           }
         }
       } else {
-        Const.isAuthSucess = false;
         // ignore: use_build_context_synchronously
         AppToast.showToast(context, "Username not found");
         isLoading(false);
       }
     } catch (e) {
-      Const.isAuthSucess = false;
       isLoading(false);
       debugPrint("firebaseError ->> $e");
     }

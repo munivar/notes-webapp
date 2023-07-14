@@ -12,11 +12,16 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: AppColor.lightBgClr,
-        body: mainLayout(context),
+    return WillPopScope(
+      onWillPop: () async {
+        return Future(() => false);
+      },
+      child: SafeArea(
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          backgroundColor: AppColor.lightBgClr,
+          body: mainLayout(context),
+        ),
       ),
     );
   }
@@ -66,27 +71,21 @@ class LoginView extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: AppText(
-                "DNotes",
+                "Notes",
                 fontSize: 32.sp,
                 fontWeight: FontWeight.bold,
               ),
             )
           ],
         ),
-        AppHelper.sizedBox(10, null),
+        AppHelper.sizedBox(AppHelper.isMobile ? 10 : 5, null),
         Obx(() {
-          return Align(
-            alignment: Alignment.centerLeft,
-            child: Padding(
-              padding: EdgeInsets.only(left: 2.w),
-              child: AppText(
-                controller.isRegister.isTrue
-                    ? "Looks like you're new here!"
-                    : "Login to your Account",
-                fontSize: 24.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+          return AppText(
+            controller.isRegister.isTrue
+                ? "Looks like you're new here!"
+                : "Login to your Account",
+            fontSize: 24.sp,
+            fontWeight: FontWeight.bold,
           );
         }),
         AppHelper.sizedBox(1, null),
@@ -102,7 +101,7 @@ class LoginView extends StatelessWidget {
             maxLines: 1,
             onChanged: (value) {},
             style: TextStyle(
-              fontSize: 16.sp,
+              fontSize: 18.sp,
               color: AppColor.fontClr,
               fontWeight: FontWeight.w500,
             ),
@@ -111,7 +110,7 @@ class LoginView extends StatelessWidget {
               border: InputBorder.none,
               hintText: 'Username',
               hintStyle: TextStyle(
-                fontSize: 14.sp,
+                fontSize: 16.sp,
                 color: AppColor.fontHintClr,
                 fontWeight: FontWeight.normal,
               ),
@@ -142,7 +141,7 @@ class LoginView extends StatelessWidget {
               maxLines: 1,
               onChanged: (value) {},
               style: TextStyle(
-                fontSize: 16.sp,
+                fontSize: 18.sp,
                 color: AppColor.fontClr,
                 fontWeight: FontWeight.w500,
               ),
@@ -155,7 +154,7 @@ class LoginView extends StatelessWidget {
                 border: InputBorder.none,
                 hintText: 'Password',
                 hintStyle: TextStyle(
-                  fontSize: 14.sp,
+                  fontSize: 16.sp,
                   color: AppColor.fontHintClr,
                   fontWeight: FontWeight.normal,
                 ),
@@ -211,8 +210,9 @@ class LoginView extends StatelessWidget {
           ),
         ),
         AppHelper.sizedBox(2, null),
-        const AppText(
+        AppText(
           "or",
+          fontSize: 14.sp,
           fontWeight: FontWeight.w400,
           fontColor: AppColor.fontHintClr,
         ),
@@ -235,9 +235,9 @@ class LoginView extends StatelessWidget {
                   return AppText(
                     controller.isRegister.isTrue
                         ? "Login to your Account"
-                        : "Register in DNotes Account",
+                        : "Register in Notes Account",
                     fontWeight: FontWeight.w500,
-                    fontSize: 16.sp,
+                    fontSize: 18.sp,
                     decoration: TextDecoration.underline,
                   );
                 })),

@@ -20,10 +20,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // make it false if you want to use custom function
-        // use Get.back()
-        // return Future(() => false);
-        return Future(() => true);
+        return Future(() => false);
       },
       child: SafeArea(
         child: Scaffold(
@@ -60,10 +57,22 @@ class HomeView extends StatelessWidget {
                 onTap: () {
                   Get.offAllNamed(AppRoutes.homeRoute);
                 },
-                child: AppText(
-                  "Notes",
-                  fontSize: 24.sp,
-                  fontWeight: FontWeight.bold,
+                child: Row(
+                  children: [
+                    ClipOval(
+                        child: Image.asset(
+                      AppImages.notesLogo,
+                      height: 35,
+                    )),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: AppText(
+                        "Notes",
+                        fontSize: 24.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -73,9 +82,12 @@ class HomeView extends StatelessWidget {
                 alignment: Alignment.centerRight,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(right: 80),
+                    padding: const EdgeInsets.only(right: 92),
                     child: AppSvgIcon(
                       AppImages.addIcon,
+                      height: 28,
+                      width: 28,
+                      padding: const EdgeInsets.all(7),
                       onTap: () {
                         NotesList notes = NotesList(
                           id: "dnotes",
@@ -94,13 +106,17 @@ class HomeView extends StatelessWidget {
                     ),
                   ),
                   Padding(
-                      padding: const EdgeInsets.only(right: 43),
-                      child: AppSvgIcon(
-                        AppImages.searchIcon,
-                        onTap: () {
-                          Get.toNamed(AppRoutes.searchRoute);
-                        },
-                      )),
+                    padding: const EdgeInsets.only(right: 48),
+                    child: AppSvgIcon(
+                      AppImages.searchIcon,
+                      height: 24,
+                      width: 24,
+                      padding: const EdgeInsets.all(10),
+                      onTap: () {
+                        Get.toNamed(AppRoutes.searchRoute);
+                      },
+                    ),
+                  ),
                   popupMenu(context),
                 ],
               ),
@@ -273,7 +289,7 @@ class HomeView extends StatelessWidget {
                           child: AppText(
                             items.title,
                             fontSize: 16.sp,
-                            maxLines: 2,
+                            maxLines: 10,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
