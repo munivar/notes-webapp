@@ -62,6 +62,7 @@ flutter:
 
 
 
-  # flutter build web --web-renderer html --release
-  # flutter build web --web-renderer canvaskit --release
-  # flutter build apk --obfuscate --split-debug-info=/<project-name>/<directory>
+  # Build your app in release mode, using the default (auto) option:
+  # flutter build web --release
+  # Build your app in release mode, using just the Html renderer:
+  # flutter build web --web-renderer html --release --no-tree-shake-icons
