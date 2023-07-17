@@ -15,6 +15,8 @@ import 'package:vector_graphics/vector_graphics.dart';
 
 class NotesView extends StatelessWidget {
   NotesView({super.key});
+  final GlobalKey<PopupMenuButtonState> popupMenuKey =
+      GlobalKey<PopupMenuButtonState>();
   final NotesController controller = Get.put(NotesController());
 
   @override
@@ -288,10 +290,10 @@ class NotesView extends StatelessWidget {
 
   popupMenu(BuildContext context) {
     return AppPopupMenu(
-      menuKey: controller.notePopupKey,
+      menuKey: popupMenuKey,
       onTap: () {
         if (controller.isLoading.isFalse) {
-          dynamic state = controller.notePopupKey.currentState;
+          dynamic state = popupMenuKey.currentState;
           state.showButtonMenu();
         }
       },

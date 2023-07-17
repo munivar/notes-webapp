@@ -14,6 +14,8 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({super.key});
+  final GlobalKey<PopupMenuButtonState> popupMenuKey =
+      GlobalKey<PopupMenuButtonState>();
   final HomeController controller = Get.put(HomeController());
 
   @override
@@ -150,9 +152,9 @@ class HomeView extends StatelessWidget {
 
   popupMenu(BuildContext context) {
     return AppPopupMenu(
-      menuKey: controller.homePopupKey,
+      menuKey: popupMenuKey,
       onTap: () {
-        dynamic state = controller.homePopupKey.currentState;
+        dynamic state = popupMenuKey.currentState;
         state.showButtonMenu();
       },
       child: SizedBox(

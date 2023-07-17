@@ -1,4 +1,3 @@
-import 'package:dnotes/animations/fade_in.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -25,24 +24,22 @@ class AppSvgIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FadeInIcon(
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap ?? () {},
-          borderRadius: BorderRadius.circular(50),
-          child: Padding(
-            padding: padding ?? const EdgeInsets.all(10),
-            child: SvgPicture(
-              AssetBytesLoader(assetImage),
-              colorFilter:
-                  ColorFilter.mode(color ?? AppColor.fontClr, BlendMode.srcIn),
-              excludeFromSemantics: false,
-              alignment: Alignment.center,
-              fit: fit ?? BoxFit.contain,
-              height: height ?? 25,
-              width: width ?? 25,
-            ),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap ?? () {},
+        borderRadius: BorderRadius.circular(50),
+        child: Padding(
+          padding: padding ?? const EdgeInsets.all(10),
+          child: SvgPicture(
+            AssetBytesLoader(assetImage),
+            colorFilter:
+                ColorFilter.mode(color ?? AppColor.fontClr, BlendMode.srcIn),
+            excludeFromSemantics: false,
+            alignment: Alignment.center,
+            fit: fit ?? BoxFit.contain,
+            height: height ?? 25,
+            width: width ?? 25,
           ),
         ),
       ),

@@ -15,7 +15,6 @@ import 'package:share_plus/share_plus.dart';
 
 class NotesController extends GetxController {
   final homeContrl = Get.find<HomeController>();
-  final GlobalKey notePopupKey = GlobalKey();
   CodeController codeController = CodeController();
   TextEditingController titleContrl = TextEditingController();
   RxBool isLoading = false.obs;

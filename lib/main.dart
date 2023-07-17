@@ -14,9 +14,18 @@ import 'package:firebase_core/firebase_core.dart';
 GlobalKey<NavigatorState> toastNavigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initAndGetDataFromGetStorage();
+  await GetStorage.init();
   await initializeDependencies();
-  runApp(const StartApp());
+  await AppStorage.getData(Const.isLogin).then((value) {
+    debugPrint("isLoginValue ->> $value");
+    if (value == true) {
+      Const.isAuthSucess = true;
+      runApp(const StartApp(isLogin: true));
+    } else {
+      Const.isAuthSucess = false;
+      runApp(const StartApp(isLogin: false));
+    }
+  });
 }
 
 Future<void> initializeDependencies() async {
@@ -37,19 +46,9 @@ Future<void> setupSystemUIOverlayStyle() async {
   ));
 }
 
-Future<void> initAndGetDataFromGetStorage() async {
-  await GetStorage.init();
-  await AppStorage.getData(Const.isLogin).then((value) {
-    if (value == true) {
-      Const.isAuthSucess = true;
-    } else {
-      Const.isAuthSucess = false;
-    }
-  });
-}
-
 class StartApp extends StatelessWidget {
-  const StartApp({Key? key}) : super(key: key);
+  final bool isLogin;
+  const StartApp({super.key, required this.isLogin});
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +56,8 @@ class StartApp extends StatelessWidget {
       builder: FToastBuilder(),
       navigatorKey: toastNavigatorKey,
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.loginRoute,
+      initialRoute:
+          isLogin == true ? AppRoutes.homeRoute : AppRoutes.loginRoute,
       getPages: AppRoutes.routes,
       scrollBehavior: CustomScrollBehavior(),
       title: "Notes",
