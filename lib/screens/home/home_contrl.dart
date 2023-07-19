@@ -26,7 +26,7 @@ class HomeController extends GetxController {
     // getDataFromFirebase
     getDataFromFirebase();
     // setup item count of list view
-    if (AppHelper.isMobile) {
+    if (AppHelper.isMobileL || AppHelper.isMobileS || AppHelper.isMobileM) {
       listItemCount.value = 1;
     } else {
       listItemCount.value = 3;
@@ -84,7 +84,7 @@ class HomeController extends GetxController {
   }
 
   convertToGridView() {
-    if (AppHelper.isMobile) {
+    if (AppHelper.isMobileL || AppHelper.isMobileS || AppHelper.isMobileM) {
       listItemCount.value = 2;
     } else {
       listItemCount.value = 3;

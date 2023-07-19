@@ -45,7 +45,9 @@ class NotesView extends StatelessWidget {
       elevation: 0,
       automaticallyImplyLeading: false,
       flexibleSpace: Container(
-        padding: AppHelper.isMobile == false
+        padding: AppHelper.isMobileL ||
+                AppHelper.isMobileS ||
+                AppHelper.isMobileM == false
             ? EdgeInsets.symmetric(horizontal: 3.w)
             : const EdgeInsets.all(0),
         child: Column(

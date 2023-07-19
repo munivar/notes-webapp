@@ -18,7 +18,7 @@ class TrashController extends GetxController {
 
   @override
   void onInit() {
-    if (AppHelper.isMobile) {
+    if (AppHelper.isMobileL || AppHelper.isMobileS || AppHelper.isMobileM) {
       listItemCount.value = 1;
     } else {
       listItemCount.value = 3;

@@ -41,7 +41,11 @@ class LoginView extends StatelessWidget {
               )
             : Container(
                 height: 70.h,
-                width: AppHelper.isMobile == false ? 500 : 100.w,
+                width: AppHelper.isMobileL ||
+                        AppHelper.isMobileS ||
+                        AppHelper.isMobileM == false
+                    ? 500
+                    : 100.w,
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -78,7 +82,11 @@ class LoginView extends StatelessWidget {
             )
           ],
         ),
-        AppHelper.sizedBox(AppHelper.isMobile ? 10 : 5, null),
+        AppHelper.sizedBox(
+            AppHelper.isMobileL || AppHelper.isMobileS || AppHelper.isMobileM
+                ? 10
+                : 5,
+            null),
         Obx(() {
           return AppText(
             controller.isRegister.isTrue
@@ -90,7 +98,9 @@ class LoginView extends StatelessWidget {
         }),
         AppHelper.sizedBox(1, null),
         Padding(
-          padding: AppHelper.isMobile == false
+          padding: AppHelper.isMobileL ||
+                  AppHelper.isMobileS ||
+                  AppHelper.isMobileM == false
               ? EdgeInsets.symmetric(horizontal: 1.4.w)
               : const EdgeInsets.all(0),
           child: TextFormField(
@@ -130,7 +140,9 @@ class LoginView extends StatelessWidget {
         ),
         AppHelper.sizedBox(1, null),
         Padding(
-          padding: AppHelper.isMobile == false
+          padding: AppHelper.isMobileL ||
+                  AppHelper.isMobileS ||
+                  AppHelper.isMobileM == false
               ? EdgeInsets.symmetric(horizontal: 1.4.w)
               : const EdgeInsets.all(0),
           child: TextFormField(
@@ -173,7 +185,9 @@ class LoginView extends StatelessWidget {
         ),
         AppHelper.sizedBox(3, null),
         Padding(
-          padding: AppHelper.isMobile == false
+          padding: AppHelper.isMobileL ||
+                  AppHelper.isMobileS ||
+                  AppHelper.isMobileM == false
               ? EdgeInsets.symmetric(horizontal: 1.8.w)
               : const EdgeInsets.symmetric(horizontal: 10),
           child: Material(

@@ -8,7 +8,15 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'dart:io';
 import 'package:lottie/lottie.dart';
 
-enum DeviceType { isMobile, isTablet, isDesktop }
+enum DeviceType {
+  isMobileS,
+  isMobileM,
+  isMobileL,
+  isTablet,
+  isLaptop,
+  isLaptopL,
+  is4K,
+}
 
 enum DeviceOrientation { isPortrait, isLandscape }
 
@@ -18,12 +26,20 @@ class AppHelper {
     final mediaQueryData = MediaQueryData.fromView(
         WidgetsBinding.instance.platformDispatcher.implicitView!);
     final double width = mediaQueryData.size.width;
-    if (width >= 960) {
-      return DeviceType.isDesktop;
-    } else if (width >= 600) {
+    if (width >= 2560) {
+      return DeviceType.is4K;
+    } else if (width >= 1440) {
+      return DeviceType.isLaptopL;
+    } else if (width >= 1024) {
+      return DeviceType.isLaptop;
+    } else if (width >= 768) {
       return DeviceType.isTablet;
+    } else if (width >= 425) {
+      return DeviceType.isMobileL;
+    } else if (width >= 375) {
+      return DeviceType.isMobileM;
     } else {
-      return DeviceType.isMobile;
+      return DeviceType.isMobileS;
     }
   }
 
@@ -39,9 +55,13 @@ class AppHelper {
     }
   }
 
-  static bool get isMobile => deviceType == DeviceType.isMobile;
+  static bool get isMobileS => deviceType == DeviceType.isMobileS;
+  static bool get isMobileM => deviceType == DeviceType.isMobileM;
+  static bool get isMobileL => deviceType == DeviceType.isMobileL;
   static bool get isTablet => deviceType == DeviceType.isTablet;
-  static bool get isDesktop => deviceType == DeviceType.isDesktop;
+  static bool get isLaptop => deviceType == DeviceType.isLaptop;
+  static bool get isLaptopL => deviceType == DeviceType.isLaptopL;
+  static bool get is4K => deviceType == DeviceType.is4K;
   static bool get isAndroid => Platform.isAndroid;
   static bool get isIOS => Platform.isIOS;
   static bool get isWeb => kIsWeb;

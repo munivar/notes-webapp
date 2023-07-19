@@ -42,8 +42,12 @@ class TrashView extends StatelessWidget {
       automaticallyImplyLeading: false,
       flexibleSpace: Container(
         height: 60,
-        width: AppHelper.isDesktop ? 60.w : 100.w,
-        padding: AppHelper.isMobile == false
+        width: AppHelper.is4K || AppHelper.isLaptopL || AppHelper.isLaptop
+            ? 60.w
+            : 100.w,
+        padding: AppHelper.isMobileL ||
+                AppHelper.isMobileS ||
+                AppHelper.isMobileM == false
             ? EdgeInsets.symmetric(horizontal: 3.w)
             : const EdgeInsets.symmetric(horizontal: 5),
         child: Row(
@@ -80,9 +84,17 @@ class TrashView extends StatelessWidget {
     return Container(
         height: double.infinity,
         margin: EdgeInsets.only(
-          left: AppHelper.isMobile == false ? 3.w : 2.w,
+          left: AppHelper.isMobileL ||
+                  AppHelper.isMobileS ||
+                  AppHelper.isMobileM == false
+              ? 3.w
+              : 2.w,
           bottom: 10,
-          right: AppHelper.isMobile == false ? 3.w : 2.w,
+          right: AppHelper.isMobileL ||
+                  AppHelper.isMobileS ||
+                  AppHelper.isMobileM == false
+              ? 3.w
+              : 2.w,
         ),
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),

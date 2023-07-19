@@ -50,7 +50,9 @@ class AppToast {
           )),
       gravity: ToastGravity.BOTTOM,
       positionedToastBuilder: (context, child) {
-        return AppHelper.isMobile && AppHelper.isWeb != true
+        return AppHelper.isMobileL ||
+                AppHelper.isMobileS ||
+                AppHelper.isMobileM && AppHelper.isWeb != true
             ? Positioned(
                 bottom: AppHelper.isIOS ? 50 : 20,
                 right: 20,

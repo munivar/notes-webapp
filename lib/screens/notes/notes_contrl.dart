@@ -42,7 +42,7 @@ class NotesController extends GetxController {
   @override
   void onInit() {
     // word wrap code
-    if (AppHelper.isMobile) {
+    if (AppHelper.isMobileL || AppHelper.isMobileS || AppHelper.isMobileM) {
       isWordWrap(true);
     } else {
       isWordWrap(false);
