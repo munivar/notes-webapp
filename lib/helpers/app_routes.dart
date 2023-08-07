@@ -17,26 +17,35 @@ class AppRoutes {
   static final List<GetPage> routes = [
     GetPage(
       name: loginRoute,
+      transition: Transition.fade,
+      curve: Curves.fastEaseInToSlowEaseOut,
       page: () => LoginView(),
     ),
     GetPage(
       name: homeRoute,
       page: () => HomeView(),
-      transition: Transition.fadeIn,
+      transition: Transition.fade,
+      curve: Curves.fastEaseInToSlowEaseOut,
       middlewares: [RouteMiddleWare()],
     ),
     GetPage(
       name: notesRoute,
       page: () => NotesView(),
+      transition: Transition.fade,
+      curve: Curves.fastEaseInToSlowEaseOut,
       middlewares: [RouteMiddleWare()],
     ),
     GetPage(
       name: searchRoute,
       page: () => SearchView(),
+      transition: Transition.fade,
+      curve: Curves.fastEaseInToSlowEaseOut,
       middlewares: [RouteMiddleWare()],
     ),
     GetPage(
       name: trashRoute,
+      transition: Transition.fade,
+      curve: Curves.fastEaseInToSlowEaseOut,
       page: () => TrashView(),
       middlewares: [RouteMiddleWare()],
     ),
