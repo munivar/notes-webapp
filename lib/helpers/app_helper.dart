@@ -21,54 +21,9 @@ enum DeviceType {
 enum DeviceOrientation { isPortrait, isLandscape }
 
 class AppHelper {
-  // getting device type
-  static DeviceType get deviceType {
-    final mediaQueryData = MediaQueryData.fromView(
-        WidgetsBinding.instance.platformDispatcher.implicitView!);
-    final double width = mediaQueryData.size.width;
-    if (width >= 2560) {
-      return DeviceType.is4K;
-    } else if (width >= 1440) {
-      return DeviceType.isLaptopL;
-    } else if (width >= 1024) {
-      return DeviceType.isLaptop;
-    } else if (width >= 768) {
-      return DeviceType.isTablet;
-    } else if (width >= 425) {
-      return DeviceType.isMobileL;
-    } else if (width >= 375) {
-      return DeviceType.isMobileM;
-    } else {
-      return DeviceType.isMobileS;
-    }
-  }
-
-  // getting device orientation
-  static DeviceOrientation get deviceOrientation {
-    final orientation =
-        // ignore: deprecated_member_use
-        MediaQueryData.fromView(WidgetsBinding.instance.window).orientation;
-    if (orientation == Orientation.portrait) {
-      return DeviceOrientation.isPortrait;
-    } else {
-      return DeviceOrientation.isLandscape;
-    }
-  }
-
-  static bool get isMobileS => deviceType == DeviceType.isMobileS;
-  static bool get isMobileM => deviceType == DeviceType.isMobileM;
-  static bool get isMobileL => deviceType == DeviceType.isMobileL;
-  static bool get isTablet => deviceType == DeviceType.isTablet;
-  static bool get isLaptop => deviceType == DeviceType.isLaptop;
-  static bool get isLaptopL => deviceType == DeviceType.isLaptopL;
-  static bool get is4K => deviceType == DeviceType.is4K;
   static bool get isAndroid => Platform.isAndroid;
   static bool get isIOS => Platform.isIOS;
   static bool get isWeb => kIsWeb;
-  static bool get isPortrait =>
-      deviceOrientation == DeviceOrientation.isPortrait;
-  static bool get isLandscape =>
-      deviceOrientation == DeviceOrientation.isLandscape;
 
   // responsive sizedbox
   static SizedBox sizedBox(double? height, double? width) {

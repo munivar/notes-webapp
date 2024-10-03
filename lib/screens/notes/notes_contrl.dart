@@ -5,7 +5,6 @@ import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/screens/home/home_contrl.dart';
 import 'package:dnotes/screens/notes/note_list.dart';
-import 'package:dnotes/widgets/app_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -42,10 +41,10 @@ class NotesController extends GetxController {
   @override
   void onInit() {
     // word wrap code
-    if (AppHelper.isMobileL || AppHelper.isMobileS || AppHelper.isMobileM) {
-      isWordWrap(true);
-    } else {
+    if (AppHelper.isWeb == true) {
       isWordWrap(false);
+    } else {
+      isWordWrap(true);
     }
     // initializing firebase firestore
     collectionRef = FirebaseFirestore.instance;
@@ -114,7 +113,6 @@ class NotesController extends GetxController {
   void copyTextToClipboard(BuildContext context, String text) async {
     isLoading(true);
     await Clipboard.setData(ClipboardData(text: text)).then((value) {
-      AppToast.showToast(context, "Copied to Clipboard");
       isLoading(false);
     });
   }

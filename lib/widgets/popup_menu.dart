@@ -34,6 +34,7 @@ class AppPopupMenu extends StatelessWidget {
         key: menuKey,
         elevation: 3,
         color: Colors.white,
+        iconColor: Colors.white,
         splashRadius: 2,
         tooltip: "",
         enabled: false,
@@ -51,7 +52,7 @@ class AppPopupMenu extends StatelessWidget {
               child: SvgPicture(
                 AssetBytesLoader(AppImages.menuIcon),
                 colorFilter:
-                    ColorFilter.mode(AppColor.fontClr, BlendMode.srcIn),
+                    ColorFilter.mode(AppColor.whiteColor, BlendMode.srcIn),
                 excludeFromSemantics: false,
                 fit: BoxFit.contain,
                 alignment: Alignment.center,

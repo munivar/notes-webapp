@@ -35,7 +35,6 @@ class AppText extends StatelessWidget {
       padding: const EdgeInsets.only(top: 4),
       child: Text(
         text,
-        textScaleFactor: 1,
         maxLines: maxLines ?? 1,
         overflow: overflow ?? TextOverflow.ellipsis,
         textAlign: textAlign ?? TextAlign.left,

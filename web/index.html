@@ -4,7 +4,7 @@
 <head>
   <base href="/">
   <meta charset="UTF-8">
-  <title>Notes</title>
+  <title>To-Do List</title>
   <meta name="description" content="Flutter Project">
   <link rel="manifest" href="manifest.json">
 
@@ -33,30 +33,15 @@
 <body>
   <style>
     body {
-      background-color: #030303;
+      background: url('icons/bg.jpg') no-repeat center center fixed;
+      background-size: cover;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      backdrop-filter: blur(10px);
     }
   </style>
-
-  <!-- Background -->
-  <style>
-    body.light {
-      background-color: #F3F3F3;
-    }
-
-    body.dark {
-      background-color: #241E30;
-    }
-  </style>
-  <script>
-    var queryParams = new URLSearchParams(window.location.search);
-    // Set the theme from the URL param, with fallback to user preference if no theme is
-    // specified.
-    var theme = queryParams.get("brightness");
-    theme ||= window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
-    document.body.classList.add(theme);
-  </script>
 
   <!-- Loading indicator -->
   <div id="loading">
@@ -67,6 +52,7 @@
         margin: 0;
         padding: 0;
         position: fixed;
+        backdrop-filter: blur(10px);
       }
 
       #loading {
@@ -75,6 +61,7 @@
         height: 100%;
         justify-content: center;
         width: 100%;
+        backdrop-filter: blur(10px);
       }
 
       #loading img {
@@ -84,15 +71,18 @@
         /* opacity: .66; */
         opacity: 1;
         transition: opacity .4s;
+        backdrop-filter: blur(10px);
       }
 
       #loading.main_done img {
         opacity: 1;
+        backdrop-filter: blur(10px);
       }
 
       #loading.init_done img {
         animation: .33s ease-in-out 0s 1 forwards zooooom;
         opacity: .05;
+        backdrop-filter: blur(10px);
       }
 
       @keyframes breathe {

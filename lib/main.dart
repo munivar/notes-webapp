@@ -56,7 +56,7 @@ class StartApp extends StatelessWidget {
       initialRoute: AppRoutes.homeRoute,
       getPages: AppRoutes.routes,
       scrollBehavior: CustomScrollBehavior(),
-      title: "Notes",
+      title: "To-Do List",
       theme: ThemeData(
         brightness: Brightness.dark,
         primaryColor: AppColor.primaryClr,

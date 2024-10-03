@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:dnotes/animations/fade_in.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_helper.dart';
@@ -6,11 +7,12 @@ import 'package:dnotes/helpers/app_routes.dart';
 import 'package:dnotes/screens/home/home_contrl.dart';
 import 'package:dnotes/screens/notes/note_list.dart';
 import 'package:dnotes/widgets/app_text.dart';
-import 'package:dnotes/widgets/popup_menu.dart';
 import 'package:dnotes/widgets/svg_icon.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:vector_graphics/vector_graphics_compat.dart';
 
 class HomeView extends StatelessWidget {
   HomeView({super.key});
@@ -20,191 +22,166 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return Future(() => false);
-      },
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: AppColor.lightBgClr,
-          appBar: appbarLayout(context),
-          body: mainLayout(context),
+    return SafeArea(
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/bg.jpg"),
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
-    );
-  }
-
-  appbarLayout(BuildContext context) {
-    return AppBar(
-      toolbarHeight: 60,
-      elevation: 0,
-      backgroundColor: AppColor.lightBgClr,
-      automaticallyImplyLeading: false,
-      flexibleSpace: Container(
-        height: 60,
-        width: AppHelper.is4K || AppHelper.isLaptopL || AppHelper.isLaptop
-            ? 60.w
-            : 100.w,
-        padding: AppHelper.isMobileL ||
-                AppHelper.isMobileS ||
-                AppHelper.isMobileM == false
-            ? EdgeInsets.symmetric(horizontal: 3.w)
-            : const EdgeInsets.all(0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 20),
-              child: InkWell(
-                highlightColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                splashColor: Colors.transparent,
-                onTap: () {
-                  Get.offAllNamed(AppRoutes.homeRoute);
-                },
-                child: Row(
-                  children: [
-                    ClipOval(
-                        child: Image.asset(
-                      AppImages.notesLogo,
-                      height: 35,
-                    )),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: AppText(
-                        "Notes",
-                        fontSize: 24.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: Stack(
-                alignment: Alignment.centerRight,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 92),
-                    child: AppSvgIcon(
-                      AppImages.addIcon,
-                      height: 28,
-                      width: 28,
-                      padding: const EdgeInsets.all(7),
-                      onTap: () {
-                        NotesList notes = NotesList(
-                          id: "dnotes",
-                          title: "",
-                          text: "",
-                          date: "",
-                          isDeleted: false,
-                          noteColor: "0xffFFFFFF",
-                        );
-                        Get.toNamed(AppRoutes.notesRoute, arguments: {
-                          "notes": notes,
-                          "isFromTrash": false,
-                          "isFromSearch": false,
-                        });
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(right: 48),
-                    child: AppSvgIcon(
-                      AppImages.searchIcon,
-                      height: 24,
-                      width: 24,
-                      padding: const EdgeInsets.all(10),
-                      onTap: () {
-                        Get.toNamed(AppRoutes.searchRoute);
-                      },
-                    ),
-                  ),
-                  popupMenu(context),
-                ],
-              ),
-            ),
-          ],
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            drawerScrimColor: Colors.transparent,
+            body: mainLayout(context),
+          ),
         ),
       ),
     );
   }
 
   mainLayout(BuildContext context) {
-    return Container(
-        height: double.infinity,
-        margin: EdgeInsets.only(
-          left: AppHelper.isMobileL ||
-                  AppHelper.isMobileS ||
-                  AppHelper.isMobileM == false
-              ? 3.w
-              : 2.w,
-          bottom: 10,
-          right: AppHelper.isMobileL ||
-                  AppHelper.isMobileS ||
-                  AppHelper.isMobileM == false
-              ? 3.w
-              : 2.w,
-        ),
-        child: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Center(
+        child: SizedBox(
+          width: AppHelper.isWeb == true ? 52.w : 92.w,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              AppHelper.isWeb == true
+                  ? SizedBox(height: 18.h)
+                  : SizedBox(height: 8.h),
+              AppHelper.isWeb == true
+                  ? Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        murti(context),
+                        SizedBox(width: 4.w),
+                        quotes(context),
+                        // const Text("सरल स्वभाव, न मन कूटिलाई,\nजथा लाभ, संतोष सदाई."),
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        murti(context),
+                        SizedBox(height: 4.h),
+                        quotes(context),
+                      ],
+                    ),
+              const SizedBox(height: 42),
+              TextField(
+                maxLines: 1,
+                autofocus: AppHelper.isWeb == true ? true : false,
+                controller: controller.searchContrl,
+                onChanged: (value) {
+                  controller.searchQueryInDatabase(value.toString());
+                },
+                onSubmitted: (value) async {
+                  controller.onLaunch(value);
+                },
+                style:
+                    const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                decoration: InputDecoration(
+                    hintText: "Search.....",
+                    hintStyle: const TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.w600),
+                    prefix: const SizedBox(width: 12),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(500)),
+                    filled: true,
+                    fillColor: Theme.of(context)
+                        .colorScheme
+                        .surfaceContainerHighest
+                        .withOpacity(0.3),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 12)),
+              ),
+              const SizedBox(height: 12),
               buildListLayout(context),
-              AppHelper.sizedBox(4, null),
+              SizedBox(height: 12.h),
             ],
           ),
-        ));
-  }
-
-  popupMenu(BuildContext context) {
-    return AppPopupMenu(
-      menuKey: popupMenuKey,
-      onTap: () {
-        dynamic state = popupMenuKey.currentState;
-        state.showButtonMenu();
-      },
-      child: SizedBox(
-        width: 135,
-        child: ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          physics: const ScrollPhysics(),
-          itemCount: controller.popupMenuList.length,
-          itemBuilder: ((context, index) {
-            return Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: (() {
-                  controller.onMenuTap(controller.popupMenuList[index]);
-                }),
-                borderRadius: BorderRadius.circular(13),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                  child: AppText(
-                    controller.popupMenuList[index],
-                    fontWeight: FontWeight.w600,
-                    fontSize: 15.sp,
-                  ),
-                ),
-              ),
-            );
-          }),
         ),
       ),
+    );
+  }
+
+  murti(BuildContext context) {
+    return Container(
+      height: 180,
+      width: 180,
+      decoration: BoxDecoration(
+        color: Theme.of(context)
+            .colorScheme
+            .surfaceContainerHighest
+            .withOpacity(0.4),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.4),
+          width: 1.0,
+        ),
+        borderRadius: BorderRadius.circular(500),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(500),
+        child: Image.asset(
+          "assets/images/murti.png",
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
+  }
+
+  quotes(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "-------------x-------------",
+          style: TextStyle(
+            fontSize: 24.sp,
+            letterSpacing: 0.8,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        Text(
+          "સરળ સ્વભાવ, ન મન કુટિલાઇ,",
+          style: TextStyle(
+            fontSize: 24.sp,
+            letterSpacing: 0.8,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Text(
+          "જથા લાભ, સંતોષ સદાઈ...",
+          style: TextStyle(
+            fontSize: 24.sp,
+            letterSpacing: 1.6,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        Text(
+          "-------------x-------------",
+          style: TextStyle(
+            fontSize: 24.sp,
+            letterSpacing: 0.8,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
     );
   }
 
   buildListLayout(BuildContext context) {
     return Obx(() {
       if (controller.isLoading.isTrue) {
-        return FadeInAnything(child: Container());
+        return const FadeInAnything(child: SizedBox(height: 28));
       } else if (controller.notesList.isEmpty) {
         return FadeInAnything(
           child: Center(
@@ -215,6 +192,7 @@ class HomeView extends StatelessWidget {
                 AppText(
                   "No Notes",
                   fontWeight: FontWeight.w600,
+                  fontColor: Colors.white.withOpacity(0.8),
                   fontSize: 18.sp,
                 ),
                 AppHelper.sizedBox(0.5, null),
@@ -222,6 +200,7 @@ class HomeView extends StatelessWidget {
                   "Tap the Add button to \n Create a Notes",
                   maxLines: 2,
                   fontSize: 14.sp,
+                  fontColor: Colors.white.withOpacity(0.6),
                   textAlign: TextAlign.center,
                   fontWeight: FontWeight.w500,
                 ),
@@ -230,52 +209,45 @@ class HomeView extends StatelessWidget {
           )),
         );
       } else {
-        return controller.listItemCount.value == 1
-            ? ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                physics: const ScrollPhysics(),
-                itemCount: controller.notesList.length,
-                itemBuilder: (context, index) {
-                  var items = controller.notesList[index];
-                  // add data from firebase firestore to code controller
-                  // controller.codeController = CodeController(
-                  //   text: items.text,
-                  //   language: dart,
-                  // );
-                  //
-                  return buildChildrenLayout(context, items);
-                })
-            : MasonryGridView.count(
-                shrinkWrap: true,
-                physics: const ScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                crossAxisCount: controller.listItemCount.value,
-                itemCount: controller.notesList.length,
-                itemBuilder: ((context, index) {
-                  var items = controller.notesList[index];
-                  // add data from firebase firestore to code controller
-                  // controller.codeController = CodeController(
-                  //   text: items.text,
-                  //   language: dart,
-                  // );
-                  //
-                  return buildChildrenLayout(context, items);
-                }));
+        return MasonryGridView.count(
+            shrinkWrap: true,
+            physics: const ScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            crossAxisCount: AppHelper.isWeb == true ? 3 : 1,
+            itemCount: controller.notesList.length,
+            itemBuilder: ((context, index) {
+              var items = controller.notesList[index];
+              // add data from firebase firestore to code controller
+              // controller.codeController = CodeController(
+              //   text: items.text,
+              //   language: dart,
+              // );
+              //
+              return buildChildrenLayout(context, items, index);
+            }));
       }
     });
   }
 
-  buildChildrenLayout(BuildContext context, NotesList items) {
+  buildChildrenLayout(BuildContext context, NotesList items, int index) {
     return FadeInAnything(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-        child: Material(
-          borderRadius: BorderRadius.circular(13),
-          color: Color(int.parse(items.noteColor)),
+        child: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context)
+                .colorScheme
+                .surfaceContainerHighest
+                .withOpacity(0.4),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.3),
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: InkWell(
             borderRadius: BorderRadius.circular(13),
-            onTap: () {
+            onTap: () async {
               NotesList notes = NotesList(
                 id: items.id,
                 title: items.title,
@@ -298,29 +270,174 @@ class HomeView extends StatelessWidget {
                 children: [
                   items.title.isEmpty
                       ? Container()
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 3),
-                          child: AppText(
-                            items.title,
-                            fontSize: 16.sp,
-                            maxLines: 10,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      : Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 12,
+                              width: 12,
+                              margin: const EdgeInsets.only(top: 7.5, right: 3),
+                              decoration: BoxDecoration(
+                                color: Color(int.parse(items.noteColor)),
+                                borderRadius: BorderRadius.circular(500),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 3),
+                                child: AppText(
+                                  items.title,
+                                  fontSize: 16.sp,
+                                  maxLines: 5,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontColor: Colors.white.withOpacity(0.8),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                            deleteBtn(context, items.id),
+                          ],
                         ),
                   items.text.isEmpty
                       ? Container()
-                      : Container(
-                          width: 100.w,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 5, vertical: 0),
-                          child: AppText(
-                            items.text,
-                            maxLines: 8,
-                            fontColor: AppColor.fontHintClr,
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w500,
+                      : Row(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                width: 100.w,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 5, vertical: 0),
+                                child: AppText(
+                                  items.text,
+                                  maxLines: 2,
+                                  fontColor: Colors.white.withOpacity(0.5),
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            items.title.isEmpty
+                                ? deleteBtn(context, items.id)
+                                : const SizedBox(),
+                          ],
+                        ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  deleteBtn(BuildContext context, String id) {
+    return AppSvgIcon(
+      AppImages.deleteIcon,
+      height: 21,
+      width: 21,
+      color: Colors.white,
+      padding: const EdgeInsets.all(12),
+      onTap: () {
+        deleteDialog(context, id);
+      },
+    );
+  }
+
+  // -- dialog for delete confirmation
+  deleteDialog(BuildContext context, String id) {
+    Get.dialog(
+      barrierDismissible: false,
+      barrierColor: Colors.transparent,
+      Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: SizedBox(
+          width: 360,
+          height: 220,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.3),
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: AppColor.fontClr,
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(50),
+                    ),
+                    padding: const EdgeInsets.all(5),
+                    child: const SvgPicture(
+                      AssetBytesLoader(AppImages.deleteIcon),
+                      colorFilter:
+                          ColorFilter.mode(AppColor.fontClr, BlendMode.srcIn),
+                      excludeFromSemantics: false,
+                      fit: BoxFit.contain,
+                      alignment: Alignment.center,
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: AppText(
+                      "Are you sure Move this Notes to Trash ?",
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14.sp,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        OutlinedButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16.sp,
+                                color: AppColor.fontClr),
                           ),
                         ),
+                        const SizedBox(width: 8),
+                        OutlinedButton(
+                          onPressed: () {
+                            Get.back();
+                            controller.moveToTrashInFirebase(context, id);
+                          },
+                          child: Text(
+                            "Move to Trash",
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16.sp,
+                                color: Colors.red),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),

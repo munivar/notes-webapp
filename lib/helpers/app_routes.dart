@@ -2,7 +2,6 @@ import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/screens/home/home_view.dart';
 import 'package:dnotes/screens/login/login_view.dart';
 import 'package:dnotes/screens/notes/notes_view.dart';
-import 'package:dnotes/screens/search/search_view.dart';
 import 'package:dnotes/screens/trash/trash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -11,7 +10,6 @@ class AppRoutes {
   static const String loginRoute = "/";
   static const String homeRoute = "/home";
   static const String notesRoute = "/notes";
-  static const String searchRoute = "/search";
   static const String trashRoute = "/trash";
 
   static final List<GetPage> routes = [
@@ -31,13 +29,6 @@ class AppRoutes {
     GetPage(
       name: notesRoute,
       page: () => NotesView(),
-      transition: Transition.fade,
-      curve: Curves.fastEaseInToSlowEaseOut,
-      middlewares: [RouteMiddleWare()],
-    ),
-    GetPage(
-      name: searchRoute,
-      page: () => SearchView(),
       transition: Transition.fade,
       curve: Curves.fastEaseInToSlowEaseOut,
       middlewares: [RouteMiddleWare()],

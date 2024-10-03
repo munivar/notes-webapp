@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:code_text_field/code_text_field.dart';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_const.dart';
@@ -21,18 +22,23 @@ class NotesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        if (controller.isLoading.isFalse) {
-          Get.back();
-        }
-        return Future(() => false);
-      },
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: AppColor.lightBgClr,
-          appBar: appbarLayout(context),
-          body: mainLayout(context),
+    return SafeArea(
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/bg.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: appbarLayout(context),
+            body: mainLayout(context),
+          ),
         ),
       ),
     );
@@ -40,14 +46,12 @@ class NotesView extends StatelessWidget {
 
   appbarLayout(BuildContext context) {
     return AppBar(
-      backgroundColor: AppColor.lightBgClr,
+      backgroundColor: Colors.transparent,
       toolbarHeight: 122,
       elevation: 0,
       automaticallyImplyLeading: false,
       flexibleSpace: Container(
-        padding: AppHelper.isMobileL ||
-                AppHelper.isMobileS ||
-                AppHelper.isMobileM == false
+        padding: AppHelper.isWeb == true
             ? EdgeInsets.symmetric(horizontal: 3.w)
             : const EdgeInsets.all(0),
         child: Column(
@@ -61,6 +65,7 @@ class NotesView extends StatelessWidget {
                     AppImages.backIcon,
                     height: 30,
                     width: 30,
+                    color: Colors.white,
                     padding: const EdgeInsets.all(7),
                     onTap: () {
                       if (controller.isLoading.isFalse) {
@@ -80,6 +85,7 @@ class NotesView extends StatelessWidget {
                                 AppImages.revertIcon,
                                 height: 20,
                                 width: 20,
+                                color: Colors.white,
                                 padding: const EdgeInsets.all(12.5),
                                 onTap: () {
                                   if (controller.isLoading.isFalse) {
@@ -98,6 +104,7 @@ class NotesView extends StatelessWidget {
                                 AppImages.deleteIcon,
                                 height: 21,
                                 width: 21,
+                                color: Colors.white,
                                 padding: const EdgeInsets.all(12),
                                 onTap: () {
                                   if (controller.isFromTrash.isTrue) {
@@ -125,6 +132,7 @@ class NotesView extends StatelessWidget {
                   expands: true,
                   maxLines: null,
                   minLines: null,
+                  autofocus: true,
                   textInputAction: TextInputAction.done,
                   keyboardType: TextInputType.text,
                   textAlign: TextAlign.left,
@@ -133,8 +141,8 @@ class NotesView extends StatelessWidget {
                     controller.saveNotes(context);
                   },
                   style: TextStyle(
-                    fontSize: 18.sp,
-                    color: AppColor.fontClr,
+                    fontSize: 24.sp,
+                    color: Colors.white.withOpacity(0.8),
                     fontWeight: FontWeight.w600,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -166,8 +174,8 @@ class NotesView extends StatelessWidget {
                     ),
                     hintText: 'Enter notes title here...',
                     hintStyle: TextStyle(
-                      fontSize: 18.sp,
-                      color: AppColor.fontHintClr,
+                      fontSize: 24.sp,
+                      color: Colors.white.withOpacity(0.7),
                       fontWeight: FontWeight.w500,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -194,95 +202,92 @@ class NotesView extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         child: SizedBox(
-          width: 120,
-          height: 210,
-          child: Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(18),
-            ),
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 10),
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(
-                      color: AppColor.fontClr,
-                      width: 1.5,
+          width: 360,
+          height: 220,
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border.all(
+                  color: Colors.white.withOpacity(0.3),
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const SizedBox(height: 10),
+                  Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: AppColor.fontClr,
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(50),
                     ),
-                    borderRadius: BorderRadius.circular(50),
+                    padding: const EdgeInsets.all(5),
+                    child: const SvgPicture(
+                      AssetBytesLoader(AppImages.deleteIcon),
+                      colorFilter:
+                          ColorFilter.mode(AppColor.fontClr, BlendMode.srcIn),
+                      excludeFromSemantics: false,
+                      fit: BoxFit.contain,
+                      alignment: Alignment.center,
+                    ),
                   ),
-                  padding: const EdgeInsets.all(5),
-                  child: const SvgPicture(
-                    AssetBytesLoader(AppImages.deleteIcon),
-                    colorFilter:
-                        ColorFilter.mode(AppColor.fontClr, BlendMode.srcIn),
-                    excludeFromSemantics: false,
-                    fit: BoxFit.contain,
-                    alignment: Alignment.center,
+                  const SizedBox(height: 15),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: AppText(
+                      "Are you sure to Delete this Notes Permanently ?",
+                      maxLines: 2,
+                      textAlign: TextAlign.center,
+                      fontWeight: FontWeight.w500,
+                      fontSize: 14.sp,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 15),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: AppText(
-                    "Are you sure to Delete this Notes Permanently ?",
-                    maxLines: 2,
-                    textAlign: TextAlign.center,
-                    fontWeight: FontWeight.w500,
-                    fontSize: 14.sp,
-                  ),
-                ),
-                const SizedBox(height: 15),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(50),
-                        onTap: () {
-                          Get.back();
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 20),
-                          child: AppText(
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        OutlinedButton(
+                          onPressed: () {
+                            Get.back();
+                          },
+                          child: Text(
                             "Cancel",
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16.sp,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16.sp,
+                                color: AppColor.fontClr),
                           ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(50),
-                        onTap: () {
-                          Get.back();
-                          controller.deleteNotesInFirebase(context);
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 20),
-                          child: AppText(
+                        const SizedBox(width: 8),
+                        OutlinedButton(
+                          onPressed: () {
+                            Get.back();
+                            controller.deleteNotesInFirebase(context);
+                          },
+                          child: Text(
                             "Delete Note",
-                            fontColor: Colors.red,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16.sp,
+                            style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16.sp,
+                                color: Colors.red),
                           ),
                         ),
-                      ),
+                      ],
                     ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -393,8 +398,15 @@ class NotesView extends StatelessWidget {
           bottom: 5,
           right: AppHelper.isWeb ? 15 : 5),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(13),
-        color: AppColor.codeFieldClr,
+        color: Theme.of(context)
+            .colorScheme
+            .surfaceContainerHighest
+            .withOpacity(0.4),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.3),
+          width: 1.0,
+        ),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -431,11 +443,7 @@ class NotesView extends StatelessWidget {
                         wrap: controller.isWordWrap.value,
                         horizontalScroll: true,
                         lineNumbers: false,
-                        enabled: AppHelper.isWeb
-                            ? true
-                            : AppHelper.isLandscape
-                                ? false
-                                : true,
+                        enabled: true,
                         smartQuotesType: SmartQuotesType.enabled,
                         decoration: BoxDecoration(
                             color: Colors.transparent,

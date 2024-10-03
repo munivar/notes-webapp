@@ -1,6 +1,6 @@
 name: dnotes
 description: A new Flutter project.
-publish_to: 'none'
+# publish_to: 'none'
 version: 1.0.0+1
 
 environment:
@@ -13,7 +13,7 @@ dependencies:
   get: ^4.6.5 # for improve perfomance and better coding
   simple_animations: ^5.0.0+3 # for using animation
   fluttertoast: ^8.2.1  # for showing toast message
-  url_launcher: ^6.1.10 # for launching link and url
+  url_launcher: ^6.2.5 # for launching link and url
   get_storage: ^2.1.1 # for storing data
   intl: ^0.17.0 # for formating date
   code_text_field: ^1.1.0 # for formating code

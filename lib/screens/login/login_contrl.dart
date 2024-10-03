@@ -4,7 +4,6 @@ import 'package:dnotes/helpers/app_const.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_routes.dart';
 import 'package:dnotes/helpers/app_storage.dart';
-import 'package:dnotes/widgets/app_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -31,11 +30,9 @@ class LoginController extends GetxController {
           signInUserWithFirebase(context);
         }
       } else {
-        AppToast.showToast(context, "Password field is Required");
         AppHelper.closeKeyboard(context);
       }
     } else {
-      AppToast.showToast(context, "Username field is Required");
       AppHelper.closeKeyboard(context);
     }
   }
@@ -51,7 +48,7 @@ class LoginController extends GetxController {
       // Check if the document exists
       if (querySnapshot.size > 0) {
         // ignore: use_build_context_synchronously
-        AppToast.showToast(context, "Username is not available");
+
         isLoading(false);
       } else {
         // register user with details in firebase firestore
@@ -100,12 +97,10 @@ class LoginController extends GetxController {
           } else {
             isLoading(false);
             // ignore: use_build_context_synchronously
-            AppToast.showToast(context, "Password is Invalid");
           }
         }
       } else {
         // ignore: use_build_context_synchronously
-        AppToast.showToast(context, "Username not found");
         isLoading(false);
       }
     } catch (e) {

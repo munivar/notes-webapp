@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_images.dart';
@@ -12,15 +13,23 @@ class LoginView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        return Future(() => false);
-      },
-      child: SafeArea(
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: AppColor.lightBgClr,
-          body: mainLayout(context),
+    return SafeArea(
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/bg.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            backgroundColor: Colors.transparent,
+            body: mainLayout(context),
+          ),
         ),
       ),
     );
@@ -28,31 +37,26 @@ class LoginView extends StatelessWidget {
 
   mainLayout(BuildContext context) {
     return Container(
-      color: AppHelper.isWeb == false ? Colors.white : Colors.transparent,
       height: 100.h,
-      margin: AppHelper.isWeb == false
-          ? const EdgeInsets.all(0)
-          : EdgeInsets.only(left: 3.w, bottom: 10, right: 3.w),
       padding: EdgeInsets.symmetric(horizontal: 5.w),
       child: Center(
-        child: AppHelper.isWeb == false
-            ? SingleChildScrollView(
-                child: containerLayout(context),
-              )
-            : Container(
-                height: 70.h,
-                width: AppHelper.isMobileL ||
-                        AppHelper.isMobileS ||
-                        AppHelper.isMobileM == false
-                    ? 500
-                    : 100.w,
-                padding: const EdgeInsets.all(15),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: containerLayout(context),
-              ),
+        child: Container(
+          height: 70.h,
+          width: AppHelper.isWeb == true ? 500 : 100.w,
+          padding: const EdgeInsets.all(15),
+          decoration: BoxDecoration(
+            color: Theme.of(context)
+                .colorScheme
+                .surfaceContainerHighest
+                .withOpacity(0.4),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.3),
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: containerLayout(context),
+        ),
       ),
     );
   }
@@ -75,44 +79,39 @@ class LoginView extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: AppText(
-                "Notes",
+                "To-Do List",
                 fontSize: 32.sp,
+                fontColor: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             )
           ],
         ),
-        AppHelper.sizedBox(
-            AppHelper.isMobileL || AppHelper.isMobileS || AppHelper.isMobileM
-                ? 10
-                : 5,
-            null),
+        AppHelper.sizedBox(AppHelper.isWeb == true ? 5 : 10, null),
         Obx(() {
           return AppText(
             controller.isRegister.isTrue
                 ? "Looks like you're new here!"
                 : "Login to your Account",
             fontSize: 24.sp,
+            fontColor: Colors.white,
             fontWeight: FontWeight.bold,
           );
         }),
         AppHelper.sizedBox(1, null),
         Padding(
-          padding: AppHelper.isMobileL ||
-                  AppHelper.isMobileS ||
-                  AppHelper.isMobileM == false
-              ? EdgeInsets.symmetric(horizontal: 1.4.w)
-              : const EdgeInsets.all(0),
+          padding: EdgeInsets.symmetric(horizontal: 1.4.w),
           child: TextFormField(
             scrollPadding: EdgeInsets.only(
                 bottom: MediaQuery.of(context).viewInsets.bottom),
             textInputAction: TextInputAction.next,
             keyboardType: TextInputType.text,
             maxLines: 1,
+            autofocus: true,
             onChanged: (value) {},
             style: TextStyle(
               fontSize: 18.sp,
-              color: AppColor.fontClr,
+              color: AppColor.whiteColor.withOpacity(0.8),
               fontWeight: FontWeight.w500,
             ),
             cursorColor: AppColor.primaryClr,
@@ -121,7 +120,7 @@ class LoginView extends StatelessWidget {
               hintText: 'Username',
               hintStyle: TextStyle(
                 fontSize: 16.sp,
-                color: AppColor.fontHintClr,
+                color: AppColor.whiteColor.withOpacity(0.6),
                 fontWeight: FontWeight.normal,
               ),
               contentPadding:
@@ -134,17 +133,13 @@ class LoginView extends StatelessWidget {
           height: 2,
           margin: EdgeInsets.symmetric(horizontal: 2.w),
           decoration: BoxDecoration(
-              color: AppColor.fontHintClr.withOpacity(0.20),
+              color: AppColor.whiteColor.withOpacity(0.20),
               borderRadius: BorderRadius.circular(50)),
           width: 100.w,
         ),
         AppHelper.sizedBox(1, null),
         Padding(
-          padding: AppHelper.isMobileL ||
-                  AppHelper.isMobileS ||
-                  AppHelper.isMobileM == false
-              ? EdgeInsets.symmetric(horizontal: 1.4.w)
-              : const EdgeInsets.all(0),
+          padding: EdgeInsets.symmetric(horizontal: 1.4.w),
           child: TextFormField(
               scrollPadding: EdgeInsets.only(
                   bottom: MediaQuery.of(context).viewInsets.bottom),
@@ -154,7 +149,7 @@ class LoginView extends StatelessWidget {
               onChanged: (value) {},
               style: TextStyle(
                 fontSize: 18.sp,
-                color: AppColor.fontClr,
+                color: AppColor.whiteColor.withOpacity(0.8),
                 fontWeight: FontWeight.w500,
               ),
               cursorColor: AppColor.primaryClr,
@@ -167,7 +162,7 @@ class LoginView extends StatelessWidget {
                 hintText: 'Password',
                 hintStyle: TextStyle(
                   fontSize: 16.sp,
-                  color: AppColor.fontHintClr,
+                  color: AppColor.whiteColor.withOpacity(0.6),
                   fontWeight: FontWeight.normal,
                 ),
                 contentPadding:
@@ -179,17 +174,13 @@ class LoginView extends StatelessWidget {
           height: 2,
           margin: EdgeInsets.symmetric(horizontal: 2.w),
           decoration: BoxDecoration(
-              color: AppColor.fontHintClr.withOpacity(0.20),
+              color: AppColor.whiteColor.withOpacity(0.20),
               borderRadius: BorderRadius.circular(50)),
           width: 100.w,
         ),
         AppHelper.sizedBox(3, null),
         Padding(
-          padding: AppHelper.isMobileL ||
-                  AppHelper.isMobileS ||
-                  AppHelper.isMobileM == false
-              ? EdgeInsets.symmetric(horizontal: 1.8.w)
-              : const EdgeInsets.symmetric(horizontal: 10),
+          padding: EdgeInsets.symmetric(horizontal: 1.8.w),
           child: Material(
             color: AppColor.primaryClr,
             borderRadius: BorderRadius.circular(50),
@@ -228,7 +219,7 @@ class LoginView extends StatelessWidget {
           "or",
           fontSize: 14.sp,
           fontWeight: FontWeight.w400,
-          fontColor: AppColor.fontHintClr,
+          fontColor: AppColor.whiteColor.withOpacity(0.4),
         ),
         AppHelper.sizedBox(1, null),
         Material(
@@ -249,9 +240,10 @@ class LoginView extends StatelessWidget {
                   return AppText(
                     controller.isRegister.isTrue
                         ? "Login to your Account"
-                        : "Register in Notes Account",
+                        : "Register in To-Do Account",
                     fontWeight: FontWeight.w500,
                     fontSize: 18.sp,
+                    fontColor: Colors.white.withOpacity(0.6),
                     decoration: TextDecoration.underline,
                   );
                 })),

@@ -1,6 +1,6 @@
+import 'dart:ui';
 import 'package:code_text_field/code_text_field.dart';
 import 'package:dnotes/animations/fade_in.dart';
-import 'package:dnotes/helpers/app_color.dart';
 import 'package:dnotes/helpers/app_helper.dart';
 import 'package:dnotes/helpers/app_images.dart';
 import 'package:dnotes/helpers/app_routes.dart';
@@ -19,16 +19,23 @@ class TrashView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        Get.back(result: controller.isGetBack.value);
-        return Future(() => false);
-      },
-      child: SafeArea(
-        child: Scaffold(
-          backgroundColor: AppColor.lightBgClr,
-          appBar: appbarLayout(context),
-          body: mainLayout(context),
+    return SafeArea(
+      child: Container(
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/bg.jpg"),
+            fit: BoxFit.cover,
+          ),
+        ),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
+          child: Scaffold(
+            backgroundColor: Colors.transparent,
+            appBar: appbarLayout(context),
+            body: mainLayout(context),
+          ),
         ),
       ),
     );
@@ -38,66 +45,54 @@ class TrashView extends StatelessWidget {
     return AppBar(
       toolbarHeight: 60,
       elevation: 0,
-      backgroundColor: AppColor.lightBgClr,
+      backgroundColor: Colors.transparent,
       automaticallyImplyLeading: false,
-      flexibleSpace: Container(
-        height: 60,
-        width: AppHelper.is4K || AppHelper.isLaptopL || AppHelper.isLaptop
-            ? 60.w
-            : 100.w,
-        padding: AppHelper.isMobileL ||
-                AppHelper.isMobileS ||
-                AppHelper.isMobileM == false
-            ? EdgeInsets.symmetric(horizontal: 3.w)
-            : const EdgeInsets.symmetric(horizontal: 5),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 2),
-              child: AppSvgIcon(
-                AppImages.backIcon,
-                height: 30,
-                width: 30,
-                padding: const EdgeInsets.all(7),
-                onTap: () {
-                  Get.back();
-                },
+      flexibleSpace: Center(
+        child: Container(
+          height: 60,
+          width: AppHelper.isWeb == true ? 78.w : 96.w,
+          padding: AppHelper.isWeb == true
+              ? EdgeInsets.symmetric(horizontal: 3.w)
+              : const EdgeInsets.symmetric(horizontal: 5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: AppSvgIcon(
+                  AppImages.backIcon,
+                  height: 30,
+                  width: 30,
+                  color: Colors.white,
+                  padding: const EdgeInsets.all(7),
+                  onTap: () {
+                    Get.back();
+                  },
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: AppText(
-                "Trash",
-                fontSize: 22.sp,
-                fontWeight: FontWeight.bold,
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: AppText(
+                  "Trash",
+                  fontSize: 22.sp,
+                  fontColor: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
   mainLayout(BuildContext context) {
-    return Container(
-        height: double.infinity,
-        margin: EdgeInsets.only(
-          left: AppHelper.isMobileL ||
-                  AppHelper.isMobileS ||
-                  AppHelper.isMobileM == false
-              ? 3.w
-              : 2.w,
-          bottom: 10,
-          right: AppHelper.isMobileL ||
-                  AppHelper.isMobileS ||
-                  AppHelper.isMobileM == false
-              ? 3.w
-              : 2.w,
-        ),
-        child: SingleChildScrollView(
-          physics: const AlwaysScrollableScrollPhysics(),
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Center(
+        child: SizedBox(
+          width: AppHelper.isWeb == true ? 72.w : 92.w,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -106,13 +101,17 @@ class TrashView extends StatelessWidget {
               AppHelper.sizedBox(4, null),
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   buildListLayout(BuildContext context) {
     return Obx(() {
       if (controller.isLoading.isTrue) {
-        return FadeInAnything(child: Container());
+        return FadeInAnything(
+          child: SizedBox(height: 28, child: AppHelper.appLoader(Colors.white)),
+        );
       } else if (controller.notesList.isEmpty) {
         return FadeInAnything(
           child: Center(
@@ -126,49 +125,43 @@ class TrashView extends StatelessWidget {
           )),
         );
       } else {
-        return controller.listItemCount.value == 1
-            ? ListView.builder(
-                scrollDirection: Axis.vertical,
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
-                itemCount: controller.notesList.length,
-                itemBuilder: (context, index) {
-                  var items = controller.notesList[index];
-                  // add data from firebase firestore to code controller
-                  controller.codeController = CodeController(
-                    text: items.text,
-                    language: dart,
-                  );
-                  //
-                  return buildChildrenLayout(context, items);
-                })
-            : MasonryGridView.count(
-                shrinkWrap: true,
-                physics: const BouncingScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                crossAxisCount: controller.listItemCount.value,
-                itemCount: controller.notesList.length,
-                itemBuilder: ((context, index) {
-                  var items = controller.notesList[index];
-                  // add data from firebase firestore to code controller
-                  controller.codeController = CodeController(
-                    text: items.text,
-                    language: dart,
-                  );
-                  //
-                  return buildChildrenLayout(context, items);
-                }));
+        return MasonryGridView.count(
+            shrinkWrap: true,
+            physics: const BouncingScrollPhysics(),
+            scrollDirection: Axis.vertical,
+            crossAxisCount: AppHelper.isWeb == true ? 3 : 1,
+            itemCount: controller.notesList.length,
+            itemBuilder: ((context, index) {
+              var items = controller.notesList[index];
+              // add data from firebase firestore to code controller
+              controller.codeController = CodeController(
+                text: items.text,
+                language: dart,
+              );
+              //
+              return buildChildrenLayout(context, items, index);
+            }));
       }
     });
   }
 
-  buildChildrenLayout(BuildContext context, NotesList items) {
+  buildChildrenLayout(BuildContext context, NotesList items, int index) {
     return FadeInAnything(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-        child: Material(
-          borderRadius: BorderRadius.circular(13),
-          color: Color(int.parse(items.noteColor)),
+        child: Container(
+          decoration: BoxDecoration(
+            // color: Color(int.parse(items.noteColor)),
+            color: Theme.of(context)
+                .colorScheme
+                .surfaceContainerHighest
+                .withOpacity(0.4),
+            border: Border.all(
+              color: Colors.white.withOpacity(0.3),
+              width: 1.0,
+            ),
+            borderRadius: BorderRadius.circular(12),
+          ),
           child: InkWell(
             borderRadius: BorderRadius.circular(13),
             onTap: () async {
@@ -200,14 +193,33 @@ class TrashView extends StatelessWidget {
                 children: [
                   items.title.isEmpty
                       ? Container()
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 3),
-                          child: AppText(
-                            items.title,
-                            fontSize: 16.sp,
-                            maxLines: 10,
-                            fontWeight: FontWeight.w600,
-                          ),
+                      : Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 12,
+                              width: 12,
+                              margin: const EdgeInsets.only(top: 7.5, right: 3),
+                              decoration: BoxDecoration(
+                                color: Color(int.parse(items.noteColor)),
+                                borderRadius: BorderRadius.circular(500),
+                              ),
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 3),
+                                child: AppText(
+                                  items.title,
+                                  fontSize: 16.sp,
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontColor: Colors.white.withOpacity(0.8),
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                   items.text.isEmpty
                       ? Container()
@@ -218,7 +230,7 @@ class TrashView extends StatelessWidget {
                           child: AppText(
                             items.text,
                             maxLines: 8,
-                            fontColor: AppColor.fontHintClr,
+                            fontColor: Colors.white.withOpacity(0.5),
                             fontSize: 14.sp,
                             fontWeight: FontWeight.w500,
                           ),
