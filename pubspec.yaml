@@ -65,4 +65,4 @@ flutter:
   # Build your app in release mode, using the default (auto) option:
   # flutter build web --release
   # Build your app in release mode, using just the Html renderer:
-  # flutter build web --web-renderer html --release --no-tree-shake-icons
+  # flutter build web --web-renderer html --release
